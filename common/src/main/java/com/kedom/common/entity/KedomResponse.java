@@ -49,7 +49,7 @@ public class KedomResponse {
     public static KedomResponse OK() {
         return new KedomResponse(KedomResponseCodeEnum.SUCCESS);
     }
-    public static KedomResponse OK_FULLDa(Object data) {
+    public static KedomResponse OK_FULLData(Object data) {
         return new KedomResponse().fillData(data);
     }
 

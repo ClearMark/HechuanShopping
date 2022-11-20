@@ -39,7 +39,7 @@ public class UmsMemberController {
     public KedomResponse login(@RequestBody UserVO userLoginVo) {
 
         UmsMember umsMember = umsMemberService.login(userLoginVo);
-        return  KedomResponse.OK_FULLDa(umsMember);
+        return  KedomResponse.OK_FULLData(umsMember);
     }
 
     @PutMapping

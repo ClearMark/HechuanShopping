@@ -26,7 +26,7 @@ public class ProductController {
     @PostMapping("/saveFile")
     public KedomResponse saveFile(List<MultipartFile> files) {
         List<String> paths = productServiceImpl.saveImage(files);
-        return KedomResponse.OK_FULLDa(paths);
+        return KedomResponse.OK_FULLData(paths);
     }
 
     @PostMapping
