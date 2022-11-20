@@ -111,11 +111,8 @@
         select count(*) from pms_attr where attr_name = #{attrName} and attr_group_id=#{attrGroupId} and catelog_id=#{catelogId} and enable = 1
 
     </select>
-    <select id="queryAttrNameByIds" resultMap="PmsAttrMap">
-        select attr_id,attr_name from pms_attr where attr_id in
-        <foreach collection="list" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+    <select id="queryAllAttrNameByCateId" resultMap="PmsAttrMap">
+        select attr_id,attr_name from pms_attr where catelog_id = #{catelogId} and search_type=#{attrType} and enable = 1
     </select>
 
     <!--新增所有列-->

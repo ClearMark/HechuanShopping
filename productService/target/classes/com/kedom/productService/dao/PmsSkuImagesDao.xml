@@ -93,6 +93,13 @@
         img_sort = values(img_sort),
         default_img = values(default_img)
     </insert>
+    <insert id="insertList">
+        insert into pms_sku_images(sku_id, img_url, img_sort, default_img)
+        values
+        <foreach collection="list" item="entity" separator=",">
+        (#{entity.skuId}, #{entity.imgUrl}, #{entity.imgSort}, #{entity.defaultImg})
+        </foreach>
+    </insert>
 
     <!--通过主键修改数据-->
     <update id="update">

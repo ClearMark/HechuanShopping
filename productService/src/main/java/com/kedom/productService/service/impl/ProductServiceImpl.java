@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Service
 public class ProductServiceImpl {
 
-//Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
+private static final Logger  logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     //spu
     @Autowired
@@ -152,7 +152,7 @@ public class ProductServiceImpl {
             List<PmsSkuImages> skuImages = sku.getImages().stream().map(img -> {
                 PmsSkuImages pmsSkuImages = new PmsSkuImages();
                 pmsSkuImages.setSkuId(pmsSkuInfo.getSkuId());
-                pmsSkuImages.setImgUrl(img);
+                pmsSkuImages.setImgUrl(img.getImgUrl());
                 return pmsSkuImages;
             }).collect(Collectors.toList());
 
@@ -174,16 +174,16 @@ public class ProductServiceImpl {
         });
 
 
-
-        });
-
-
     }
 
     @Cacheable(value = "product",key = "'aaa'")
     public String a()
     {
         return "a";
+    }
+
+    public static void main(String[] args) {
+        logger.info("a");
     }
 
 }

@@ -12,12 +12,13 @@
         <result property="publishStatus" column="publish_status" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="spuBelong" column="spu_belong" jdbcType="INTEGER"/>
     </resultMap>
 
     <!--查询单个-->
     <select id="queryById" resultMap="PmsSpuInfoMap">
         select
-          id, spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time
+          id, spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time,spu_belong
         from pms_spu_info
         where id = #{id}
     </select>
@@ -25,7 +26,7 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="PmsSpuInfoMap">
         select
-          id, spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time
+          id, spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time,spu_belong
         from pms_spu_info
         <where>
             <if test="id != null">
@@ -96,29 +97,22 @@
 
     <!--新增所有列-->
     <insert id="insert" >
-        insert into pms_spu_info(id, spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time)
-        values (#{id}, #{spuName}, #{spuDescription}, #{catalogId}, #{brandId}, #{weight}, #{publishStatus}, #{createTime}, #{updateTime})
+        insert into pms_spu_info(id, spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time,spu_belong)
+        values (#{id}, #{spuName}, #{spuDescription}, #{catalogId}, #{brandId}, #{weight}, #{publishStatus}, #{createTime}, #{updateTime},#{spuBelong})
     </insert>
 
     <insert id="insertGetKey" useGeneratedKeys="true" keyProperty="id">
-        insert into pms_spu_info(id, spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time)
-        values (#{id}, #{spuName}, #{spuDescription}, #{catalogId}, #{brandId}, #{weight}, #{publishStatus}, #{createTime}, #{updateTime})
+        insert into pms_spu_info(id, spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time,spu_belong)
+        values (#{id}, #{spuName}, #{spuDescription}, #{catalogId}, #{brandId}, #{weight}, #{publishStatus}, #{createTime}, #{updateTime},#{spuBelong})
     </insert>
 
 
-    <insert id="insertBatch">
-        insert into pms_spu_info(id, spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-        (#{entity.id}, #{entity.spuName}, #{entity.spuDescription}, #{entity.catalogId}, #{entity.brandId}, #{entity.weight}, #{entity.publishStatus}, #{entity.createTime}, #{entity.updateTime})
-        </foreach>
-    </insert>
 
     <insert id="insertOrUpdateBatch">
-        insert into pms_spu_info(spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time)
+        insert into pms_spu_info(spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time,spu_belong)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.id}, #{entity.spuName}, #{entity.spuDescription}, #{entity.catalogId}, #{entity.brandId}, #{entity.weight}, #{entity.publishStatus}, #{entity.createTime}, #{entity.updateTime})
+            (#{entity.id}, #{entity.spuName}, #{entity.spuDescription}, #{entity.catalogId}, #{entity.brandId}, #{entity.weight}, #{entity.publishStatus}, #{entity.createTime}, #{entity.updateTime},#{entity.spuBelong})
         </foreach>
         on duplicate key update
         id = values(id),
@@ -129,7 +123,8 @@
         weight = values(weight),
         publish_status = values(publish_status),
         create_time = values(create_time),
-        update_time = values(update_time)
+        update_time = values(update_time),
+        spu_belong = values(spu_belong)
     </insert>
 
     <!--通过主键修改数据-->
@@ -159,6 +154,9 @@
             </if>
             <if test="updateTime != null">
                 update_time = #{updateTime},
+            </if>
+            <if test="spuBelong != null">
+                spu_belong = #{spuBelong},
             </if>
         </set>
         where id = #{id}

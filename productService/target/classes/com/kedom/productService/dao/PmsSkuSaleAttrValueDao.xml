@@ -101,6 +101,13 @@
         attr_value = values(attr_value),
         attr_sort = values(attr_sort)
     </insert>
+    <insert id="insertList">
+        insert into pms_sku_sale_attr_value(sku_id, attr_id, attr_name, attr_value, attr_sort)
+        values
+        <foreach collection="list" item="entity" separator=",">
+            (#{entity.skuId}, #{entity.attrId}, #{entity.attrName}, #{entity.attrValue}, #{entity.attrSort})
+        </foreach>
+    </insert>
 
     <!--通过主键修改数据-->
     <update id="update">
