@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedom.productService.dao.PmsCategoryDao">
+
+    <resultMap type="com.kedom.common.entity.productServiceEntity.PmsCategory" id="PmsCategoryMap">
+        <result property="catId" column="cat_id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="parentCid" column="parent_cid" jdbcType="INTEGER"/>
+        <result property="catLevel" column="cat_level" jdbcType="INTEGER"/>
+        <result property="showStatus" column="show_status" jdbcType="INTEGER"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="icon" column="icon" jdbcType="VARCHAR"/>
+        <result property="productUnit" column="product_unit" jdbcType="VARCHAR"/>
+        <result property="productCount" column="product_count" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PmsCategoryMap">
+        select
+          cat_id, name, parent_cid, cat_level, show_status, sort, icon, product_unit, product_count
+        from pms_category
+        where cat_id = #{catId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="PmsCategoryMap">
+        select
+          cat_id, name, parent_cid, cat_level, show_status, sort, icon, product_unit, product_count
+        from pms_category
+        <where>
+            <if test="catId != null">
+                and cat_id = #{catId}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="parentCid != null">
+                and parent_cid = #{parentCid}
+            </if>
+            <if test="catLevel != null">
+                and cat_level = #{catLevel}
+            </if>
+            <if test="showStatus != null">
+                and show_status = #{showStatus}
+            </if>
+            <if test="sort != null">
+                and sort = #{sort}
+            </if>
+            <if test="icon != null and icon != ''">
+                and icon = #{icon}
+            </if>
+            <if test="productUnit != null and productUnit != ''">
+                and product_unit = #{productUnit}
+            </if>
+            <if test="productCount != null">
+                and product_count = #{productCount}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from pms_category
+        <where>
+            <if test="catId != null">
+                and cat_id = #{catId}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="parentCid != null">
+                and parent_cid = #{parentCid}
+            </if>
+            <if test="catLevel != null">
+                and cat_level = #{catLevel}
+            </if>
+            <if test="showStatus != null">
+                and show_status = #{showStatus}
+            </if>
+            <if test="sort != null">
+                and sort = #{sort}
+            </if>
+            <if test="icon != null and icon != ''">
+                and icon = #{icon}
+            </if>
+            <if test="productUnit != null and productUnit != ''">
+                and product_unit = #{productUnit}
+            </if>
+            <if test="productCount != null">
+                and product_count = #{productCount}
+            </if>
+        </where>
+    </select>
+    <select id="queryAll" resultMap="PmsCategoryMap">
+        select * from pms_category
+    </select>
+    <select id="checkCategoryIsThreeLevelCategory" resultType="java.lang.Integer">
+        select count(*) from pms_category where cat_id = #{catId} and cat_level = 3 limit 1
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" >
+        insert into pms_category(cat_id, name, parent_cid, cat_level, show_status, sort, icon, product_unit, product_count)
+        values (#{catId}, #{name}, #{parentCid}, #{catLevel}, #{showStatus}, #{sort}, #{icon}, #{productUnit}, #{productCount})
+    </insert>
+
+    <insert id="insertBatch">
+        insert into pms_category(cat_id, name, parent_cid, cat_level, show_status, sort, icon, product_unit, product_count)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.catId}, #{entity.name}, #{entity.parentCid}, #{entity.catLevel}, #{entity.showStatus}, #{entity.sort}, #{entity.icon}, #{entity.productUnit}, #{entity.productCount})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch">
+        insert into pms_category(name, parent_cid, cat_level, show_status, sort, icon, product_unit, product_count)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.catId}, #{entity.name}, #{entity.parentCid}, #{entity.catLevel}, #{entity.showStatus}, #{entity.sort}, #{entity.icon}, #{entity.productUnit}, #{entity.productCount})
+        </foreach>
+        on duplicate key update
+        cat_id = values(cat_id),
+        name = values(name),
+        parent_cid = values(parent_cid),
+        cat_level = values(cat_level),
+        show_status = values(show_status),
+        sort = values(sort),
+        icon = values(icon),
+        product_unit = values(product_unit),
+        product_count = values(product_count)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update pms_category
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="parentCid != null">
+                parent_cid = #{parentCid},
+            </if>
+            <if test="catLevel != null">
+                cat_level = #{catLevel},
+            </if>
+            <if test="showStatus != null">
+                show_status = #{showStatus},
+            </if>
+            <if test="sort != null">
+                sort = #{sort},
+            </if>
+            <if test="icon != null and icon != ''">
+                icon = #{icon},
+            </if>
+            <if test="productUnit != null and productUnit != ''">
+                product_unit = #{productUnit},
+            </if>
+            <if test="productCount != null">
+                product_count = #{productCount},
+            </if>
+        </set>
+        where cat_id = #{catId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from pms_category where cat_id = #{catId}
+    </delete>
+
+    <update id="deleteCategorysById">
+        update pms_category set show_status=0 where cat_id in <foreach collection="list" item="item">
+        #{item}
+    </foreach>
+
+    </update>
+
+
+
+</mapper>
+

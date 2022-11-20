@@ -1,0 +1,12 @@
+server:
+  port: 20002
+spring:
+  application:
+    name: memberService
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+  datasource:
+    url: jdbc:mysql://localhost:3306/user_service?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true
+    username: root
+    password: root

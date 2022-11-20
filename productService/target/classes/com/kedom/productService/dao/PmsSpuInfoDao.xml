@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedom.productService.dao.PmsSpuInfoDao">
+
+    <resultMap type="com.kedom.productService.entity.PmsSpuInfo" id="PmsSpuInfoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="spuName" column="spu_name" jdbcType="VARCHAR"/>
+        <result property="spuDescription" column="spu_description" jdbcType="VARCHAR"/>
+        <result property="catalogId" column="catalog_id" jdbcType="INTEGER"/>
+        <result property="brandId" column="brand_id" jdbcType="INTEGER"/>
+        <result property="weight" column="weight" jdbcType="NUMERIC"/>
+        <result property="publishStatus" column="publish_status" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PmsSpuInfoMap">
+        select
+          id, spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time
+        from pms_spu_info
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="PmsSpuInfoMap">
+        select
+          id, spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time
+        from pms_spu_info
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="spuName != null and spuName != ''">
+                and spu_name = #{spuName}
+            </if>
+            <if test="spuDescription != null and spuDescription != ''">
+                and spu_description = #{spuDescription}
+            </if>
+            <if test="catalogId != null">
+                and catalog_id = #{catalogId}
+            </if>
+            <if test="brandId != null">
+                and brand_id = #{brandId}
+            </if>
+            <if test="weight != null">
+                and weight = #{weight}
+            </if>
+            <if test="publishStatus != null">
+                and publish_status = #{publishStatus}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from pms_spu_info
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="spuName != null and spuName != ''">
+                and spu_name = #{spuName}
+            </if>
+            <if test="spuDescription != null and spuDescription != ''">
+                and spu_description = #{spuDescription}
+            </if>
+            <if test="catalogId != null">
+                and catalog_id = #{catalogId}
+            </if>
+            <if test="brandId != null">
+                and brand_id = #{brandId}
+            </if>
+            <if test="weight != null">
+                and weight = #{weight}
+            </if>
+            <if test="publishStatus != null">
+                and publish_status = #{publishStatus}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" >
+        insert into pms_spu_info(id, spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time)
+        values (#{id}, #{spuName}, #{spuDescription}, #{catalogId}, #{brandId}, #{weight}, #{publishStatus}, #{createTime}, #{updateTime})
+    </insert>
+
+    <insert id="insertGetKey" useGeneratedKeys="true" keyProperty="id">
+        insert into pms_spu_info(id, spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time)
+        values (#{id}, #{spuName}, #{spuDescription}, #{catalogId}, #{brandId}, #{weight}, #{publishStatus}, #{createTime}, #{updateTime})
+    </insert>
+
+
+    <insert id="insertBatch">
+        insert into pms_spu_info(id, spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.id}, #{entity.spuName}, #{entity.spuDescription}, #{entity.catalogId}, #{entity.brandId}, #{entity.weight}, #{entity.publishStatus}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch">
+        insert into pms_spu_info(spu_name, spu_description, catalog_id, brand_id, weight, publish_status, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.spuName}, #{entity.spuDescription}, #{entity.catalogId}, #{entity.brandId}, #{entity.weight}, #{entity.publishStatus}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        id = values(id),
+        spu_name = values(spu_name),
+        spu_description = values(spu_description),
+        catalog_id = values(catalog_id),
+        brand_id = values(brand_id),
+        weight = values(weight),
+        publish_status = values(publish_status),
+        create_time = values(create_time),
+        update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update pms_spu_info
+        <set>
+            <if test="spuName != null and spuName != ''">
+                spu_name = #{spuName},
+            </if>
+            <if test="spuDescription != null and spuDescription != ''">
+                spu_description = #{spuDescription},
+            </if>
+            <if test="catalogId != null">
+                catalog_id = #{catalogId},
+            </if>
+            <if test="brandId != null">
+                brand_id = #{brandId},
+            </if>
+            <if test="weight != null">
+                weight = #{weight},
+            </if>
+            <if test="publishStatus != null">
+                publish_status = #{publishStatus},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from pms_spu_info where id = #{id}
+    </delete>
+
+</mapper>
+

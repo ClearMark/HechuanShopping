@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedom.productService.dao.PmsAttrDao">
+
+    <resultMap type="com.kedom.productService.entity.PmsAttr" id="PmsAttrMap">
+        <result property="attrId" column="attr_id" jdbcType="INTEGER"/>
+        <result property="attrName" column="attr_name" jdbcType="VARCHAR"/>
+        <result property="searchType" column="search_type" jdbcType="INTEGER"/>
+        <result property="icon" column="icon" jdbcType="VARCHAR"/>
+        <result property="valueSelect" column="value_select" jdbcType="VARCHAR"/>
+        <result property="attrType" column="attr_type" jdbcType="INTEGER"/>
+        <result property="enable" column="enable" jdbcType="INTEGER"/>
+        <result property="catelogId" column="catelog_id" jdbcType="INTEGER"/>
+        <result property="showDesc" column="show_desc" jdbcType="INTEGER"/>
+        <result property="attrGroupId" column="attr_group_id" jdbcType="INTEGER"/>
+        <result property="attrGroupSort" column="attr_group_sort" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PmsAttrMap">
+        select
+          attr_id, attr_name, search_type, icon, value_select, attr_type, enable, catelog_id, show_desc, attr_group_id, attr_group_sort
+        from pms_attr
+        where attr_id = #{attrId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="PmsAttrMap">
+        select
+          attr_id, attr_name, search_type, icon, value_select, attr_type, enable, catelog_id, show_desc, attr_group_id, attr_group_sort
+        from pms_attr
+        <where>
+            <if test="attrId != null">
+                and attr_id = #{attrId}
+            </if>
+            <if test="attrName != null and attrName != ''">
+                and attr_name = #{attrName}
+            </if>
+            <if test="searchType != null">
+                and search_type = #{searchType}
+            </if>
+            <if test="icon != null and icon != ''">
+                and icon = #{icon}
+            </if>
+            <if test="valueSelect != null and valueSelect != ''">
+                and value_select = #{valueSelect}
+            </if>
+            <if test="attrType != null">
+                and attr_type = #{attrType}
+            </if>
+            <if test="enable != null">
+                and enable = #{enable}
+            </if>
+            <if test="catelogId != null">
+                and catelog_id = #{catelogId}
+            </if>
+            <if test="showDesc != null">
+                and show_desc = #{showDesc}
+            </if>
+            <if test="attrGroupId != null">
+                and attr_group_id = #{attrGroupId}
+            </if>
+            <if test="attrGroupSort != null">
+                and attr_group_sort = #{attrGroupSort}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from pms_attr
+        <where>
+            <if test="attrId != null">
+                and attr_id = #{attrId}
+            </if>
+            <if test="attrName != null and attrName != ''">
+                and attr_name = #{attrName}
+            </if>
+            <if test="searchType != null">
+                and search_type = #{searchType}
+            </if>
+            <if test="icon != null and icon != ''">
+                and icon = #{icon}
+            </if>
+            <if test="valueSelect != null and valueSelect != ''">
+                and value_select = #{valueSelect}
+            </if>
+            <if test="attrType != null">
+                and attr_type = #{attrType}
+            </if>
+            <if test="enable != null">
+                and enable = #{enable}
+            </if>
+            <if test="catelogId != null">
+                and catelog_id = #{catelogId}
+            </if>
+            <if test="showDesc != null">
+                and show_desc = #{showDesc}
+            </if>
+            <if test="attrGroupId != null">
+                and attr_group_id = #{attrGroupId}
+            </if>
+            <if test="attrGroupSort != null">
+                and attr_group_sort = #{attrGroupSort}
+            </if>
+        </where>
+    </select>
+    <select id="checkAttrIsExistAndEnable" resultType="java.lang.Integer">
+        select count(*) from pms_attr where attr_name = #{attrName} and attr_group_id=#{attrGroupId} and catelog_id=#{catelogId} and enable = 1
+
+    </select>
+    <select id="queryAttrNameByIds" resultMap="PmsAttrMap">
+        select attr_id,attr_name from pms_attr where attr_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" >
+        insert into pms_attr(attr_id, attr_name, search_type, icon, value_select, attr_type, enable, catelog_id, show_desc, attr_group_id, attr_group_sort)
+        values (#{attrId}, #{attrName}, #{searchType}, #{icon}, #{valueSelect}, #{attrType}, #{enable}, #{catelogId}, #{showDesc}, #{attrGroupId}, #{attrGroupSort})
+    </insert>
+
+    <insert id="insertBatch">
+        insert into pms_attr(attr_id, attr_name, search_type, icon, value_select, attr_type, enable, catelog_id, show_desc, attr_group_id, attr_group_sort)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.attrId}, #{entity.attrName}, #{entity.searchType}, #{entity.icon}, #{entity.valueSelect}, #{entity.attrType}, #{entity.enable}, #{entity.catelogId}, #{entity.showDesc}, #{entity.attrGroupId}, #{entity.attrGroupSort})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch">
+        insert into pms_attr(attr_name, search_type, icon, value_select, attr_type, enable, catelog_id, show_desc, attr_group_id, attr_group_sort)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.attrId}, #{entity.attrName}, #{entity.searchType}, #{entity.icon}, #{entity.valueSelect}, #{entity.attrType}, #{entity.enable}, #{entity.catelogId}, #{entity.showDesc}, #{entity.attrGroupId}, #{entity.attrGroupSort})
+        </foreach>
+        on duplicate key update
+        attr_id = values(attr_id),
+        attr_name = values(attr_name),
+        search_type = values(search_type),
+        icon = values(icon),
+        value_select = values(value_select),
+        attr_type = values(attr_type),
+        enable = values(enable),
+        catelog_id = values(catelog_id),
+        show_desc = values(show_desc),
+        attr_group_id = values(attr_group_id),
+        attr_group_sort = values(attr_group_sort)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update pms_attr
+        <set>
+            <if test="attrName != null and attrName != ''">
+                attr_name = #{attrName},
+            </if>
+            <if test="searchType != null">
+                search_type = #{searchType},
+            </if>
+            <if test="icon != null and icon != ''">
+                icon = #{icon},
+            </if>
+            <if test="valueSelect != null and valueSelect != ''">
+                value_select = #{valueSelect},
+            </if>
+            <if test="attrType != null">
+                attr_type = #{attrType},
+            </if>
+            <if test="enable != null">
+                enable = #{enable},
+            </if>
+            <if test="catelogId != null">
+                catelog_id = #{catelogId},
+            </if>
+            <if test="showDesc != null">
+                show_desc = #{showDesc},
+            </if>
+            <if test="attrGroupId != null">
+                attr_group_id = #{attrGroupId},
+            </if>
+            <if test="attrGroupSort != null">
+                attr_group_sort = #{attrGroupSort},
+            </if>
+        </set>
+        where attr_id = #{attrId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from pms_attr where attr_id = #{attrId}
+    </delete>
+
+</mapper>
+

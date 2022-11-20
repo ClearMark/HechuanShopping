@@ -1,0 +1,12 @@
+server:
+  port: 20003
+spring:
+  application:
+    name: productService
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/pms?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+imageSave:
+  path: C:/productImage/
+  id: 1

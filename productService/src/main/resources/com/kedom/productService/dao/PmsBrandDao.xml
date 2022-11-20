@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedom.productService.dao.PmsBrandDao">
+
+    <resultMap type="com.kedom.common.entity.productServiceEntity.PmsBrand" id="PmsBrandMap">
+        <result property="brandId" column="brand_id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="logo" column="logo" jdbcType="VARCHAR"/>
+        <result property="descript" column="descript" jdbcType="VARCHAR"/>
+        <result property="showStatus" column="show_status" jdbcType="INTEGER"/>
+        <result property="firstLetter" column="first_letter" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PmsBrandMap">
+        select
+          brand_id, name, logo, descript, show_status, first_letter, sort
+        from pms_brand
+        where brand_id = #{brandId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="PmsBrandMap">
+        select
+          brand_id, name, logo, descript, show_status, first_letter, sort
+        from pms_brand
+        <where>
+            <if test="brandId != null">
+                and brand_id = #{brandId}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="logo != null and logo != ''">
+                and logo = #{logo}
+            </if>
+            <if test="descript != null and descript != ''">
+                and descript = #{descript}
+            </if>
+            <if test="showStatus != null">
+                and show_status = #{showStatus}
+            </if>
+            <if test="firstLetter != null and firstLetter != ''">
+                and first_letter = #{firstLetter}
+            </if>
+            <if test="sort != null">
+                and sort = #{sort}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from pms_brand
+        <where>
+            <if test="brandId != null">
+                and brand_id = #{brandId}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="logo != null and logo != ''">
+                and logo = #{logo}
+            </if>
+            <if test="descript != null and descript != ''">
+                and descript = #{descript}
+            </if>
+            <if test="showStatus != null">
+                and show_status = #{showStatus}
+            </if>
+            <if test="firstLetter != null and firstLetter != ''">
+                and first_letter = #{firstLetter}
+            </if>
+            <if test="sort != null">
+                and sort = #{sort}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" >
+        insert into pms_brand(brand_id, name, logo, descript, show_status, first_letter, sort)
+        values (#{brandId}, #{name}, #{logo}, #{descript}, #{showStatus}, #{firstLetter}, #{sort})
+    </insert>
+
+    <insert id="insertBatch">
+        insert into pms_brand(brand_id, name, logo, descript, show_status, first_letter, sort)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.brandId}, #{entity.name}, #{entity.logo}, #{entity.descript}, #{entity.showStatus}, #{entity.firstLetter}, #{entity.sort})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch">
+        insert into pms_brand(name, logo, descript, show_status, first_letter, sort)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.brandId}, #{entity.name}, #{entity.logo}, #{entity.descript}, #{entity.showStatus}, #{entity.firstLetter}, #{entity.sort})
+        </foreach>
+        on duplicate key update
+        brand_id = values(brand_id),
+        name = values(name),
+        logo = values(logo),
+        descript = values(descript),
+        show_status = values(show_status),
+        first_letter = values(first_letter),
+        sort = values(sort)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update pms_brand
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="logo != null and logo != ''">
+                logo = #{logo},
+            </if>
+            <if test="descript != null and descript != ''">
+                descript = #{descript},
+            </if>
+            <if test="showStatus != null">
+                show_status = #{showStatus},
+            </if>
+            <if test="firstLetter != null and firstLetter != ''">
+                first_letter = #{firstLetter},
+            </if>
+            <if test="sort != null">
+                sort = #{sort},
+            </if>
+        </set>
+        where brand_id = #{brandId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from pms_brand where brand_id = #{brandId}
+    </delete>
+
+</mapper>
+

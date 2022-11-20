@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedom.productService.dao.PmsSkuImagesDao">
+
+    <resultMap type="com.kedom.productService.entity.PmsSkuImages" id="PmsSkuImagesMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="skuId" column="sku_id" jdbcType="INTEGER"/>
+        <result property="imgUrl" column="img_url" jdbcType="VARCHAR"/>
+        <result property="imgSort" column="img_sort" jdbcType="INTEGER"/>
+        <result property="defaultImg" column="default_img" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PmsSkuImagesMap">
+        select
+          id, sku_id, img_url, img_sort, default_img
+        from pms_sku_images
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="PmsSkuImagesMap">
+        select
+          id, sku_id, img_url, img_sort, default_img
+        from pms_sku_images
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="skuId != null">
+                and sku_id = #{skuId}
+            </if>
+            <if test="imgUrl != null and imgUrl != ''">
+                and img_url = #{imgUrl}
+            </if>
+            <if test="imgSort != null">
+                and img_sort = #{imgSort}
+            </if>
+            <if test="defaultImg != null">
+                and default_img = #{defaultImg}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from pms_sku_images
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="skuId != null">
+                and sku_id = #{skuId}
+            </if>
+            <if test="imgUrl != null and imgUrl != ''">
+                and img_url = #{imgUrl}
+            </if>
+            <if test="imgSort != null">
+                and img_sort = #{imgSort}
+            </if>
+            <if test="defaultImg != null">
+                and default_img = #{defaultImg}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" >
+        insert into pms_sku_images(id, sku_id, img_url, img_sort, default_img)
+        values (#{id}, #{skuId}, #{imgUrl}, #{imgSort}, #{defaultImg})
+    </insert>
+
+    <insert id="insertBatch">
+        insert into pms_sku_images(id, sku_id, img_url, img_sort, default_img)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.id}, #{entity.skuId}, #{entity.imgUrl}, #{entity.imgSort}, #{entity.defaultImg})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch">
+        insert into pms_sku_images(sku_id, img_url, img_sort, default_img)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.skuId}, #{entity.imgUrl}, #{entity.imgSort}, #{entity.defaultImg})
+        </foreach>
+        on duplicate key update
+        id = values(id),
+        sku_id = values(sku_id),
+        img_url = values(img_url),
+        img_sort = values(img_sort),
+        default_img = values(default_img)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update pms_sku_images
+        <set>
+            <if test="skuId != null">
+                sku_id = #{skuId},
+            </if>
+            <if test="imgUrl != null and imgUrl != ''">
+                img_url = #{imgUrl},
+            </if>
+            <if test="imgSort != null">
+                img_sort = #{imgSort},
+            </if>
+            <if test="defaultImg != null">
+                default_img = #{defaultImg},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from pms_sku_images where id = #{id}
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedom.productService.dao.PmsSpuCommentDao">
+
+    <resultMap type="com.kedom.productService.entity.PmsSpuComment" id="PmsSpuCommentMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="skuId" column="sku_id" jdbcType="INTEGER"/>
+        <result property="spuId" column="spu_id" jdbcType="INTEGER"/>
+        <result property="spuName" column="spu_name" jdbcType="VARCHAR"/>
+        <result property="memberNickName" column="member_nick_name" jdbcType="VARCHAR"/>
+        <result property="star" column="star" jdbcType="INTEGER"/>
+        <result property="memberIp" column="member_ip" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="showStatus" column="show_status" jdbcType="INTEGER"/>
+        <result property="spuAttributes" column="spu_attributes" jdbcType="VARCHAR"/>
+        <result property="likesCount" column="likes_count" jdbcType="INTEGER"/>
+        <result property="replyCount" column="reply_count" jdbcType="INTEGER"/>
+        <result property="resources" column="resources" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="memberIcon" column="member_icon" jdbcType="VARCHAR"/>
+        <result property="commentType" column="comment_type" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PmsSpuCommentMap">
+        select
+          id, sku_id, spu_id, spu_name, member_nick_name, star, member_ip, create_time, show_status, spu_attributes, likes_count, reply_count, resources, content, member_icon, comment_type
+        from pms_spu_comment
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="PmsSpuCommentMap">
+        select
+          id, sku_id, spu_id, spu_name, member_nick_name, star, member_ip, create_time, show_status, spu_attributes, likes_count, reply_count, resources, content, member_icon, comment_type
+        from pms_spu_comment
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="skuId != null">
+                and sku_id = #{skuId}
+            </if>
+            <if test="spuId != null">
+                and spu_id = #{spuId}
+            </if>
+            <if test="spuName != null and spuName != ''">
+                and spu_name = #{spuName}
+            </if>
+            <if test="memberNickName != null and memberNickName != ''">
+                and member_nick_name = #{memberNickName}
+            </if>
+            <if test="star != null">
+                and star = #{star}
+            </if>
+            <if test="memberIp != null and memberIp != ''">
+                and member_ip = #{memberIp}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="showStatus != null">
+                and show_status = #{showStatus}
+            </if>
+            <if test="spuAttributes != null and spuAttributes != ''">
+                and spu_attributes = #{spuAttributes}
+            </if>
+            <if test="likesCount != null">
+                and likes_count = #{likesCount}
+            </if>
+            <if test="replyCount != null">
+                and reply_count = #{replyCount}
+            </if>
+            <if test="resources != null and resources != ''">
+                and resources = #{resources}
+            </if>
+            <if test="content != null and content != ''">
+                and content = #{content}
+            </if>
+            <if test="memberIcon != null and memberIcon != ''">
+                and member_icon = #{memberIcon}
+            </if>
+            <if test="commentType != null">
+                and comment_type = #{commentType}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from pms_spu_comment
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="skuId != null">
+                and sku_id = #{skuId}
+            </if>
+            <if test="spuId != null">
+                and spu_id = #{spuId}
+            </if>
+            <if test="spuName != null and spuName != ''">
+                and spu_name = #{spuName}
+            </if>
+            <if test="memberNickName != null and memberNickName != ''">
+                and member_nick_name = #{memberNickName}
+            </if>
+            <if test="star != null">
+                and star = #{star}
+            </if>
+            <if test="memberIp != null and memberIp != ''">
+                and member_ip = #{memberIp}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="showStatus != null">
+                and show_status = #{showStatus}
+            </if>
+            <if test="spuAttributes != null and spuAttributes != ''">
+                and spu_attributes = #{spuAttributes}
+            </if>
+            <if test="likesCount != null">
+                and likes_count = #{likesCount}
+            </if>
+            <if test="replyCount != null">
+                and reply_count = #{replyCount}
+            </if>
+            <if test="resources != null and resources != ''">
+                and resources = #{resources}
+            </if>
+            <if test="content != null and content != ''">
+                and content = #{content}
+            </if>
+            <if test="memberIcon != null and memberIcon != ''">
+                and member_icon = #{memberIcon}
+            </if>
+            <if test="commentType != null">
+                and comment_type = #{commentType}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" >
+        insert into pms_spu_comment(id, sku_id, spu_id, spu_name, member_nick_name, star, member_ip, create_time, show_status, spu_attributes, likes_count, reply_count, resources, content, member_icon, comment_type)
+        values (#{id}, #{skuId}, #{spuId}, #{spuName}, #{memberNickName}, #{star}, #{memberIp}, #{createTime}, #{showStatus}, #{spuAttributes}, #{likesCount}, #{replyCount}, #{resources}, #{content}, #{memberIcon}, #{commentType})
+    </insert>
+
+    <insert id="insertBatch">
+        insert into pms_spu_comment(id, sku_id, spu_id, spu_name, member_nick_name, star, member_ip, create_time, show_status, spu_attributes, likes_count, reply_count, resources, content, member_icon, comment_type)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.id}, #{entity.skuId}, #{entity.spuId}, #{entity.spuName}, #{entity.memberNickName}, #{entity.star}, #{entity.memberIp}, #{entity.createTime}, #{entity.showStatus}, #{entity.spuAttributes}, #{entity.likesCount}, #{entity.replyCount}, #{entity.resources}, #{entity.content}, #{entity.memberIcon}, #{entity.commentType})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch">
+        insert into pms_spu_comment(sku_id, spu_id, spu_name, member_nick_name, star, member_ip, create_time, show_status, spu_attributes, likes_count, reply_count, resources, content, member_icon, comment_type)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.skuId}, #{entity.spuId}, #{entity.spuName}, #{entity.memberNickName}, #{entity.star}, #{entity.memberIp}, #{entity.createTime}, #{entity.showStatus}, #{entity.spuAttributes}, #{entity.likesCount}, #{entity.replyCount}, #{entity.resources}, #{entity.content}, #{entity.memberIcon}, #{entity.commentType})
+        </foreach>
+        on duplicate key update
+        id = values(id),
+        sku_id = values(sku_id),
+        spu_id = values(spu_id),
+        spu_name = values(spu_name),
+        member_nick_name = values(member_nick_name),
+        star = values(star),
+        member_ip = values(member_ip),
+        create_time = values(create_time),
+        show_status = values(show_status),
+        spu_attributes = values(spu_attributes),
+        likes_count = values(likes_count),
+        reply_count = values(reply_count),
+        resources = values(resources),
+        content = values(content),
+        member_icon = values(member_icon),
+        comment_type = values(comment_type)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update pms_spu_comment
+        <set>
+            <if test="skuId != null">
+                sku_id = #{skuId},
+            </if>
+            <if test="spuId != null">
+                spu_id = #{spuId},
+            </if>
+            <if test="spuName != null and spuName != ''">
+                spu_name = #{spuName},
+            </if>
+            <if test="memberNickName != null and memberNickName != ''">
+                member_nick_name = #{memberNickName},
+            </if>
+            <if test="star != null">
+                star = #{star},
+            </if>
+            <if test="memberIp != null and memberIp != ''">
+                member_ip = #{memberIp},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="showStatus != null">
+                show_status = #{showStatus},
+            </if>
+            <if test="spuAttributes != null and spuAttributes != ''">
+                spu_attributes = #{spuAttributes},
+            </if>
+            <if test="likesCount != null">
+                likes_count = #{likesCount},
+            </if>
+            <if test="replyCount != null">
+                reply_count = #{replyCount},
+            </if>
+            <if test="resources != null and resources != ''">
+                resources = #{resources},
+            </if>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+            <if test="memberIcon != null and memberIcon != ''">
+                member_icon = #{memberIcon},
+            </if>
+            <if test="commentType != null">
+                comment_type = #{commentType},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from pms_spu_comment where id = #{id}
+    </delete>
+
+</mapper>
+

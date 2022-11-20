@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedom.productService.dao.PmsSkuSaleAttrValueDao">
+
+    <resultMap type="com.kedom.productService.entity.PmsSkuSaleAttrValue" id="PmsSkuSaleAttrValueMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="skuId" column="sku_id" jdbcType="INTEGER"/>
+        <result property="attrId" column="attr_id" jdbcType="INTEGER"/>
+        <result property="attrName" column="attr_name" jdbcType="VARCHAR"/>
+        <result property="attrValue" column="attr_value" jdbcType="VARCHAR"/>
+        <result property="attrSort" column="attr_sort" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PmsSkuSaleAttrValueMap">
+        select
+          id, sku_id, attr_id, attr_name, attr_value, attr_sort
+        from pms_sku_sale_attr_value
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="PmsSkuSaleAttrValueMap">
+        select
+          id, sku_id, attr_id, attr_name, attr_value, attr_sort
+        from pms_sku_sale_attr_value
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="skuId != null">
+                and sku_id = #{skuId}
+            </if>
+            <if test="attrId != null">
+                and attr_id = #{attrId}
+            </if>
+            <if test="attrName != null and attrName != ''">
+                and attr_name = #{attrName}
+            </if>
+            <if test="attrValue != null and attrValue != ''">
+                and attr_value = #{attrValue}
+            </if>
+            <if test="attrSort != null">
+                and attr_sort = #{attrSort}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from pms_sku_sale_attr_value
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="skuId != null">
+                and sku_id = #{skuId}
+            </if>
+            <if test="attrId != null">
+                and attr_id = #{attrId}
+            </if>
+            <if test="attrName != null and attrName != ''">
+                and attr_name = #{attrName}
+            </if>
+            <if test="attrValue != null and attrValue != ''">
+                and attr_value = #{attrValue}
+            </if>
+            <if test="attrSort != null">
+                and attr_sort = #{attrSort}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" >
+        insert into pms_sku_sale_attr_value(id, sku_id, attr_id, attr_name, attr_value, attr_sort)
+        values (#{id}, #{skuId}, #{attrId}, #{attrName}, #{attrValue}, #{attrSort})
+    </insert>
+
+    <insert id="insertBatch">
+        insert into pms_sku_sale_attr_value(id, sku_id, attr_id, attr_name, attr_value, attr_sort)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.id}, #{entity.skuId}, #{entity.attrId}, #{entity.attrName}, #{entity.attrValue}, #{entity.attrSort})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch">
+        insert into pms_sku_sale_attr_value(sku_id, attr_id, attr_name, attr_value, attr_sort)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.skuId}, #{entity.attrId}, #{entity.attrName}, #{entity.attrValue}, #{entity.attrSort})
+        </foreach>
+        on duplicate key update
+        id = values(id),
+        sku_id = values(sku_id),
+        attr_id = values(attr_id),
+        attr_name = values(attr_name),
+        attr_value = values(attr_value),
+        attr_sort = values(attr_sort)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update pms_sku_sale_attr_value
+        <set>
+            <if test="skuId != null">
+                sku_id = #{skuId},
+            </if>
+            <if test="attrId != null">
+                attr_id = #{attrId},
+            </if>
+            <if test="attrName != null and attrName != ''">
+                attr_name = #{attrName},
+            </if>
+            <if test="attrValue != null and attrValue != ''">
+                attr_value = #{attrValue},
+            </if>
+            <if test="attrSort != null">
+                attr_sort = #{attrSort},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from pms_sku_sale_attr_value where id = #{id}
+    </delete>
+
+</mapper>
+

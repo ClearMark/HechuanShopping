@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedom.memberService.dao.UmsMemberDao">
+
+    <resultMap type="com.kedom.common.entity.memberServiceEntity.UmsMember" id="UmsMemberMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="levelId" column="level_id" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="header" column="header" jdbcType="VARCHAR"/>
+        <result property="gender" column="gender" jdbcType="INTEGER"/>
+        <result property="birth" column="birth" jdbcType="TIMESTAMP"/>
+        <result property="city" column="city" jdbcType="VARCHAR"/>
+        <result property="job" column="job" jdbcType="VARCHAR"/>
+        <result property="sign" column="sign" jdbcType="VARCHAR"/>
+        <result property="sourceType" column="source_type" jdbcType="INTEGER"/>
+        <result property="integration" column="integration" jdbcType="INTEGER"/>
+        <result property="growth" column="growth" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UmsMemberMap">
+        select
+          id, level_id, username, password, nickname, mobile, email, header, gender, birth, city, job, sign, source_type, integration, growth, status, create_time
+        from ums_member
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UmsMemberMap">
+        select
+          id, level_id, username, password, nickname, mobile, email, header, gender, birth, city, job, sign, source_type, integration, growth, status, create_time
+        from ums_member
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="levelId != null">
+                and level_id = #{levelId}
+            </if>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="nickname != null and nickname != ''">
+                and nickname = #{nickname}
+            </if>
+            <if test="mobile != null and mobile != ''">
+                and mobile = #{mobile}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="header != null and header != ''">
+                and header = #{header}
+            </if>
+            <if test="gender != null">
+                and gender = #{gender}
+            </if>
+            <if test="birth != null">
+                and birth = #{birth}
+            </if>
+            <if test="city != null and city != ''">
+                and city = #{city}
+            </if>
+            <if test="job != null and job != ''">
+                and job = #{job}
+            </if>
+            <if test="sign != null and sign != ''">
+                and sign = #{sign}
+            </if>
+            <if test="sourceType != null">
+                and source_type = #{sourceType}
+            </if>
+            <if test="integration != null">
+                and integration = #{integration}
+            </if>
+            <if test="growth != null">
+                and growth = #{growth}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from ums_member
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="levelId != null">
+                and level_id = #{levelId}
+            </if>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="nickname != null and nickname != ''">
+                and nickname = #{nickname}
+            </if>
+            <if test="mobile != null and mobile != ''">
+                and mobile = #{mobile}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="header != null and header != ''">
+                and header = #{header}
+            </if>
+            <if test="gender != null">
+                and gender = #{gender}
+            </if>
+            <if test="birth != null">
+                and birth = #{birth}
+            </if>
+            <if test="city != null and city != ''">
+                and city = #{city}
+            </if>
+            <if test="job != null and job != ''">
+                and job = #{job}
+            </if>
+            <if test="sign != null and sign != ''">
+                and sign = #{sign}
+            </if>
+            <if test="sourceType != null">
+                and source_type = #{sourceType}
+            </if>
+            <if test="integration != null">
+                and integration = #{integration}
+            </if>
+            <if test="growth != null">
+                and growth = #{growth}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryUsernameIsUnique" resultType="java.lang.Integer">
+        select count(*) from ums_member where username = #{username} limit 1
+    </select>
+    <select id="queryMobileIsUnique" resultType="java.lang.Integer">
+        select count(*) from ums_member where mobile = #{mobile} limit 1
+    </select>
+
+    <select id="queryPublicInfoByUsername" resultType="com.kedom.common.entity.memberServiceEntity.UmsMember">
+        select * from ums_member where username = #{username} limit 1
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" >
+        insert into ums_member(id, level_id, username, password, nickname, mobile, email, header, gender, birth, city, job, sign, source_type, integration, growth, status, create_time)
+        values (#{id}, #{levelId}, #{username}, #{password}, #{nickname}, #{mobile}, #{email}, #{header}, #{gender}, #{birth}, #{city}, #{job}, #{sign}, #{sourceType}, #{integration}, #{growth}, #{status}, #{createTime})
+    </insert>
+
+    <insert id="insertBatch">
+        insert into ums_member(id, level_id, username, password, nickname, mobile, email, header, gender, birth, city, job, sign, source_type, integration, growth, status, create_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.id}, #{entity.levelId}, #{entity.username}, #{entity.password}, #{entity.nickname}, #{entity.mobile}, #{entity.email}, #{entity.header}, #{entity.gender}, #{entity.birth}, #{entity.city}, #{entity.job}, #{entity.sign}, #{entity.sourceType}, #{entity.integration}, #{entity.growth}, #{entity.status}, #{entity.createTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch">
+        insert into ums_member(level_id, username, password, nickname, mobile, email, header, gender, birth, city, job, sign, source_type, integration, growth, status, create_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.levelId}, #{entity.username}, #{entity.password}, #{entity.nickname}, #{entity.mobile}, #{entity.email}, #{entity.header}, #{entity.gender}, #{entity.birth}, #{entity.city}, #{entity.job}, #{entity.sign}, #{entity.sourceType}, #{entity.integration}, #{entity.growth}, #{entity.status}, #{entity.createTime})
+        </foreach>
+        on duplicate key update
+        id = values(id),
+        level_id = values(level_id),
+        username = values(username),
+        password = values(password),
+        nickname = values(nickname),
+        mobile = values(mobile),
+        email = values(email),
+        header = values(header),
+        gender = values(gender),
+        birth = values(birth),
+        city = values(city),
+        job = values(job),
+        sign = values(sign),
+        source_type = values(source_type),
+        integration = values(integration),
+        growth = values(growth),
+        status = values(status),
+        create_time = values(create_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update ums_member
+        <set>
+            <if test="levelId != null">
+                level_id = #{levelId},
+            </if>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="nickname != null and nickname != ''">
+                nickname = #{nickname},
+            </if>
+            <if test="mobile != null and mobile != ''">
+                mobile = #{mobile},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="header != null and header != ''">
+                header = #{header},
+            </if>
+            <if test="gender != null">
+                gender = #{gender},
+            </if>
+            <if test="birth != null">
+                birth = #{birth},
+            </if>
+            <if test="city != null and city != ''">
+                city = #{city},
+            </if>
+            <if test="job != null and job != ''">
+                job = #{job},
+            </if>
+            <if test="sign != null and sign != ''">
+                sign = #{sign},
+            </if>
+            <if test="sourceType != null">
+                source_type = #{sourceType},
+            </if>
+            <if test="integration != null">
+                integration = #{integration},
+            </if>
+            <if test="growth != null">
+                growth = #{growth},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from ums_member where id = #{id}
+    </delete>
+</mapper>
+

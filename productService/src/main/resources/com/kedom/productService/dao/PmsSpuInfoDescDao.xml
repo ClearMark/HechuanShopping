@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedom.productService.dao.PmsSpuInfoDescDao">
+
+    <resultMap type="com.kedom.productService.entity.PmsSpuInfoDesc" id="PmsSpuInfoDescMap">
+        <result property="spuId" column="spu_id" jdbcType="INTEGER"/>
+        <result property="decript" column="decript" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PmsSpuInfoDescMap">
+        select
+          spu_id, decript
+        from pms_spu_info_desc
+        where spu_id = #{spuId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="PmsSpuInfoDescMap">
+        select
+          spu_id, decript
+        from pms_spu_info_desc
+        <where>
+            <if test="spuId != null">
+                and spu_id = #{spuId}
+            </if>
+            <if test="decript != null and decript != ''">
+                and decript = #{decript}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from pms_spu_info_desc
+        <where>
+            <if test="spuId != null">
+                and spu_id = #{spuId}
+            </if>
+            <if test="decript != null and decript != ''">
+                and decript = #{decript}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" >
+        insert into pms_spu_info_desc(spu_id, decript)
+        values (#{spuId}, #{decript})
+    </insert>
+
+    <insert id="insertBatch">
+        insert into pms_spu_info_desc(spu_id, decript)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.spuId}, #{entity.decript})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch">
+        insert into pms_spu_info_desc(decript)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.spuId}, #{entity.decript})
+        </foreach>
+        on duplicate key update
+        spu_id = values(spu_id),
+        decript = values(decript)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update pms_spu_info_desc
+        <set>
+            <if test="decript != null and decript != ''">
+                decript = #{decript},
+            </if>
+        </set>
+        where spu_id = #{spuId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from pms_spu_info_desc where spu_id = #{spuId}
+    </delete>
+
+</mapper>
+
