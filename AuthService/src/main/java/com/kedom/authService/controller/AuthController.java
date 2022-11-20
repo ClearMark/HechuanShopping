@@ -1,7 +1,10 @@
 package com.kedom.authService.controller;
 
+import com.kedom.authService.entity.MailMessage;
 import com.kedom.authService.entity.UmsMember;
 import com.kedom.authService.service.JWTService;
+import com.kedom.authService.service.MailService;
+import com.kedom.authService.util.AuthTool;
 import com.kedom.common.entity.KedomResponse;
 import com.kedom.openFeignService.entity.vo.UserRegisterVO;
 import com.kedom.openFeignService.entity.vo.UserVO;
@@ -9,10 +12,7 @@ import com.kedom.openFeignService.feignClient.MemberFeignService;
 import org.redisson.api.RBucket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -24,6 +24,9 @@ public class AuthController {
 
     @Autowired
     private MemberFeignService memberFeignService;
+
+    @Autowired
+    private MailService mailService;
 
     @Autowired
     JWTService jwtService;
@@ -59,6 +62,27 @@ public class AuthController {
         }
         return response;
     }
+
+    @PostMapping("/MailCode/{sendTo}/{type}")
+    public KedomResponse MailCode(@PathVariable("sendTo") String to, @PathVariable("type")String type) {
+        KedomResponse response = new KedomResponse();
+        String code = AuthTool.randomCode();
+
+        MailMessage mailMessage = new MailMessage();
+        mailMessage.setTo(to);
+        mailMessage.setSubject("验证码");
+        mailMessage.setText("您的验证码为："+code);
+        mailMessage.setType(type);
+        if (mailMessage.getType()==null)
+        {
+            return response.fillData("验证码来源不能为空");
+        }
+        mailService.mailCodeUploadRedis(mailMessage, code);
+        mailService.sendTextMailMessage(mailMessage);
+
+        return KedomResponse.OK_FULLData(code);
+    }
+
 
     @PostMapping("/getRedisUmsMemberByAccessToken")
     public Boolean getRedisUmsMemberByAccessToken(@RequestBody String accessToken) {
