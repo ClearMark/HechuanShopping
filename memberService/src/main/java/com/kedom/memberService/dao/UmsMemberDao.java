@@ -86,5 +86,7 @@ public interface UmsMemberDao {
     int queryMobileIsUnique(String mobile);
 
     UmsMember queryPublicInfoByUsername(String username);
+
+    int queryEmailIsUnique(String email);
 }
 

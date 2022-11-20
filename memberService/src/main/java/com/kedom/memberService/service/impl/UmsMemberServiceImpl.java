@@ -12,6 +12,7 @@ import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -91,16 +92,19 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     public void register(UserRegisterVO userRegisterVO) throws RuntimeException {
         //验证唯一性+加密密码。
         checkUsernameIsUnique(userRegisterVO.getUsername());
-        checkMobileIsUnique(userRegisterVO.getMobile());
+//        checkMobileIsUnique(userRegisterVO.getMobile());
+        checkEmailIsUnique(userRegisterVO.getEmail());
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String encodeAfterPassword = bCryptPasswordEncoder.encode(userRegisterVO.getPassword());
 
         //新增用户
-        UmsMember umsMember = new UmsMember();
-        umsMember.setUsername(userRegisterVO.getUsername());
-        umsMember.setPassword(encodeAfterPassword);
-        umsMember.setMobile(userRegisterVO.getMobile());
+            UmsMember umsMember = new UmsMember();
+//        umsMember.setUsername(userRegisterVO.getUsername());
+//        umsMember.setPassword(encodeAfterPassword);
+//        umsMember.setMobile(userRegisterVO.getMobile());
+//        umsMember.setEmail(userRegisterVO.getEmail());
 
+        BeanUtils.copyProperties(userRegisterVO, umsMember);
         umsMemberDao.insert(umsMember);
 
     }
@@ -133,6 +137,14 @@ public class UmsMemberServiceImpl implements UmsMemberService {
             throw new KedomUserException(KedomExceptionEnum.Mobile_IS_EXIST);
         }
     }
+
+    public void checkEmailIsUnique(String email) throws RuntimeException {
+        int i = umsMemberDao.queryEmailIsUnique(email);
+        if (i > 0) {
+            throw new KedomUserException(KedomExceptionEnum.Mobile_IS_EXIST);
+        }
+    }
+
 
     @Override
     public UmsMember getMemberByAccessToken(String accessToken) {

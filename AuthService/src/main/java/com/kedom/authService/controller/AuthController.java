@@ -34,10 +34,18 @@ public class AuthController {
     @PostMapping("/register")
     public KedomResponse register(@Valid UserRegisterVO registerVO, BindingResult bindingResult) {
         KedomResponse response = new KedomResponse();
-
         HashMap<String, String> parameterError = getParameterError(bindingResult);
         if (parameterError.size()!=0) {
             return  response.fillData(parameterError);
+        }
+
+        String code = registerVO.getCode();
+        String email = registerVO.getEmail();
+        String redisCode = mailService.mailCodeDownloadRedis(email, 1);
+        if (!code.equals(redisCode)) {
+            response.setCode(500);
+            response.setMessage("验证码错误");
+            return response;
         }
         response = memberFeignService.register(registerVO);
         return response;

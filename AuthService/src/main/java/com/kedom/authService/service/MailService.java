@@ -65,6 +65,12 @@ public class MailService {
         bucket.expireAt(new Date(System.currentTimeMillis()+1000*60*5));
     }
 
+    public String mailCodeDownloadRedis(String to,Integer type){
+        RBucket<String> bucket = redissonClient.getBucket(to+type);
+        return bucket.get();
+    }
+
+
 
     @Async("emailThreadPool")
     public void sendTextMailMessage(MailMessage mailMessage){
