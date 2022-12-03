@@ -1,7 +1,6 @@
 package com.kedom.authService.controller;
 
 import com.kedom.authService.entity.MailMessage;
-import com.kedom.authService.entity.UmsMember;
 import com.kedom.authService.service.JWTService;
 import com.kedom.authService.service.MailService;
 import com.kedom.authService.util.AuthTool;
@@ -9,17 +8,17 @@ import com.kedom.common.entity.KedomResponse;
 import com.kedom.openFeignService.entity.vo.UserRegisterVO;
 import com.kedom.openFeignService.entity.vo.UserVO;
 import com.kedom.openFeignService.feignClient.MemberFeignService;
-import org.redisson.api.RBucket;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@Slf4j
 public class AuthController {
 
     @Autowired

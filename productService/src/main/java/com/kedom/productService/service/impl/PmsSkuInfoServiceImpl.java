@@ -2,15 +2,10 @@ package com.kedom.productService.service.impl;
 
 import com.kedom.common.entity.KedomUserException.KedomUserException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
-import com.kedom.productService.entity.PmsSkuInfo;
 import com.kedom.productService.dao.PmsSkuInfoDao;
+import com.kedom.productService.entity.PmsSkuInfo;
 import com.kedom.productService.service.PmsSkuInfoService;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import java.util.List;
-import java.util.ArrayList;
 
 import javax.annotation.Resource;
 
@@ -69,11 +64,25 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
 
     @Override
     public void insertGetKey(PmsSkuInfo pmsSkuInfo) {
-        int count= this.pmsSkuInfoDao.insertGetKey(pmsSkuInfo);
-        if(count==0)
-        {
+        int count = this.pmsSkuInfoDao.insertGetKey(pmsSkuInfo);
+        if (count == 0) {
             throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
         }
+    }
+
+    @Override
+    public Boolean existsSkuBySkuId(Long skuId) {
+        Integer count = pmsSkuInfoDao.existsSkuBySkuId(skuId);
+        if (count.equals(1)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public PmsSkuInfo querySkuIntoWareInfoBySkuId(Long skuId) {
+        PmsSkuInfo pmsSkuInfo = pmsSkuInfoDao.querySkuIntoWareInfoBySkuId(skuId);
+        return pmsSkuInfo;
     }
 
 }

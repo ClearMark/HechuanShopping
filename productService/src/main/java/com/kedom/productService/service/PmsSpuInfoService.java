@@ -1,9 +1,6 @@
 package com.kedom.productService.service;
 
 import com.kedom.productService.entity.PmsSpuInfo;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import java.util.List;
 
 /**
  * spu信息(PmsSpuInfo)表服务接口
@@ -39,4 +36,6 @@ public interface PmsSpuInfoService {
 
 
     void insertGetKey(PmsSpuInfo pmsSpuInfo);
+
+    void spuPutOnShelves(Long id);
 }

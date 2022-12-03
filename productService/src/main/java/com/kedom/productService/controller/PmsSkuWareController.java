@@ -1,27 +1,27 @@
 package com.kedom.productService.controller;
 
 import com.kedom.common.entity.KedomResponse;
-import com.kedom.productService.entity.PmsSpuInfo;
-import com.kedom.productService.service.PmsSpuInfoService;
+import com.kedom.productService.entity.PmsSkuWare;
+import com.kedom.productService.service.PmsSkuWareService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
 /**
- * spu信息(PmsSpuInfo)表控制层
+ * 商品库存(PmsSkuWare)表控制层
  *
  * @author makejava
- * @since 2022-11-17 14:25:38
+ * @since 2022-12-02 23:55:27
  */
 @RestController
-@RequestMapping("/pmsSpuInfo")
-public class PmsSpuInfoController {
+@RequestMapping("/pmsSkuWare")
+public class PmsSkuWareController {
     /**
      * 服务对象
      */
     @Resource
-    private PmsSpuInfoService pmsSpuInfoService;
+    private PmsSkuWareService pmsSkuWareService;
 
     /**
      * 通过主键查询单条数据
@@ -31,38 +31,35 @@ public class PmsSpuInfoController {
      */
     @GetMapping("/{id}")
     public KedomResponse queryById(@PathVariable("id") Long id) {
-         ResponseEntity.ok(this.pmsSpuInfoService.queryById(id));
-    return null;
+        ResponseEntity.ok(this.pmsSkuWareService.queryById(id));
+        return null;
     }
 
     /**
      * 新增数据
+     * 商品第一次上架时，创建库存信息
      *
-     * @param pmsSpuInfo 实体
+     * @param pmsSkuWare 实体
      * @return 新增结果
      */
     @PostMapping
-    public KedomResponse add(PmsSpuInfo pmsSpuInfo) {
-         this.pmsSpuInfoService.insert(pmsSpuInfo);
-     return KedomResponse.OK();
+    public KedomResponse add(PmsSkuWare pmsSkuWare) {
+        if ("".equals(pmsSkuWare.getSkuId())) {
+            return KedomResponse.error(5000, "skuId不能为空");
+        }
+        this.pmsSkuWareService.insert(pmsSkuWare);
+        return KedomResponse.OK();
     }
 
     /**
      * 编辑数据
      *
-     * @param pmsSpuInfo 实体
+     * @param pmsSkuWare 实体
      * @return 编辑结果
      */
     @PutMapping
-    public KedomResponse edit(PmsSpuInfo pmsSpuInfo) {
-        this.pmsSpuInfoService.update(pmsSpuInfo);
-        return KedomResponse.OK();
-    }
-
-    @PutMapping("/putOnShelves/{id}")
-    public KedomResponse spuPutOnShelves(@PathVariable("id") Long id) {
-
-        this.pmsSpuInfoService.spuPutOnShelves(id);
+    public KedomResponse edit(PmsSkuWare pmsSkuWare) {
+        this.pmsSkuWareService.update(pmsSkuWare);
         return KedomResponse.OK();
     }
 

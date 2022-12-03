@@ -16,6 +16,17 @@ public class KedomResponse {
         this.setMessage(codeEnum.getMessage());
     }
 
+    public KedomResponse(Integer code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+
+
+    public static KedomResponse error(Integer code, String message) {
+        return new KedomResponse(code, message);
+    }
+
+
     public KedomResponse fillCode(KedomResponseCodeEnum codeEnum) {
         this.setCode(codeEnum.getCode());
         this.setMessage(codeEnum.getMessage());

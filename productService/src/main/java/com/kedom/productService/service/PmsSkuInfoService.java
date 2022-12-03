@@ -1,9 +1,6 @@
 package com.kedom.productService.service;
 
 import com.kedom.productService.entity.PmsSkuInfo;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import java.util.List;
 
 /**
  * sku信息(PmsSkuInfo)表服务接口
@@ -39,4 +36,8 @@ public interface PmsSkuInfoService {
 
 
     void insertGetKey(PmsSkuInfo pmsSkuInfo);
+
+    Boolean existsSkuBySkuId(Long skuId);
+
+    PmsSkuInfo querySkuIntoWareInfoBySkuId(Long skuId);
 }

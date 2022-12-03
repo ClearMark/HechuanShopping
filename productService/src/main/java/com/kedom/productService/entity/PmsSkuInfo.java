@@ -1,7 +1,8 @@
 package com.kedom.productService.entity;
 
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 
 @Data
@@ -9,10 +10,10 @@ import lombok.Data;
  * sku信息(PmsSkuInfo)实体类
  *
  * @author makejava
- * @since 2022-11-19 13:20:35
+ * @since 2022-12-03 15:10:46
  */
 public class PmsSkuInfo implements Serializable {
-    private static final long serialVersionUID = -98921094499767327L;
+    private static final long serialVersionUID = 807766819841138549L;
     /**
      * skuId
      */
@@ -60,7 +61,7 @@ public class PmsSkuInfo implements Serializable {
     /**
      * 商家ID
      */
-    private Long skuBelong;
+    private Long createId;
 
 
 }

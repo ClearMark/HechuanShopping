@@ -2,15 +2,10 @@ package com.kedom.productService.service.impl;
 
 import com.kedom.common.entity.KedomUserException.KedomUserException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
-import com.kedom.productService.entity.PmsSpuInfo;
 import com.kedom.productService.dao.PmsSpuInfoDao;
+import com.kedom.productService.entity.PmsSpuInfo;
 import com.kedom.productService.service.PmsSpuInfoService;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import java.util.List;
-import java.util.ArrayList;
 
 import javax.annotation.Resource;
 
@@ -69,10 +64,18 @@ public class PmsSpuInfoServiceImpl implements PmsSpuInfoService {
 
     @Override
     public void insertGetKey(PmsSpuInfo pmsSpuInfo) {
-        int count= this.pmsSpuInfoDao.insertGetKey(pmsSpuInfo);
-        if(count==0)
-        {
+        int count = this.pmsSpuInfoDao.insertGetKey(pmsSpuInfo);
+        if (count == 0) {
             throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+        }
+    }
+
+    @Override
+    public void spuPutOnShelves(Long id) {
+
+        int count = this.pmsSpuInfoDao.spuPutOnShelves(id);
+        if (count == 0) {
+            throw new KedomUserException(KedomExceptionEnum.PUT_ON_SHELVES_ERROR);
         }
     }
 

@@ -1,10 +1,11 @@
 package com.kedom.productService.dao;
 
 import com.kedom.productService.entity.PmsSpuInfo;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
+
 import java.util.List;
-import org.apache.ibatis.annotations.Mapper;
 
 
 /**
@@ -65,7 +66,7 @@ public interface PmsSpuInfoDao {
      * @param pmsSpuInfo 实例对象
      * @return 影响行数
      */
-    Byte update(PmsSpuInfo pmsSpuInfo);
+    Integer update(PmsSpuInfo pmsSpuInfo);
 
     /**
      * 通过主键删除数据
