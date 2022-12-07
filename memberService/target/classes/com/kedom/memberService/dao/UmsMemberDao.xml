@@ -167,6 +167,9 @@
     <select id="queryPublicInfoByUsername" resultType="com.kedom.common.entity.memberServiceEntity.UmsMember">
         select * from ums_member where username = #{username} limit 1
     </select>
+    <select id="queryEmailIsUnique" resultType="java.lang.Integer">
+        select count(*) from ums_member where email = #{email} limit 1
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" >
