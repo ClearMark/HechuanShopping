@@ -1,13 +1,10 @@
 package com.kedom.memberService.controller;
 
 import com.kedom.common.entity.KedomResponse;
-import com.kedom.common.entity.KedomUserException.KedomUserException;
-import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.common.entity.memberServiceEntity.UmsMember;
 import com.kedom.memberService.service.UmsMemberService;
 import com.kedom.openFeignService.entity.vo.UserRegisterVO;
 import com.kedom.openFeignService.entity.vo.UserVO;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,14 +29,14 @@ public class UmsMemberController {
 
        umsMemberService.register(userRegisterVO);
 
-      return  KedomResponse.OK();
+      return KedomResponse.ok();
     }
 
     @PostMapping("/login")
     public KedomResponse login(@RequestBody UserVO userLoginVo) {
 
         UmsMember umsMember = umsMemberService.login(userLoginVo);
-        return  KedomResponse.OK_FULLData(umsMember);
+        return KedomResponse.okAddData(umsMember);
     }
 
     @PutMapping
@@ -49,25 +46,21 @@ public class UmsMemberController {
         umsMember.setId(redisMember.getId());
         umsMember.setUsername(redisMember.getUsername());
         umsMemberService.updateDB(umsMember);
-        umsMemberService.updateCache(umsMember,accessToken);
+        umsMemberService.updateCache(umsMember, accessToken);
 
-        return  KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
 
-
-
-
-
-    @ExceptionHandler(Exception.class)
-    public KedomResponse exceptionHandling(Exception e) {
-
-        KedomResponse kedomResponse = new KedomResponse();
-
-
-        kedomResponse.fillCode(9999,e.getMessage());
-        return kedomResponse;
-    }
+//    @ExceptionHandler(Exception.class)
+//    public KedomResponse exceptionHandling(Exception e) {
+//
+//        KedomResponse kedomResponse = new KedomResponse();
+//
+//
+//        kedomResponse.fillCode(9999,e.getMessage());
+//        return kedomResponse;
+//    }
 
 
 }

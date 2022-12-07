@@ -1,12 +1,10 @@
 package com.kedom.productService.controller;
 
+import com.kedom.common.entity.KedomResponse;
 import com.kedom.productService.entity.PmsCategoryBrandRelation;
 import com.kedom.productService.service.PmsCategoryBrandRelationService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.kedom.common.entity.KedomResponse;
 
 import javax.annotation.Resource;
 
@@ -46,7 +44,7 @@ public class PmsCategoryBrandRelationController {
     @PostMapping
     public KedomResponse add(PmsCategoryBrandRelation pmsCategoryBrandRelation) {
          this.pmsCategoryBrandRelationService.insert(pmsCategoryBrandRelation);
-     return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     /**
@@ -58,7 +56,7 @@ public class PmsCategoryBrandRelationController {
     @PutMapping
     public KedomResponse edit(PmsCategoryBrandRelation pmsCategoryBrandRelation) {
          this.pmsCategoryBrandRelationService.update(pmsCategoryBrandRelation);
-     return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     /**

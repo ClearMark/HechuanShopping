@@ -1,18 +1,16 @@
 package com.kedom.productService.service.impl;
 
 
-import com.kedom.common.entity.KedomUserException.KedomUserException;
+import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.common.entity.productServiceEntity.PmsCategory;
 import com.kedom.productService.dao.PmsCategoryDao;
 import com.kedom.productService.service.PmsCategoryService;
 import org.springframework.stereotype.Service;
 
-
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Resource;
 
 /**
  * 商品三级分类(PmsCategory)表服务实现类
@@ -50,7 +48,7 @@ public class PmsCategoryServiceImpl implements PmsCategoryService {
     public void insert(PmsCategory pmsCategory) {
         int insert = this.pmsCategoryDao.insert(pmsCategory);
         if (insert == 0) {
-            throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+            throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
         }
     }
 
@@ -104,7 +102,7 @@ public class PmsCategoryServiceImpl implements PmsCategoryService {
         int count= this.pmsCategoryDao.checkCategoryIsThreeLevelCategory(cateId);
         if(count!=1)
         {
-            throw new KedomUserException(KedomExceptionEnum.CategoryNotIsThereLevelCateGory);
+            throw new KedomException(KedomExceptionEnum.CategoryNotIsThereLevelCateGory);
         }
     }
 

@@ -1,18 +1,16 @@
 package com.kedom.productService.service.impl;
 
-import com.kedom.common.entity.KedomUserException.KedomUserException;
+import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
-import com.kedom.productService.dao.PmsCategoryDao;
-import com.kedom.productService.entity.PmsAttrGroup;
 import com.kedom.productService.dao.PmsAttrGroupDao;
+import com.kedom.productService.entity.PmsAttrGroup;
 import com.kedom.productService.service.PmsAttrGroupService;
 import com.kedom.productService.service.PmsCategoryService;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.ArrayList;
-
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * 属性分组(PmsAttrGroup)表服务实现类
@@ -56,7 +54,7 @@ public class PmsAttrGroupServiceImpl implements PmsAttrGroupService {
        int count= this.pmsAttrGroupDao.insert(pmsAttrGroup);
        if(count==0)
        {
-       throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+           throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
        }
     }
 
@@ -68,7 +66,7 @@ public class PmsAttrGroupServiceImpl implements PmsAttrGroupService {
         int count= this.pmsAttrGroupDao.checkAttrGroupUniqueOnCategory(attrGroupName,categoryId);
         if(count!=0)
         {
-            throw new KedomUserException(KedomExceptionEnum.AttrGroupNotUniqueOnCategory);
+            throw new KedomException(KedomExceptionEnum.AttrGroupNotUniqueOnCategory);
         }
     }
 
@@ -85,7 +83,7 @@ public class PmsAttrGroupServiceImpl implements PmsAttrGroupService {
        int count= this.pmsAttrGroupDao.update(pmsAttrGroup);
        if(count==0)
        {
-        throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+           throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
        }
     }
 
@@ -103,7 +101,7 @@ public class PmsAttrGroupServiceImpl implements PmsAttrGroupService {
         int count=pmsAttrGroupDao.checkAttrGroupIsExist(attrGroupId);
         if (count ==0)
         {
-            throw new KedomUserException(KedomExceptionEnum.AttrGroupNotIsExist);
+            throw new KedomException(KedomExceptionEnum.AttrGroupNotIsExist);
         }
     }
 

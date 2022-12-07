@@ -40,4 +40,6 @@ public interface PmsSkuInfoService {
     Boolean existsSkuBySkuId(Long skuId);
 
     PmsSkuInfo querySkuIntoWareInfoBySkuId(Long skuId);
+
+
 }

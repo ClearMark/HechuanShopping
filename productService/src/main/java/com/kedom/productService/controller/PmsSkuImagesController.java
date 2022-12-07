@@ -1,12 +1,10 @@
 package com.kedom.productService.controller;
 
+import com.kedom.common.entity.KedomResponse;
 import com.kedom.productService.entity.PmsSkuImages;
 import com.kedom.productService.service.PmsSkuImagesService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.kedom.common.entity.KedomResponse;
 
 import javax.annotation.Resource;
 
@@ -46,7 +44,7 @@ public class PmsSkuImagesController {
     @PostMapping
     public KedomResponse add(PmsSkuImages pmsSkuImages) {
          this.pmsSkuImagesService.insert(pmsSkuImages);
-     return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     /**
@@ -58,7 +56,7 @@ public class PmsSkuImagesController {
     @PutMapping
     public KedomResponse edit(PmsSkuImages pmsSkuImages) {
          this.pmsSkuImagesService.update(pmsSkuImages);
-     return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     /**

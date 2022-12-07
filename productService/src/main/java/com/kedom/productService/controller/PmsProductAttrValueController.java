@@ -1,12 +1,10 @@
 package com.kedom.productService.controller;
 
+import com.kedom.common.entity.KedomResponse;
 import com.kedom.productService.entity.PmsProductAttrValue;
 import com.kedom.productService.service.PmsProductAttrValueService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.kedom.common.entity.KedomResponse;
 
 import javax.annotation.Resource;
 
@@ -46,7 +44,7 @@ public class PmsProductAttrValueController {
     @PostMapping
     public KedomResponse add(PmsProductAttrValue pmsProductAttrValue) {
          this.pmsProductAttrValueService.insert(pmsProductAttrValue);
-     return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     /**
@@ -58,7 +56,7 @@ public class PmsProductAttrValueController {
     @PutMapping
     public KedomResponse edit(PmsProductAttrValue pmsProductAttrValue) {
          this.pmsProductAttrValueService.update(pmsProductAttrValue);
-     return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     /**

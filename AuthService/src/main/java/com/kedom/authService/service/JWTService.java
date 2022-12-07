@@ -2,7 +2,7 @@ package com.kedom.authService.service;
 
 
 import com.google.gson.Gson;
-import com.kedom.authService.entity.UmsMember;
+import com.kedom.authService.util.AuthTool;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
@@ -21,12 +21,14 @@ public class JWTService {
     @Autowired
     Gson gson;
 
+    private final String APIRequestCodePrefix = "APIRequestCode";
+
     public String createAccessToken(String entity) {
         String beforeToken = "clearMark" + System.currentTimeMillis();
         String accessToken = Md5Crypt.md5Crypt(beforeToken.getBytes());
-        RBucket<Object> bucket = redissonClient.getBucket(accessToken,new StringCodec("utf-8"));
+        RBucket<Object> bucket = redissonClient.getBucket(accessToken, new StringCodec("utf-8"));
         while (bucket.get() != null) {
-            beforeToken = "clearMark"  + System.currentTimeMillis();
+            beforeToken = "clearMark" + System.currentTimeMillis();
             accessToken = Md5Crypt.md5Crypt(beforeToken.getBytes());
             bucket = redissonClient.getBucket(accessToken);
         }
@@ -35,13 +37,20 @@ public class JWTService {
     }
 
     public Boolean verificationUmsMemberAccessToken(String accessToken) {
-        RBucket<Object> bucket = redissonClient.getBucket(accessToken,new StringCodec("utf-8"));
+        RBucket<Object> bucket = redissonClient.getBucket(accessToken, new StringCodec("utf-8"));
 
         Object o = bucket.get();
         if (o != null) {
             return true;
         }
         return false;
+    }
+
+    public String getAPIRequestCode(String accessToken) {
+        RBucket<Object> bucket = redissonClient.getBucket(APIRequestCodePrefix + accessToken);
+        String code = AuthTool.randomCode(4);
+        bucket.set(code, 30, TimeUnit.MINUTES);
+        return code;
     }
 
 

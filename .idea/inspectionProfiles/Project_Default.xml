@@ -11,6 +11,7 @@
         <set>
           <option value="accessToken" />
           <option value="userID" />
+          <option value="Token" />
         </set>
       </option>
     </inspection_tool>

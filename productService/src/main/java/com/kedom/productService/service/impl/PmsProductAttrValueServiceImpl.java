@@ -1,18 +1,14 @@
 package com.kedom.productService.service.impl;
 
-import com.kedom.common.entity.KedomUserException.KedomUserException;
+import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
-import com.kedom.productService.entity.PmsProductAttrValue;
 import com.kedom.productService.dao.PmsProductAttrValueDao;
+import com.kedom.productService.entity.PmsProductAttrValue;
 import com.kedom.productService.service.PmsProductAttrValueService;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import java.util.List;
-import java.util.ArrayList;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * spu属性值(PmsProductAttrValue)表服务实现类
@@ -48,7 +44,7 @@ public class PmsProductAttrValueServiceImpl implements PmsProductAttrValueServic
        int count= this.pmsProductAttrValueDao.insert(pmsProductAttrValue);
        if(count==0)
        {
-       throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+           throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
        }
     }
 
@@ -63,7 +59,7 @@ public class PmsProductAttrValueServiceImpl implements PmsProductAttrValueServic
        int count= this.pmsProductAttrValueDao.update(pmsProductAttrValue);
        if(count==0)
        {
-        throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+           throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
        }
     }
 
@@ -72,7 +68,7 @@ public class PmsProductAttrValueServiceImpl implements PmsProductAttrValueServic
         int count= this.pmsProductAttrValueDao.insertList(skuAttrValues);
         if(count==0)
         {
-            throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+            throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
         }
     }
 

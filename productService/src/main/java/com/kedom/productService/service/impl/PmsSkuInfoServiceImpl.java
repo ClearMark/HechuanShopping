@@ -1,6 +1,6 @@
 package com.kedom.productService.service.impl;
 
-import com.kedom.common.entity.KedomUserException.KedomUserException;
+import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.productService.dao.PmsSkuInfoDao;
 import com.kedom.productService.entity.PmsSkuInfo;
@@ -43,7 +43,7 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
        int count= this.pmsSkuInfoDao.insert(pmsSkuInfo);
        if(count==0)
        {
-       throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+           throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
        }
     }
 
@@ -58,7 +58,7 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
        int count= this.pmsSkuInfoDao.update(pmsSkuInfo);
        if(count==0)
        {
-        throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+           throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
        }
     }
 
@@ -66,7 +66,7 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
     public void insertGetKey(PmsSkuInfo pmsSkuInfo) {
         int count = this.pmsSkuInfoDao.insertGetKey(pmsSkuInfo);
         if (count == 0) {
-            throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+            throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
         }
     }
 

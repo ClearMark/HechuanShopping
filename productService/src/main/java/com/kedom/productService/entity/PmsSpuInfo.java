@@ -1,8 +1,9 @@
 package com.kedom.productService.entity;
 
-import java.time.LocalDateTime;
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 
 @Data
@@ -10,10 +11,10 @@ import lombok.Data;
  * spu信息(PmsSpuInfo)实体类
  *
  * @author makejava
- * @since 2022-11-19 01:12:25
+ * @since 2022-12-03 19:21:59
  */
 public class PmsSpuInfo implements Serializable {
-    private static final long serialVersionUID = 985307542077288371L;
+    private static final long serialVersionUID = 265974733803090745L;
     /**
      * 商品id
      */
@@ -42,12 +43,12 @@ public class PmsSpuInfo implements Serializable {
     private Integer publishStatus;
     
     private LocalDateTime createTime;
-    
+
     private LocalDateTime updateTime;
     /**
      * 商家ID
      */
-    private Long spuBelong;
+    private Long createId;
 
 
 }

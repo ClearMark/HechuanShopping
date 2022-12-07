@@ -44,7 +44,7 @@ public class PmsSpuInfoController {
     @PostMapping
     public KedomResponse add(PmsSpuInfo pmsSpuInfo) {
          this.pmsSpuInfoService.insert(pmsSpuInfo);
-     return KedomResponse.OK();
+     return KedomResponse.ok();
     }
 
     /**
@@ -56,14 +56,13 @@ public class PmsSpuInfoController {
     @PutMapping
     public KedomResponse edit(PmsSpuInfo pmsSpuInfo) {
         this.pmsSpuInfoService.update(pmsSpuInfo);
-        return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     @PutMapping("/putOnShelves/{id}")
     public KedomResponse spuPutOnShelves(@PathVariable("id") Long id) {
-
         this.pmsSpuInfoService.spuPutOnShelves(id);
-        return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     /**

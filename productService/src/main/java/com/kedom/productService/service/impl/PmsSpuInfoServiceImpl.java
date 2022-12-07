@@ -1,13 +1,15 @@
 package com.kedom.productService.service.impl;
 
-import com.kedom.common.entity.KedomUserException.KedomUserException;
+import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.productService.dao.PmsSpuInfoDao;
 import com.kedom.productService.entity.PmsSpuInfo;
 import com.kedom.productService.service.PmsSpuInfoService;
+import com.kedom.productService.util.IDUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * spu信息(PmsSpuInfo)表服务实现类
@@ -43,7 +45,7 @@ public class PmsSpuInfoServiceImpl implements PmsSpuInfoService {
        int count= this.pmsSpuInfoDao.insert(pmsSpuInfo);
        if(count==0)
        {
-       throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+           throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
        }
     }
 
@@ -58,7 +60,7 @@ public class PmsSpuInfoServiceImpl implements PmsSpuInfoService {
        int count= this.pmsSpuInfoDao.update(pmsSpuInfo);
        if(count==0)
        {
-        throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+           throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
        }
     }
 
@@ -66,17 +68,27 @@ public class PmsSpuInfoServiceImpl implements PmsSpuInfoService {
     public void insertGetKey(PmsSpuInfo pmsSpuInfo) {
         int count = this.pmsSpuInfoDao.insertGetKey(pmsSpuInfo);
         if (count == 0) {
-            throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+            throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
         }
     }
 
     @Override
     public void spuPutOnShelves(Long id) {
+        PmsSpuInfo pmsSpuInfo = new PmsSpuInfo();
+        pmsSpuInfo.setId(id);
+        pmsSpuInfo.setPublishStatus(1);
+        pmsSpuInfo.setCreateId(IDUtil.getId());
 
-        int count = this.pmsSpuInfoDao.spuPutOnShelves(id);
+        int count = this.pmsSpuInfoDao.spuPutOnShelves(pmsSpuInfo);
         if (count == 0) {
-            throw new KedomUserException(KedomExceptionEnum.PUT_ON_SHELVES_ERROR);
+            throw new KedomException(KedomExceptionEnum.PUT_ON_SHELVES_ERROR);
         }
+    }
+
+    @Override
+    public List<PmsSpuInfo> queryBySpuNameAndPage(String spuKey, Integer pageNum, Integer pageSize) {
+        List<PmsSpuInfo> spuList = pmsSpuInfoDao.queryBySpuNameAndPage(spuKey, pageNum, pageSize);
+        return null;
     }
 
 }

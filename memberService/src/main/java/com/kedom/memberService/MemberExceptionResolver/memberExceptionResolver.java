@@ -3,15 +3,12 @@ package com.kedom.memberService.MemberExceptionResolver;
 
 import com.kedom.common.entity.KedomResponse;
 import com.kedom.common.entity.exceptionEnum.OperationExceptionMark;
-
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.time.LocalDateTime;
 
 //MVC全局异常处理器
 @ControllerAdvice
@@ -31,7 +28,7 @@ public class memberExceptionResolver implements HandlerExceptionResolver {
 
         if (e instanceof OperationExceptionMark) //判断是否是用户引起的异常 决定是否加入数据库
         {
-            kedomResponse.fillCode(3000,exceptionMessage);
+//            kedomResponse.fillCode(3000,exceptionMessage);
             System.out.println("用户引起的异常");
         } else {
 //            String exceptionURL = httpServletRequest.getRequestURL().toString();
@@ -43,7 +40,7 @@ public class memberExceptionResolver implements HandlerExceptionResolver {
 //
 //            response.fillCode(CodeEnum.ERROR_SERVER);
 //            response.setMessage("服务器异常");
-            kedomResponse.fillCode(3001,exceptionMessage);
+//            kedomResponse.fillCode(3001,exceptionMessage);
             System.out.println("服务器异常");
         }
 

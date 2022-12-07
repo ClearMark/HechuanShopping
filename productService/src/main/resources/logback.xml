@@ -20,8 +20,9 @@
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>
+
     <logger name="com" additivity="false">
-        <level value="info" />
+        <level value="debug"/>
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </logger>

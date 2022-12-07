@@ -77,5 +77,9 @@ public interface PmsSpuInfoDao {
     Byte deleteById(Long id);
 
     int insertGetKey(PmsSpuInfo pmsSpuInfo);
+
+    Integer spuPutOnShelves(PmsSpuInfo pmsSpuInfo);
+
+    List<PmsSpuInfo> queryBySpuNameAndPage(String spuKey, Integer pageNum, Integer pageSize);
 }
 

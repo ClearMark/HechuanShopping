@@ -1,5 +1,6 @@
 package com.kedom.productService.dao;
 
+import com.kedom.productService.entity.PmsSkuInfo;
 import com.kedom.productService.entity.PmsSkuWare;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -84,5 +85,7 @@ public interface PmsSkuWareDao {
     int deleteById(Long id);
 
     int existsSkuWareBySkuId(Long skuId);
+
+    Integer updateWare(PmsSkuInfo pmsSkuInfo);
 }
 

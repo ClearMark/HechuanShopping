@@ -1,11 +1,11 @@
 package com.kedom.productService.controller;
 
 
+import com.kedom.common.entity.KedomResponse;
 import com.kedom.common.entity.productServiceEntity.PmsBrand;
 import com.kedom.productService.service.PmsBrandService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.kedom.common.entity.KedomResponse;
 
 import javax.annotation.Resource;
 
@@ -45,7 +45,7 @@ public class PmsBrandController {
     @PostMapping
     public KedomResponse add(PmsBrand pmsBrand) {
          this.pmsBrandService.insert(pmsBrand);
-     return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     /**
@@ -57,7 +57,7 @@ public class PmsBrandController {
     @PutMapping
     public KedomResponse edit(PmsBrand pmsBrand) {
          this.pmsBrandService.update(pmsBrand);
-     return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     /**

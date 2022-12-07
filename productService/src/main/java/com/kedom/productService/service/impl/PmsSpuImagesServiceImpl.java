@@ -1,18 +1,14 @@
 package com.kedom.productService.service.impl;
 
-import com.kedom.common.entity.KedomUserException.KedomUserException;
+import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
-import com.kedom.productService.entity.PmsSpuImages;
 import com.kedom.productService.dao.PmsSpuImagesDao;
+import com.kedom.productService.entity.PmsSpuImages;
 import com.kedom.productService.service.PmsSpuImagesService;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import java.util.List;
-import java.util.ArrayList;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * spu图片(PmsSpuImages)表服务实现类
@@ -48,7 +44,7 @@ public class PmsSpuImagesServiceImpl implements PmsSpuImagesService {
        int count= this.pmsSpuImagesDao.insert(pmsSpuImages);
        if(count==0)
        {
-       throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+           throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
        }
     }
 
@@ -63,7 +59,7 @@ public class PmsSpuImagesServiceImpl implements PmsSpuImagesService {
        int count= this.pmsSpuImagesDao.update(pmsSpuImages);
        if(count==0)
        {
-        throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+           throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
        }
     }
 
@@ -72,7 +68,7 @@ public class PmsSpuImagesServiceImpl implements PmsSpuImagesService {
         int count= this.pmsSpuImagesDao.insertList(images);
         if(count==0)
         {
-            throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+            throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
         }
     }
 

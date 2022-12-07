@@ -1,6 +1,6 @@
 package com.kedom.productService.service.impl;
 
-import com.kedom.common.entity.KedomUserException.KedomUserException;
+import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.common.entity.productServiceEntity.PmsBrand;
 import com.kedom.productService.dao.PmsBrandDao;
@@ -43,7 +43,7 @@ public class PmsBrandServiceImpl implements PmsBrandService {
        int count= this.pmsBrandDao.insert(pmsBrand);
        if(count==0)
        {
-       throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+           throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
        }
     }
 
@@ -58,7 +58,7 @@ public class PmsBrandServiceImpl implements PmsBrandService {
        int count= this.pmsBrandDao.update(pmsBrand);
        if(count==0)
        {
-        throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+           throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
        }
     }
 

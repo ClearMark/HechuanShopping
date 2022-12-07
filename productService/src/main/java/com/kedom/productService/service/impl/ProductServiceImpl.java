@@ -20,13 +20,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class ProductServiceImpl {
+public class ProductServiceImpl implements ProductService {
 
-private static final Logger  logger = LoggerFactory.getLogger(ProductServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     //spu
     @Autowired
@@ -53,6 +52,13 @@ private static final Logger  logger = LoggerFactory.getLogger(ProductServiceImpl
     @Value("$${imageSave.id}")
     String id;
 
+
+    @Override
+    public List<ProductVO> getProduct(String spuKey, Integer pageNum, Integer pageSize) {
+
+        List<PmsSpuInfo> spuList = pmsSpuInfoService.queryBySpuNameAndPage(spuKey, pageNum, pageSize);
+        return null;
+    }
 
     public List<String> saveImage(List<MultipartFile> files) {
         List<String> paths = new ArrayList<>();

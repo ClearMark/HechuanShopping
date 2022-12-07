@@ -14,13 +14,18 @@ public enum KedomExceptionEnum {
     //通用异常 20开
     UPDATE_ERROR(2001, "信息更新失败"),
     INSERT_ERROR(2002, "信息插入失败"),
+    API_REQUEST_CODE_ERROR(2003, "重复请求了"),
 
     //产品管理异常 30开
     CategoryNotIsThereLevelCateGory(3001, "分类不是三级分类"),
     AttrGroupNotUniqueOnCategory(3002, "同一分类下属性分组名称不能重复"),
     AttrGroupNotIsExist(3003, "分类 分组不存在"),
     GROUP_ATTR_IS_EXIST(3004, "分组属性已存在"),
-    PUT_ON_SHELVES_ERROR(3005, "上架失败");
+    PUT_ON_SHELVES_ERROR(3005, "上架失败"),
+    SKU_WARE_EXIST(3006, "库存信息已存在"),
+    SKU_INTO_WARE_ERROR_BY_CREATE_ID_ERROR(3007, "入库失败创建人ID错误"),
+    SKU_NOT_EXIST(3008, "商品不存在"),
+    SKU_ID_NOT_EMPTY(3020, "SKU不能为空");
 
 
     KedomExceptionEnum(Integer exceptionCode, String exceptionMessage) {

@@ -1,9 +1,9 @@
 package com.kedom.productService.controller;
 
 
+import com.kedom.common.entity.KedomResponse;
 import com.kedom.common.entity.productServiceEntity.PmsCategory;
 import com.kedom.productService.service.PmsCategoryService;
-import com.kedom.common.entity.KedomResponse;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -28,20 +28,20 @@ public class PmsCategoryController {
     @GetMapping
     public KedomResponse getAllProductCategory() {
         List<PmsCategory> allProductCategory = pmsCategoryService.getAllProductCategory();
-        return KedomResponse.OK().fillData(allProductCategory);
+        return KedomResponse.okAddData(allProductCategory);
     }
 
     //前端请求方式[1,2,3] 直接写一个数组就完了
     @DeleteMapping
     public KedomResponse removeCategoryById(@RequestBody ArrayList<Long> ids) {
        pmsCategoryService.removeCategoryById(ids);
-        return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     @PostMapping
     public KedomResponse addCategory(PmsCategory pmsCategory) {
         pmsCategoryService.insert(pmsCategory);
-        return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
 

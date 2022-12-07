@@ -34,5 +34,5 @@ public interface PmsSkuWareService {
      */
     void update(PmsSkuWare pmsSkuWare);
 
-
+    void updateWare(PmsSkuWare pmsSkuWare);
 }

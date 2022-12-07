@@ -2,9 +2,9 @@
   * Copyright 2021 bejson.com 
   */
 package com.kedom.productService.entity.vo;
+
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
@@ -16,7 +16,8 @@ import java.util.List;
 @Data
 public class ProductVO {
 
-//    @NotEmpty(groups = {AddGroup.class})
+    //    @NotEmpty(groups = {AddGroup.class})
+    //spuId
     private String spuName;
     private String spuDescription;
 //    @NotEmpty(groups = {AddGroup.class})

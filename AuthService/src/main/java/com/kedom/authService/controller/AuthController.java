@@ -90,19 +90,23 @@ public class AuthController {
         return KedomResponse.OK_FULLData(code);
     }
 
-
     @PostMapping("/getRedisUmsMemberByAccessToken")
     public Boolean getRedisUmsMemberByAccessToken(@RequestBody String accessToken) {
         return jwtService.verificationUmsMemberAccessToken(accessToken);
     }
 
+    @GetMapping("getAPIRequestCode")
+    public KedomResponse getAPIRequestCode(@RequestHeader("Token") String accessToken) {
+        String code = jwtService.getAPIRequestCode(accessToken);
+        return KedomResponse.OK_FULLData(code);
+    }
 
 
-    private HashMap<String,String> getParameterError(BindingResult bindingResult) {
-        HashMap<String,String> errorMap=new HashMap<>();
+    private HashMap<String, String> getParameterError(BindingResult bindingResult) {
+        HashMap<String, String> errorMap = new HashMap<>();
 
         bindingResult.getFieldErrors().forEach(fieldError -> {
-            errorMap.put(fieldError.getField(),fieldError.getDefaultMessage());
+            errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
         });
 
          return errorMap;

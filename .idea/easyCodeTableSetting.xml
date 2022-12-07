@@ -1022,7 +1022,7 @@
                     <option name="comment" value="商家ID" />
                     <option name="custom" value="false" />
                     <option name="ext" value="{}" />
-                    <option name="name" value="spuBelong" />
+                    <option name="name" value="createId" />
                     <option name="type" value="java.lang.Long" />
                   </ColumnInfoDTO>
                 </list>

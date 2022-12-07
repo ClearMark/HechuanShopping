@@ -1,12 +1,10 @@
 package com.kedom.productService.controller;
 
+import com.kedom.common.entity.KedomResponse;
 import com.kedom.productService.entity.PmsAttrAttrgroupRelation;
 import com.kedom.productService.service.PmsAttrAttrgroupRelationService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.kedom.common.entity.KedomResponse;
 
 import javax.annotation.Resource;
 
@@ -46,7 +44,7 @@ public class PmsAttrAttrgroupRelationController {
     @PostMapping
     public KedomResponse add(PmsAttrAttrgroupRelation pmsAttrAttrgroupRelation) {
          this.pmsAttrAttrgroupRelationService.insert(pmsAttrAttrgroupRelation);
-     return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     /**
@@ -58,7 +56,7 @@ public class PmsAttrAttrgroupRelationController {
     @PutMapping
     public KedomResponse edit(PmsAttrAttrgroupRelation pmsAttrAttrgroupRelation) {
          this.pmsAttrAttrgroupRelationService.update(pmsAttrAttrgroupRelation);
-     return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     /**

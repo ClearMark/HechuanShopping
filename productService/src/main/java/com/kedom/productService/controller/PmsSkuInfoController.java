@@ -1,12 +1,10 @@
 package com.kedom.productService.controller;
 
+import com.kedom.common.entity.KedomResponse;
 import com.kedom.productService.entity.PmsSkuInfo;
 import com.kedom.productService.service.PmsSkuInfoService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.kedom.common.entity.KedomResponse;
 
 import javax.annotation.Resource;
 
@@ -46,7 +44,7 @@ public class PmsSkuInfoController {
     @PostMapping
     public KedomResponse add(PmsSkuInfo pmsSkuInfo) {
          this.pmsSkuInfoService.insert(pmsSkuInfo);
-     return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     /**
@@ -58,7 +56,7 @@ public class PmsSkuInfoController {
     @PutMapping
     public KedomResponse edit(PmsSkuInfo pmsSkuInfo) {
          this.pmsSkuInfoService.update(pmsSkuInfo);
-     return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     /**

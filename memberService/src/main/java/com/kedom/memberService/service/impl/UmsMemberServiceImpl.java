@@ -1,6 +1,6 @@
 package com.kedom.memberService.service.impl;
 
-import com.kedom.common.entity.KedomUserException.KedomUserException;
+import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.common.entity.memberServiceEntity.UmsMember;
 import com.kedom.memberService.dao.UmsMemberDao;
@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 
 import javax.annotation.Resource;
 
@@ -64,7 +63,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         //修改数据库
         int update = umsMemberDao.update(umsMember);
         if (update != 1) {
-            throw new KedomUserException(KedomExceptionEnum.UPDATE_ERROR);
+            throw new KedomException(KedomExceptionEnum.UPDATE_ERROR);
         }
 
     }
@@ -118,7 +117,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         if (matches) {
             return umsMember;
         } else {
-            throw new KedomUserException(KedomExceptionEnum.USERNAME_PASSWORD_ERROR);
+            throw new KedomException(KedomExceptionEnum.USERNAME_PASSWORD_ERROR);
         }
     }
 
@@ -127,21 +126,21 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     public void checkUsernameIsUnique(String username) throws RuntimeException {
         int i = umsMemberDao.queryUsernameIsUnique(username);
         if (i > 0) {
-            throw new KedomUserException(KedomExceptionEnum.USERNAME_IS_EXIST);
+            throw new KedomException(KedomExceptionEnum.USERNAME_IS_EXIST);
         }
     }
 
     public void checkMobileIsUnique(String mobile) throws RuntimeException {
         int i = umsMemberDao.queryMobileIsUnique(mobile);
         if (i > 0) {
-            throw new KedomUserException(KedomExceptionEnum.Mobile_IS_EXIST);
+            throw new KedomException(KedomExceptionEnum.Mobile_IS_EXIST);
         }
     }
 
     public void checkEmailIsUnique(String email) throws RuntimeException {
         int i = umsMemberDao.queryEmailIsUnique(email);
         if (i > 0) {
-            throw new KedomUserException(KedomExceptionEnum.Mobile_IS_EXIST);
+            throw new KedomException(KedomExceptionEnum.Mobile_IS_EXIST);
         }
     }
 

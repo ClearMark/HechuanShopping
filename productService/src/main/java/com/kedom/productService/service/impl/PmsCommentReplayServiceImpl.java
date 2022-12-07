@@ -1,16 +1,11 @@
 package com.kedom.productService.service.impl;
 
-import com.kedom.common.entity.KedomUserException.KedomUserException;
+import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
-import com.kedom.productService.entity.PmsCommentReplay;
 import com.kedom.productService.dao.PmsCommentReplayDao;
+import com.kedom.productService.entity.PmsCommentReplay;
 import com.kedom.productService.service.PmsCommentReplayService;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import java.util.List;
-import java.util.ArrayList;
 
 import javax.annotation.Resource;
 
@@ -48,7 +43,7 @@ public class PmsCommentReplayServiceImpl implements PmsCommentReplayService {
        int count= this.pmsCommentReplayDao.insert(pmsCommentReplay);
        if(count==0)
        {
-       throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+           throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
        }
     }
 
@@ -63,7 +58,7 @@ public class PmsCommentReplayServiceImpl implements PmsCommentReplayService {
        int count= this.pmsCommentReplayDao.update(pmsCommentReplay);
        if(count==0)
        {
-        throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+           throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
        }
     }
 

@@ -1,6 +1,7 @@
 package com.kedom.productService.controller;
 
 import com.kedom.common.entity.KedomResponse;
+import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.productService.entity.PmsSkuWare;
 import com.kedom.productService.service.PmsSkuWareService;
 import org.springframework.http.ResponseEntity;
@@ -44,11 +45,13 @@ public class PmsSkuWareController {
      */
     @PostMapping
     public KedomResponse add(PmsSkuWare pmsSkuWare) {
+
         if ("".equals(pmsSkuWare.getSkuId())) {
-            return KedomResponse.error(5000, "skuId不能为空");
+
+            return new KedomResponse(KedomExceptionEnum.SKU_ID_NOT_EMPTY);
         }
         this.pmsSkuWareService.insert(pmsSkuWare);
-        return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     /**
@@ -58,9 +61,9 @@ public class PmsSkuWareController {
      * @return 编辑结果
      */
     @PutMapping
-    public KedomResponse edit(PmsSkuWare pmsSkuWare) {
-        this.pmsSkuWareService.update(pmsSkuWare);
-        return KedomResponse.OK();
+    public KedomResponse updateWare(PmsSkuWare pmsSkuWare) {
+        this.pmsSkuWareService.updateWare(pmsSkuWare);
+        return KedomResponse.ok();
     }
 
     /**

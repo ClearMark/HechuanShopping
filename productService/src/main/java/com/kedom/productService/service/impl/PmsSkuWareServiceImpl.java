@@ -1,11 +1,13 @@
 package com.kedom.productService.service.impl;
 
-import com.kedom.common.entity.KedomUserException.KedomUserException;
+import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.productService.dao.PmsSkuWareDao;
+import com.kedom.productService.entity.PmsSkuInfo;
 import com.kedom.productService.entity.PmsSkuWare;
 import com.kedom.productService.service.PmsSkuInfoService;
 import com.kedom.productService.service.PmsSkuWareService;
+import com.kedom.productService.util.IDUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,18 +53,25 @@ public class PmsSkuWareServiceImpl implements PmsSkuWareService {
 
         //TODO: 1.校验是否已经存在库存信息
         //先查询上架商品的信息
-        //       PmsSkuInfo intoWareSkuInfo = pmsSkuInfoService.querySkuIntoWareInfoBySkuId(pmsSkuWare.getSkuId());
-        //未上架判断sku是否存在
-//        Boolean bl1=pmsSkuInfoService.existsSkuBySkuId(pmsSkuWare.getSkuId())
-        //存在在看操作人是不是sku的创建人
-//        Long skuCreateId=pmsSkuInfoService.querySkuCreateIdBySkuId(pmsSkuWare.getSkuId());
-
+        if (existsSkuWareBySkuId(pmsSkuWare.getSkuId())) {
+            throw new KedomException(KedomExceptionEnum.SKU_WARE_EXIST);
+        }
+        //校验Sku信息 创建人
+        PmsSkuInfo pmsSkuInfo = pmsSkuInfoService.querySkuIntoWareInfoBySkuId(pmsSkuWare.getSkuId());
+        if (pmsSkuInfo == null) {
+            throw new KedomException(KedomExceptionEnum.SKU_NOT_EXIST);
+        }
+        if (!IDUtil.getId().equals(pmsSkuInfo.getCreateId())) {
+            throw new KedomException(KedomExceptionEnum.SKU_INTO_WARE_ERROR_BY_CREATE_ID_ERROR);
+        }
+        pmsSkuWare.setSkuName(pmsSkuInfo.getSkuName());
         //插入
         int count = this.pmsSkuWareDao.insert(pmsSkuWare);
         if (count == 0) {
-            throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+            throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
         }
     }
+
 
     public Boolean existsSkuWareBySkuId(Long skuId) {
         Integer count = pmsSkuWareDao.existsSkuWareBySkuId(skuId);
@@ -79,10 +88,26 @@ public class PmsSkuWareServiceImpl implements PmsSkuWareService {
      */
     @Override
     public void update(PmsSkuWare pmsSkuWare) {
-        int count = this.pmsSkuWareDao.update(pmsSkuWare);
-        if (count == 0) {
-            throw new KedomUserException(KedomExceptionEnum.INSERT_ERROR);
+
+
+    }
+
+    @Override
+    public void updateWare(PmsSkuWare pmsSkuWare) {
+        //先验证是否存在
+        PmsSkuInfo pmsSkuInfo = pmsSkuInfoService.querySkuIntoWareInfoBySkuId(pmsSkuWare.getSkuId());
+        if (pmsSkuInfo == null) {
+            throw new KedomException(KedomExceptionEnum.SKU_NOT_EXIST);
         }
+        if (!IDUtil.getId().equals(pmsSkuInfo.getCreateId())) {
+            throw new KedomException(KedomExceptionEnum.SKU_INTO_WARE_ERROR_BY_CREATE_ID_ERROR);
+        }
+
+        Integer count = pmsSkuWareDao.updateWare(pmsSkuInfo);
+        if (count == 0) {
+            throw new KedomException(KedomExceptionEnum.UPDATE_ERROR);
+        }
+
     }
 
 }

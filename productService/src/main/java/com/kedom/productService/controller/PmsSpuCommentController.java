@@ -1,12 +1,10 @@
 package com.kedom.productService.controller;
 
+import com.kedom.common.entity.KedomResponse;
 import com.kedom.productService.entity.PmsSpuComment;
 import com.kedom.productService.service.PmsSpuCommentService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.kedom.common.entity.KedomResponse;
 
 import javax.annotation.Resource;
 
@@ -46,7 +44,7 @@ public class PmsSpuCommentController {
     @PostMapping
     public KedomResponse add(PmsSpuComment pmsSpuComment) {
          this.pmsSpuCommentService.insert(pmsSpuComment);
-     return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     /**
@@ -58,7 +56,7 @@ public class PmsSpuCommentController {
     @PutMapping
     public KedomResponse edit(PmsSpuComment pmsSpuComment) {
          this.pmsSpuCommentService.update(pmsSpuComment);
-     return KedomResponse.OK();
+        return KedomResponse.ok();
     }
 
     /**
