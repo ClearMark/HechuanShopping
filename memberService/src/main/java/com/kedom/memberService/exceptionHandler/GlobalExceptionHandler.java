@@ -1,4 +1,4 @@
-package com.kedom.productService.exceptionHandler;
+package com.kedom.memberService.exceptionHandler;
 
 import com.kedom.common.entity.KedomResponse;
 import com.kedom.common.entity.KedomUserException.KedomException;

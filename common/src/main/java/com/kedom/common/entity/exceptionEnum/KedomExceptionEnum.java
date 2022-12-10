@@ -15,7 +15,9 @@ public enum KedomExceptionEnum {
     UPDATE_ERROR(2001, "信息更新失败"),
     INSERT_ERROR(2002, "信息插入失败"),
     API_REQUEST_CODE_ERROR(2003, "重复请求了"),
-
+    VERIFY_CODE_ERROR(2004, "验证码错误"),
+    REQUEST_PARAMETER_ERROR(2005, "请求参数错误"),
+    TOKEN_AND_USERID_ERROR(2006, "Token与用户信息不符"),
     //产品管理异常 30开
     CategoryNotIsThereLevelCateGory(3001, "分类不是三级分类"),
     AttrGroupNotUniqueOnCategory(3002, "同一分类下属性分组名称不能重复"),

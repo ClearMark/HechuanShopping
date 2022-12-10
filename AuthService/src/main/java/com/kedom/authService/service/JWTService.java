@@ -2,7 +2,11 @@ package com.kedom.authService.service;
 
 
 import com.google.gson.Gson;
+import com.kedom.authService.entity.TokenAndUserID;
+import com.kedom.authService.entity.UmsMember;
 import com.kedom.authService.util.AuthTool;
+import com.kedom.common.entity.KedomUserException.KedomException;
+import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
@@ -23,16 +27,21 @@ public class JWTService {
 
     private final String APIRequestCodePrefix = "APIRequestCode";
 
+
     public String createAccessToken(String entity) {
+        UmsMember umsMember = gson.fromJson(entity, UmsMember.class);
+
         String beforeToken = "clearMark" + System.currentTimeMillis();
         String accessToken = Md5Crypt.md5Crypt(beforeToken.getBytes());
-        RBucket<Object> bucket = redissonClient.getBucket(accessToken, new StringCodec("utf-8"));
+
+        RBucket<Object> bucket = redissonClient.getBucket(accessToken);
         while (bucket.get() != null) {
             beforeToken = "clearMark" + System.currentTimeMillis();
             accessToken = Md5Crypt.md5Crypt(beforeToken.getBytes());
             bucket = redissonClient.getBucket(accessToken);
         }
-        bucket.set(entity, 30, TimeUnit.MINUTES);
+
+        bucket.set(umsMember.getId(), 30, TimeUnit.MINUTES);
         return accessToken;
     }
 
@@ -47,10 +56,24 @@ public class JWTService {
     }
 
     public String getAPIRequestCode(String accessToken) {
-        RBucket<Object> bucket = redissonClient.getBucket(APIRequestCodePrefix + accessToken);
+        RBucket<Long> bucket = redissonClient.getBucket(accessToken);
+        Long aLong = bucket.get();
+
+        RBucket<Object> bucket2 = redissonClient.getBucket(APIRequestCodePrefix + aLong);
         String code = AuthTool.randomCode(4);
-        bucket.set(code, 30, TimeUnit.MINUTES);
+        bucket.set(Long.valueOf(code), 30, TimeUnit.MINUTES);
         return code;
+    }
+
+    public void TokenAndUserDataVerify(TokenAndUserID tokenAndUserID) {
+        String token = tokenAndUserID.getToken();
+        Long userID = tokenAndUserID.getUserID();
+        RBucket<Long> bucket = redissonClient.getBucket(token);
+        if (userID.equals(bucket.get())) {
+            return;
+        }
+        throw new KedomException(KedomExceptionEnum.TOKEN_AND_USERID_ERROR);
+
     }
 
 

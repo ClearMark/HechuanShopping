@@ -42,7 +42,7 @@
         </dependency>
 
 
-        <!--nacos服务发现依赖-->
+<!--        nacos服务发现依赖-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>

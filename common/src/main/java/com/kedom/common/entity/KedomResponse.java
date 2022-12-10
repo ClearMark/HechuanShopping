@@ -17,12 +17,13 @@ public class KedomResponse {
 
 
     public KedomResponse(KedomException kedomException) {
-        new KedomResponse(kedomException.getKedomExceptionEnum());
+        this.code = kedomException.getKedomExceptionEnum().getExceptionCode();
+        this.message = kedomException.getKedomExceptionEnum().getExceptionMessage();
     }
 
     public KedomResponse(KedomExceptionEnum kedomExceptionEnum) {
-        this.setCode(kedomExceptionEnum.getExceptionCode());
-        this.setMessage(kedomExceptionEnum.getExceptionMessage());
+        this.code = kedomExceptionEnum.getExceptionCode();
+        this.message = kedomExceptionEnum.getExceptionMessage();
     }
 
 

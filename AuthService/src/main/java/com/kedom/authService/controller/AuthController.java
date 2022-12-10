@@ -1,19 +1,22 @@
 package com.kedom.authService.controller;
 
 import com.kedom.authService.entity.MailMessage;
+import com.kedom.authService.entity.TokenAndUserID;
 import com.kedom.authService.service.JWTService;
 import com.kedom.authService.service.MailService;
 import com.kedom.authService.util.AuthTool;
 import com.kedom.common.entity.KedomResponse;
-import com.kedom.openFeignService.entity.vo.UserRegisterVO;
+import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.openFeignService.entity.vo.UserVO;
+import com.kedom.openFeignService.entity.vo.validationGroup.Login;
+import com.kedom.openFeignService.entity.vo.validationGroup.Register;
 import com.kedom.openFeignService.feignClient.MemberFeignService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.HashMap;
 
 @RestController
@@ -31,63 +34,71 @@ public class AuthController {
     JWTService jwtService;
 
     @PostMapping("/register")
-    public KedomResponse register(@Valid UserRegisterVO registerVO, BindingResult bindingResult) {
-        KedomResponse response = new KedomResponse();
+    public KedomResponse register(@Validated(Register.class) @RequestBody UserVO registerVO, BindingResult bindingResult) {
+
         HashMap<String, String> parameterError = getParameterError(bindingResult);
-        if (parameterError.size()!=0) {
-            return  response.fillData(parameterError);
+        if (parameterError.size() != 0) {
+            return KedomResponse.errorAddData(parameterError);
         }
 
         String code = registerVO.getCode();
         String email = registerVO.getEmail();
         String redisCode = mailService.mailCodeDownloadRedis(email, 1);
+
         if (!code.equals(redisCode)) {
-            response.setCode(500);
-            response.setMessage("验证码错误");
-            return response;
+            return new KedomResponse(KedomExceptionEnum.VERIFY_CODE_ERROR);
         }
-        response = memberFeignService.register(registerVO);
-        return response;
+
+        return memberFeignService.register(registerVO);
     }
 
     @PostMapping("/login")
-    public KedomResponse login(@Valid UserVO userLoginVo, BindingResult bindingResult) {
-        KedomResponse response = new KedomResponse();
+    public KedomResponse login(@Validated(Login.class) @RequestBody UserVO userLoginVo, BindingResult bindingResult) {
+
 
         HashMap<String, String> parameterError = getParameterError(bindingResult);
-        if (parameterError.size()!=0) {
-            return  response.fillData(parameterError);
+        if (parameterError.size() != 0) {
+            KedomResponse kedomResponse = new KedomResponse(KedomExceptionEnum.REQUEST_PARAMETER_ERROR);
+            kedomResponse.setData(parameterError);
+            return kedomResponse;
         }
-        response = memberFeignService.login(userLoginVo);
-        if (response.getCode().equals(2000))
-        {
-            String accessToken = jwtService.createAccessToken(response.getData().toString());
-            HashMap<String,String> hashMap=new HashMap();
-            hashMap.put("accessToken",accessToken);
-            response.fillData(hashMap);
-            return response;
+
+        KedomResponse kedomResponse = memberFeignService.login(userLoginVo);
+        if (kedomResponse.getCode().equals(8888)) {
+            Object userData = kedomResponse.getData();
+            String accessToken = jwtService.createAccessToken(kedomResponse.getData().toString());
+            HashMap<String, String> hashMap = new HashMap();
+            hashMap.put("userData", userData.toString());
+            hashMap.put("Token", accessToken);
+            kedomResponse.setData(hashMap);
+            return kedomResponse;
         }
-        return response;
+        return kedomResponse;
     }
 
-    @PostMapping("/MailCode/{sendTo}/{type}")
+    @GetMapping("/MailCode/{sendTo}/{type}")
     public KedomResponse MailCode(@PathVariable("sendTo") String to, @PathVariable("type")String type) {
-        KedomResponse response = new KedomResponse();
+
         String code = AuthTool.randomCode();
 
         MailMessage mailMessage = new MailMessage();
         mailMessage.setTo(to);
         mailMessage.setSubject("验证码");
-        mailMessage.setText("您的验证码为："+code);
+        mailMessage.setText("您的验证码为：" + code);
         mailMessage.setType(type);
-        if (mailMessage.getType()==null)
-        {
-            return response.fillData("验证码来源不能为空");
+        if (mailMessage.getType() == null) {
+            return KedomResponse.errorAddData("验证码来源不能为空");
         }
         mailService.mailCodeUploadRedis(mailMessage, code);
         mailService.sendTextMailMessage(mailMessage);
 
-        return KedomResponse.OK_FULLData(code);
+        return KedomResponse.ok();
+    }
+
+    @PostMapping("/TokenAndUserDataVerify")
+    public KedomResponse MailCode(@RequestBody TokenAndUserID tokenAndUserID) {
+        jwtService.TokenAndUserDataVerify(tokenAndUserID);
+        return KedomResponse.ok();
     }
 
     @PostMapping("/getRedisUmsMemberByAccessToken")
@@ -98,7 +109,7 @@ public class AuthController {
     @GetMapping("getAPIRequestCode")
     public KedomResponse getAPIRequestCode(@RequestHeader("Token") String accessToken) {
         String code = jwtService.getAPIRequestCode(accessToken);
-        return KedomResponse.OK_FULLData(code);
+        return KedomResponse.okAddData(code);
     }
 
 

@@ -17,7 +17,7 @@ import java.util.List;
  * @since 2022-11-02 21:10:01
  */
 @RestController
-@RequestMapping("/pmsCategory")
+@RequestMapping("/productService/pmsCategory")
 public class PmsCategoryController {
     /**
      * 服务对象

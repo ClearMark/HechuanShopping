@@ -7,6 +7,13 @@ spring:
     username: root
     password: root
     url: jdbc:mysql://localhost:3306/pms?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+  cloud:
+    nacos:
+      server-addr: localhost:8848 # nacos地址
+
+
+
+
 imageSave:
   path: C:/productImage/
   id: 1

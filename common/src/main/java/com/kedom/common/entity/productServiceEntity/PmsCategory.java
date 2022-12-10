@@ -51,11 +51,9 @@ public class PmsCategory implements Serializable {
      * 商品数量
      */
     private Integer productCount;
-
-
-
+    /**
+     * 子分类
+     */
     private ArrayList<PmsCategory> children;
-
-
 }
 

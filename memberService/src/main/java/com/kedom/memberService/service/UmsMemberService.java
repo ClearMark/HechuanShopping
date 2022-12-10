@@ -1,7 +1,6 @@
 package com.kedom.memberService.service;
 
 import com.kedom.common.entity.memberServiceEntity.UmsMember;
-import com.kedom.openFeignService.entity.vo.UserRegisterVO;
 import com.kedom.openFeignService.entity.vo.UserVO;
 
 
@@ -46,7 +45,7 @@ public interface UmsMemberService {
      */
     Byte deleteById(Long id);
 
-    void register(UserRegisterVO userRegisterVO) throws RuntimeException;
+    void register(UserVO userRegisterVO) throws RuntimeException;
 
     void checkUsernameIsUnique(String username) throws RuntimeException;
     void checkMobileIsUnique(String username) throws RuntimeException;

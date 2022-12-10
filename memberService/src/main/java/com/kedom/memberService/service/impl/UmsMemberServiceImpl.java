@@ -5,7 +5,6 @@ import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.common.entity.memberServiceEntity.UmsMember;
 import com.kedom.memberService.dao.UmsMemberDao;
 import com.kedom.memberService.service.UmsMemberService;
-import com.kedom.openFeignService.entity.vo.UserRegisterVO;
 import com.kedom.openFeignService.entity.vo.UserVO;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
@@ -88,7 +87,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     }
 
     @Override
-    public void register(UserRegisterVO userRegisterVO) throws RuntimeException {
+    public void register(UserVO userRegisterVO) throws RuntimeException {
         //验证唯一性+加密密码。
         checkUsernameIsUnique(userRegisterVO.getUsername());
 //        checkMobileIsUnique(userRegisterVO.getMobile());
@@ -97,13 +96,14 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         String encodeAfterPassword = bCryptPasswordEncoder.encode(userRegisterVO.getPassword());
 
         //新增用户
-            UmsMember umsMember = new UmsMember();
+        UmsMember umsMember = new UmsMember();
 //        umsMember.setUsername(userRegisterVO.getUsername());
-//        umsMember.setPassword(encodeAfterPassword);
+
 //        umsMember.setMobile(userRegisterVO.getMobile());
 //        umsMember.setEmail(userRegisterVO.getEmail());
 
         BeanUtils.copyProperties(userRegisterVO, umsMember);
+        umsMember.setPassword(encodeAfterPassword);
         umsMemberDao.insert(umsMember);
 
     }
@@ -140,7 +140,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     public void checkEmailIsUnique(String email) throws RuntimeException {
         int i = umsMemberDao.queryEmailIsUnique(email);
         if (i > 0) {
-            throw new KedomException(KedomExceptionEnum.Mobile_IS_EXIST);
+            throw new KedomException(KedomExceptionEnum.EMAIL_IS_EXIST);
         }
     }
 

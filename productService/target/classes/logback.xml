@@ -22,7 +22,7 @@
     </root>
 
     <logger name="com" additivity="false">
-        <level value="debug" />
+        <level value="debug"/>
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </logger>

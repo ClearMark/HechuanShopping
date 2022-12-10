@@ -134,7 +134,7 @@
 
     </select>
     <select id="querySkuIntoWareInfoBySkuId" resultType="com.kedom.productService.entity.PmsSkuInfo">
-        select create_id,sku_name
+        select create_id, sku_name
         from pms_sku_info
         where sku_id = #{skuId}
     </select>

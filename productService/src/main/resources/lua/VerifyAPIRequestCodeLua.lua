@@ -1,6 +1,7 @@
 local code = redis.call('GET', KEYS[1]);
-if code == ARGS[1] then
-    redis.call('DELETE', KEYS[1])
-    return 1;
+if (code == ARGV[1])
+then
+    redis.call('del', KEYS[1]);
+    return true
 end
-return 0;
+return false;

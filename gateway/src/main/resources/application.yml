@@ -8,11 +8,11 @@ spring:
       server-addr: localhost:8848 # nacos地址
     gateway:
       routes: # 网关路由配置
-#        - id: user_service # 路由id，自定义，只要唯一即可
-#          # uri: http://127.0.0.1:8081 # 路由的目标地址 http就是固定地址
-#          uri: lb://user_service # 路由的目标地址 lb就是负载均衡，后面跟服务名称
-#          predicates: # 路由断言，也就是判断请求是否符合路由规则的条件
-#      /** # 这个是按照路径匹配，只要以/user/开头就符合要求
+        #        - id: user_service # 路由id，自定义，只要唯一即可
+        #          # uri: http://127.0.0.1:8081 # 路由的目标地址 http就是固定地址
+        #          uri: lb://user_service # 路由的目标地址 lb就是负载均衡，后面跟服务名称
+        #          predicates: # 路由断言，也就是判断请求是否符合路由规则的条件
+        #      /** # 这个是按照路径匹配，只要以/user/开头就符合要求
         - id: authService
           uri: lb://authService
           predicates:
@@ -21,4 +21,24 @@ spring:
           uri: lb://memberService
           predicates:
             - Path=/umsMember/**
+        - id: productService
+          uri: lb://productService
+          predicates:
+            - Path=/productService/**
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
+          #          哪些请求被跨域拦截
+          '[/**]':
+            #            哪些网站被允许跨域
+            allowedOrigins: '*'
+            #            哪些请求方式被允许
+            allowedMethods: '*'
+            #            哪些请求头被允许
+            allowedHeaders: '*'
+            #            是否允许携带cookie
+            allowCredentials: true
+            #           跨域有效时长
+            maxAge: 18000
+
 

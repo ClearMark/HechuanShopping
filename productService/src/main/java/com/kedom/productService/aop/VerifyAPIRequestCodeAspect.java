@@ -2,6 +2,7 @@ package com.kedom.productService.aop;
 
 import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
+import com.kedom.productService.util.IDUtil;
 import com.kedom.productService.util.LuaClass;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -34,9 +35,9 @@ public class VerifyAPIRequestCodeAspect {
     public Object before(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Object[] args = proceedingJoinPoint.getArgs();
         try {
-            String token = (String) args[0];
+            Long token = IDUtil.getId();
             String redisKey = token + APIRequestCodePrefix;
-            String code = (String) args[1];
+            String code = (String) args[0];
             ArrayList<Object> keys = new ArrayList<>(1);
             keys.add(redisKey);
 

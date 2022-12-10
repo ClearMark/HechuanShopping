@@ -3,7 +3,6 @@ package com.kedom.memberService.controller;
 import com.kedom.common.entity.KedomResponse;
 import com.kedom.common.entity.memberServiceEntity.UmsMember;
 import com.kedom.memberService.service.UmsMemberService;
-import com.kedom.openFeignService.entity.vo.UserRegisterVO;
 import com.kedom.openFeignService.entity.vo.UserVO;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,17 +24,18 @@ public class UmsMemberController {
     private UmsMemberService umsMemberService;
 
     @PostMapping("/register")
-    public KedomResponse register(@RequestBody UserRegisterVO userRegisterVO) {
+    public KedomResponse register(@RequestBody UserVO userRegisterVO) {
 
-       umsMemberService.register(userRegisterVO);
+        umsMemberService.register(userRegisterVO);
 
-      return KedomResponse.ok();
+        return KedomResponse.ok();
     }
 
     @PostMapping("/login")
     public KedomResponse login(@RequestBody UserVO userLoginVo) {
 
         UmsMember umsMember = umsMemberService.login(userLoginVo);
+        umsMember.setPassword(null);
         return KedomResponse.okAddData(umsMember);
     }
 
