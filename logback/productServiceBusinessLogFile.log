@@ -1,0 +1,68 @@
+2022-12-31 11:30:01,233 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:34] 新添加菜单鱼香肉丝
+2022-12-31 11:32:28,198 INFO [http-nio-20003-exec-3] businessLog [LogRecordAspect.java:34] 新添加菜单鱼香肉丝
+2022-12-31 11:32:29,083 INFO [http-nio-20003-exec-4] businessLog [LogRecordAspect.java:34] 新添加菜单鱼香肉丝
+2022-12-31 11:32:29,864 INFO [http-nio-20003-exec-5] businessLog [LogRecordAspect.java:34] 新添加菜单鱼香肉丝
+2022-12-31 11:32:30,553 INFO [http-nio-20003-exec-6] businessLog [LogRecordAspect.java:34] 新添加菜单鱼香肉丝
+2022-12-31 11:32:52,161 INFO [http-nio-20003-exec-7] businessLog [LogRecordAspect.java:34] 新添加菜单鱼香肉丝
+
+2022-12-31 13:33:47,293 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:35] 修改配送人杨永奇
+2022-12-31 13:33:47,299 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:35] 修改地址重庆万州
+
+2022-12-31 13:41:00,467 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:42] 异常
+2022-12-31 13:41:00,474 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:42] 异常
+2022-12-31 14:02:20,548 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:42] 异常测试异常
+2022-12-31 14:02:20,550 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:42] 异常测试异常
+2022-12-31 14:04:12,117 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:42] 异常{}测试异常
+2022-12-31 14:04:12,118 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:42] 异常{}测试异常
+
+2022-12-31 14:06:25,532 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:45] 异常{}b
+2022-12-31 14:06:25,533 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:45] 异常{}b
+2022-12-31 15:06:11,635 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:45] 异常{}b
+2022-12-31 15:06:11,637 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:45] 异常{}b
+2022-12-31 15:06:21,474 INFO [http-nio-20003-exec-4] businessLog [LogRecordAspect.java:45] 异常{}b
+2022-12-31 15:06:21,474 INFO [http-nio-20003-exec-4] businessLog [LogRecordAspect.java:45] 异常{}b
+
+
+
+2022-12-31 15:14:30,205 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:46] 异常{}com.kedom.productService.controller.TestController.b(TestController.java:33)
+2022-12-31 15:55:07,639 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:51] 修改地址重庆万州
+
+2022-12-31 15:55:31,369 INFO [http-nio-20003-exec-2] businessLog [LogRecordAspect.java:51] 修改地址重庆万州
+2022-12-31 15:55:45,086 INFO [http-nio-20003-exec-3] businessLog [LogRecordAspect.java:51] 修改地址重庆万州
+2022-12-31 15:56:36,779 INFO [http-nio-20003-exec-4] businessLog [LogRecordAspect.java:51] 修改地址重庆万州
+2022-12-31 15:58:06,246 INFO [http-nio-20003-exec-6] businessLog [LogRecordAspect.java:51] 修改地址重庆万州
+
+
+2022-12-31 16:04:14,632 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:51] 修改地址重庆万州
+2022-12-31 16:04:33,791 INFO [http-nio-20003-exec-2] businessLog [LogRecordAspect.java:51] 修改地址重庆万州
+2022-12-31 16:04:33,792 INFO [http-nio-20003-exec-2] businessLog [LogRecordAspect.java:51] 修改地址重庆万州
+2022-12-31 16:04:33,793 INFO [http-nio-20003-exec-2] businessLog [LogRecordAspect.java:51] 修改配送人杨永奇
+
+2022-12-31 16:07:10,967 INFO [http-nio-20003-exec-2] businessLog [LogRecordAspect.java:51] 修改地址重庆万州
+
+
+2022-12-31 16:07:30,816 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:51] 修改地址重庆万州
+2022-12-31 16:07:30,817 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:51] 修改地址重庆万州
+2022-12-31 16:07:30,817 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:51] 修改配送人杨永奇
+
+
+2022-12-31 16:12:08,081 INFO [http-nio-20003-exec-1] businessLog [LogRecordAspect.java:51] 修改地址重庆万州
+2022-12-31 16:12:35,526 INFO [http-nio-20003-exec-3] businessLog [LogRecordAspect.java:51] 修改地址重庆万州
+2022-12-31 16:12:35,527 INFO [http-nio-20003-exec-3] businessLog [LogRecordAspect.java:51] 测试
+
+2022-12-31 16:12:48,759 INFO [http-nio-20003-exec-4] businessLog [LogRecordAspect.java:51] 修改地址重庆万州
+2022-12-31 16:12:48,761 INFO [http-nio-20003-exec-4] businessLog [LogRecordAspect.java:51] 修改配送人杨永奇
+
+2022-12-31 16:13:00,149 INFO [http-nio-20003-exec-5] businessLog [LogRecordAspect.java:51] 修改地址重庆万州
+2022-12-31 16:13:00,149 INFO [http-nio-20003-exec-5] businessLog [LogRecordAspect.java:51] 修改配送人杨永奇
+2022-12-31 16:13:00,149 INFO [http-nio-20003-exec-5] businessLog [LogRecordAspect.java:51] 测试
+
+2022-12-31 16:13:36,526 INFO [http-nio-20003-exec-6] businessLog [LogRecordAspect.java:51] 修改地址重庆万州
+2022-12-31 16:13:36,528 INFO [http-nio-20003-exec-6] businessLog [LogRecordAspect.java:67] 异常{}com.kedom.productService.controller.TestController.b_1(TestController.java:128)
+
+2022-12-31 16:13:47,963 INFO [http-nio-20003-exec-7] businessLog [LogRecordAspect.java:67] 异常{}com.kedom.productService.controller.TestController.b_1(TestController.java:128)
+
+2022-12-31 16:18:29,120 INFO [http-nio-20003-exec-3] businessLog [LogRecordAspect.java:51] 测试
+2022-12-31 16:18:29,120 INFO [http-nio-20003-exec-3] businessLog [LogRecordAspect.java:51] 修改时间2021-12-12
+2022-12-31 16:18:29,120 INFO [http-nio-20003-exec-3] businessLog [LogRecordAspect.java:51] 修改配送人杨永奇
+2022-12-31 16:18:29,120 INFO [http-nio-20003-exec-3] businessLog [LogRecordAspect.java:51] 修改地址重庆万州

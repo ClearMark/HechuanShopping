@@ -4,10 +4,13 @@ import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.productService.dao.PmsSkuInfoDao;
 import com.kedom.productService.entity.PmsSkuInfo;
+import com.kedom.productService.entity.vo.Sku;
 import com.kedom.productService.service.PmsSkuInfoService;
+import com.kedom.productService.service.PmsSkuSaleAttrValueService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * sku信息(PmsSkuInfo)表服务实现类
@@ -19,6 +22,10 @@ import javax.annotation.Resource;
 public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
     @Resource
     private PmsSkuInfoDao pmsSkuInfoDao;
+
+
+    @Resource
+    private PmsSkuSaleAttrValueService pmsSkuSaleAttrValueService;
 
     /**
      * 通过ID查询单条数据
@@ -39,12 +46,11 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
      * @return 实例对象
      */
     @Override
-    public void insert(PmsSkuInfo pmsSkuInfo) {
+    public void insert(Sku pmsSkuInfo) {
        int count= this.pmsSkuInfoDao.insert(pmsSkuInfo);
-       if(count==0)
-       {
-           throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
-       }
+        pmsSkuSaleAttrValueService.insertBatch(pmsSkuInfo.getAttr(), pmsSkuInfo.getSkuId());
+
+
     }
 
     /**
@@ -83,6 +89,17 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
     public PmsSkuInfo querySkuIntoWareInfoBySkuId(Long skuId) {
         PmsSkuInfo pmsSkuInfo = pmsSkuInfoDao.querySkuIntoWareInfoBySkuId(skuId);
         return pmsSkuInfo;
+    }
+
+    @Override
+    public List<Sku> getHotProduct() {
+        return pmsSkuInfoDao.getHotProduct();
+    }
+
+    @Override
+    public List<Sku> getProductByUserId(Long userId) {
+
+        return pmsSkuInfoDao.getProductByUserId(userId);
     }
 
 }

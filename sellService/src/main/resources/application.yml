@@ -1,0 +1,19 @@
+server:
+  port: 20004
+spring:
+  application:
+    name: sellService
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/sms?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+  cloud:
+    nacos:
+      server-addr: localhost:8848 # nacos地址
+
+mybatis:
+  configuration-properties:
+    offsetAsPageNum: true
+    rowBoundsWithCount: true
+    reasonable: true
+

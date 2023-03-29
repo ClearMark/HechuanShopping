@@ -1,0 +1,7 @@
+
+@font-face {
+    font-family: element-icons;
+    src: url(./element-icons.woff) format('woff'), url(./element-icons.ttf) format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}

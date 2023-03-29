@@ -14,7 +14,7 @@
         <result property="skuSubtitle" column="sku_subtitle" jdbcType="VARCHAR"/>
         <result property="price" column="price" jdbcType="NUMERIC"/>
         <result property="saleCount" column="sale_count" jdbcType="INTEGER"/>
-        <result property="createId" column="create_id" jdbcType="INTEGER"/>
+        <result property="createId" column="user_id" jdbcType="INTEGER"/>
 
     </resultMap>
 
@@ -31,7 +31,7 @@
                sku_subtitle,
                price,
                sale_count,
-               create_id
+               user_id
         from pms_sku_info
         where sku_id = #{skuId}
     </select>
@@ -40,7 +40,7 @@
     <select id="queryAllByLimit" resultMap="PmsSkuInfoMap">
         select
         sku_id, spu_id, sku_name, sku_desc, catalog_id, brand_id, sku_default_img, sku_title, sku_subtitle, price,
-        sale_count, create_id
+        sale_count, user_id
         from pms_sku_info
         <where>
             <if test="skuId != null">
@@ -134,22 +134,30 @@
 
     </select>
     <select id="querySkuIntoWareInfoBySkuId" resultType="com.kedom.productService.entity.PmsSkuInfo">
-        select create_id, sku_name
+        select user_id, sku_name
         from pms_sku_info
         where sku_id = #{skuId}
     </select>
+    <select id="getHotProduct" resultType="com.kedom.productService.entity.vo.Sku">
+        select a.* from pms_sku_info a left join pms_sku_ware psw on a.sku_id = psw.sku_id
+        where psw.stock>0 order by hot,a.sale_count desc
+    </select>
+    <select id="getProductByUserId" resultMap="PmsSkuInfoMap">
+        select * from pms_sku_info where user_id = #{userId}
+    </select>
+
 
     <!--新增所有列-->
-    <insert id="insert">
-        insert into pms_sku_info(sku_id, spu_id, sku_name, sku_desc, catalog_id, brand_id, sku_default_img, sku_title,
-                                 sku_subtitle, price, sale_count, create_id)
-        values (#{skuId}, #{spuId}, #{skuName}, #{skuDesc}, #{catalogId}, #{brandId}, #{skuDefaultImg}, #{skuTitle},
-                #{skuSubtitle}, #{price}, #{saleCount}, #{skuBelong})
+    <insert id="insert" useGeneratedKeys="true" keyProperty="skuId">
+        insert into pms_sku_info(sku_name, sku_desc, catalog_id,sku_default_img,
+                                 price, user_id)
+        values (#{skuName}, #{skuDesc}, #{catalogId},#{skuDefaultImg},
+                #{price},#{userId})
     </insert>
 
     <insert id="insertBatch">
         insert into pms_sku_info(sku_id, spu_id, sku_name, sku_desc, catalog_id, brand_id, sku_default_img, sku_title,
-        sku_subtitle, price, sale_count, create_id)
+        sku_subtitle, price, sale_count, user_id)
         values
         <foreach collection="entities" item="entity" separator=",">
         (#{entity.skuId}, #{entity.spuId}, #{entity.skuName}, #{entity.skuDesc}, #{entity.catalogId}, #{entity.brandId}, #{entity.skuDefaultImg}, #{entity.skuTitle}, #{entity.skuSubtitle}, #{entity.price}, #{entity.saleCount}, #{entity.skuBelong})
@@ -177,7 +185,7 @@
     </insert>
     <insert id="insertGetKey" useGeneratedKeys="true" keyProperty="sku_id">
         insert into pms_sku_info(spu_id, sku_name, sku_desc, catalog_id, brand_id, sku_default_img, sku_title,
-                                 sku_subtitle, price, sale_count, create_id)
+                                 sku_subtitle, price, sale_count, user_id)
         values (#{spuId}, #{skuName}, #{skuDesc}, #{catalogId}, #{brandId}, #{skuDefaultImg}, #{skuTitle},
                 #{skuSubtitle}, #{price}, #{saleCount}, #{skuBelong})
 

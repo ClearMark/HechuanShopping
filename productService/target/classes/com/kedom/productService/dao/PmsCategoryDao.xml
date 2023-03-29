@@ -94,10 +94,43 @@
         </where>
     </select>
     <select id="queryAll" resultMap="PmsCategoryMap">
-        select * from pms_category
+        select * from pms_category where show_status = 1
     </select>
     <select id="checkCategoryIsThreeLevelCategory" resultType="java.lang.Integer">
         select count(*) from pms_category where cat_id = #{catId} and cat_level = 3 limit 1
+    </select>
+
+    <select id="getProductCategoryPage" resultMap="PmsCategoryMap">
+        select * from pms_category
+        <where>
+            <if test="pmsCategory.catId != null">
+                cat_id = #{pmsCategory.catId}
+            </if>
+            <if test="pmsCategory.name != null and pmsCategory.name != ''">
+                and name like concat('%',#{pmsCategory.name},'%')
+            </if>
+            <if test="pmsCategory.catLevel != null">
+                and cat_level = #{pmsCategory.catLevel}
+            </if>
+
+        </where>
+        <if test="page.pageNum!=null and page.pageSize!=null">
+            limit #{page.pageBegin},#{page.pageSize}
+        </if>
+    </select>
+    <select id="getProductCategoryCount" resultType="java.lang.Integer">
+        select count(*) from pms_category
+        <where>
+            <if test="catId != null">
+                cat_id = #{catId}
+            </if>
+            <if test="name != null and name != ''">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="catLevel != null">
+                and cat_level = #{catLevel}
+            </if>
+        </where>
     </select>
 
     <!--新增所有列-->
@@ -170,7 +203,7 @@
     </delete>
 
     <update id="deleteCategorysById">
-        update pms_category set show_status=0 where cat_id in <foreach collection="list" item="item">
+        update pms_category set show_status=0 where cat_id in <foreach collection="list" item="item" separator=","  open="(" close=")">
         #{item}
     </foreach>
 

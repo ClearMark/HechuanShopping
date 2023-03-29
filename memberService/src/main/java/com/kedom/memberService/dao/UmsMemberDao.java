@@ -88,5 +88,7 @@ public interface UmsMemberDao {
     UmsMember queryPublicInfoByUsername(String username);
 
     int queryEmailIsUnique(String email);
+
+    List<UmsMember> queryAll(int offset);
 }
 

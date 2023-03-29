@@ -1,6 +1,9 @@
 package com.kedom.productService.service;
 
 import com.kedom.productService.entity.PmsSkuInfo;
+import com.kedom.productService.entity.vo.Sku;
+
+import java.util.List;
 
 /**
  * sku信息(PmsSkuInfo)表服务接口
@@ -24,7 +27,7 @@ public interface PmsSkuInfoService {
      * @param pmsSkuInfo 实例对象
      * @return 实例对象
      */
-    void insert(PmsSkuInfo pmsSkuInfo);
+    void insert(Sku pmsSkuInfo);
 
     /**
      * 修改数据
@@ -42,4 +45,7 @@ public interface PmsSkuInfoService {
     PmsSkuInfo querySkuIntoWareInfoBySkuId(Long skuId);
 
 
+    List<Sku> getHotProduct();
+
+    List<Sku> getProductByUserId(Long userId);
 }

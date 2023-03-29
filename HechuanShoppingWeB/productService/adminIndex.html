@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+<style>
+    .el-header {
+        background-color: #B3C0D1;
+        color: #333;
+        line-height: 60px;
+    }
+
+    .el-aside {
+        color: #333;
+    }
+</style>
+<body style="height: 100%;">
+<div id="app">
+    <el-container style="height: 1000px; border: 1px solid #eee">
+        <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+            <el-menu :default-openeds="['1']">
+                <el-submenu index="1">
+                    <template slot="title"><i class="el-icon-message"></i>用户管理</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="1-1" @click="mainTypeChange('用户信息管理')">用户信息管理</el-menu-item>
+                        <el-menu-item index="1-2">商家信息管理</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+                <el-submenu index="2">
+                    <template slot="title"><i class="el-icon-setting"></i>订单管理</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="2-1">选项1</el-menu-item>
+                        <el-menu-item index="2-2">选项2</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+                <el-submenu index="3">
+                    <template slot="title"><i class="el-icon-setting"></i>商城管理</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="3-1" @click="mainTypeChange('商品分类管理')">商品分类管理</el-menu-item>
+                        <el-menu-item index="3-2" @click="mainTypeChange('分类属性管理')">分类属性管理</el-menu-item>
+                        <el-menu-item index="3-3">每日推荐商品</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+
+            </el-menu>
+        </el-aside>
+
+        <el-container>
+            <el-header style="text-align: right; font-size: 12px">
+                <!--                <el-dropdown>-->
+                <!--                    <i class="el-icon-setting" style="margin-right: 15px"></i>-->
+                <!--                    <el-dropdown-menu slot="dropdown">-->
+                <!--                        <el-dropdown-item>查看</el-dropdown-item>-->
+                <!--                        <el-dropdown-item>新增</el-dropdown-item>-->
+                <!--                        <el-dropdown-item>删除</el-dropdown-item>-->
+                <!--                    </el-dropdown-menu>-->
+                <!--                </el-dropdown>-->
+                <span>杨永奇</span>
+            </el-header>
+
+            <el-main v-if="mainType=='用户信息管理'">
+                <template>
+                    <el-table
+                            :data="userDataList"
+                            border
+                            style="width: 60%">
+                        <el-table-column
+                                fixed
+                                prop="username"
+                                label="账号"
+                                width="150">
+                        </el-table-column>
+                        <el-table-column
+                                prop="nickname"
+                                label="昵称"
+                                width="120">
+                        </el-table-column>
+                        <el-table-column
+                                prop="mobile"
+                                label="手机号"
+                                width="120">
+                        </el-table-column>
+                        <el-table-column
+                                prop="email"
+                                label="邮箱"
+                                width="120">
+                        </el-table-column>
+                        <el-table-column
+                                prop="createTime"
+                                label="注册时间"
+                                width="300">
+                        </el-table-column>
+                        <el-table-column
+                                fixed="right"
+                                label="操作"
+                                width="100">
+                            <template slot-scope="scope">
+                                <el-button type="text" size="small">编辑/查看</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </template>
+            </el-main>
+
+
+
+            <el-main v-if="mainType=='商品分类管理'">
+
+                <template>
+                    <div>
+                        <el-tree
+                                :data="tableData"
+                                :props="defaultProps"
+                                :expand-on-click-node="false"
+                                node-key="catId"
+                                :default-expanded-keys="expandedKeys"
+                        >
+                         <span class="custom-tree-node" slot-scope="{ node, data }">
+        <span>{{ node.label }}</span>
+        <span>
+          <el-button
+                  v-if="node.level <=2"
+                  type="text"
+                  size="mini"
+                  @click="() => append(data)">
+            添加子分类
+          </el-button>
+            <el-button
+                    v-if="node.childNodes.length===0"
+                    type="text"
+                    size="mini"
+                    @click="() => remove(node, data)">
+            删除该分类
+          </el-button>
+        </span>
+      </span>
+                        </el-tree>
+                        <el-dialog
+                                title="提示"
+                                :visible.sync="dialogVisible"
+                                width="30%"
+                        >
+                            <el-form :model="category">
+                                <el-form-item label="分类名称">
+                                    <el-input v-model="category.name" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-form>
+                            <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="addCategory()">确 定</el-button>
+  </span>
+                        </el-dialog>
+                    </div>
+
+
+                </template>
+
+            </el-main>
+
+            <el-main v-if="mainType=='分类属性管理'">
+                <template>
+                    <div class="block">
+                        <el-cascader
+                                placeholder="搜索指定分类属性"
+                                :options="attrOptions"
+                                v-model="caseValue"
+                                filterable></el-cascader>
+                        <el-button type="primary" icon="el-icon-search" @click="searchCategoryAttrByCategoryId">搜索
+                        </el-button>
+                        <el-button type="primary" @click="addAttrDialog = true">添加新属性</el-button>
+                    </div>
+                    <el-dialog
+                            title="提示"
+                            :visible.sync="addAttrDialog"
+                            width="30%"
+                            :before-close="handleClose">
+                        <el-form :model="newAttr" class="demo-form-inline">
+                            <el-form-item label="属性名">
+                                <el-input v-model="newAttr.attrName" placeholder="属性名"></el-input>
+                            </el-form-item>
+                            <el-form-item label="选择分类">
+                                <el-cascader
+                                        placeholder="搜索指定分类属性"
+                                        :options="attrOptions"
+                                        v-model="addSelectValue"
+                                        filterable></el-cascader>
+                            </el-form-item>
+
+                        </el-form>
+
+                        <span slot="footer" class="dialog-footer">
+    <el-button @click="addAttrDialog = false">取 消</el-button>
+    <el-button type="primary" @click="addNewAttr">添加</el-button>
+  </span>
+                    </el-dialog>
+                    <el-table
+                            :data="categoryAttrList"
+                            border
+                            style="width: 50%">
+                        <el-table-column
+                                fixed
+                                prop="attrId"
+                                label="ID"
+                                width="150">
+                        </el-table-column>
+                        <el-table-column
+                                fixed
+                                prop="attrName"
+                                label="属性名称"
+                                width="150">
+                        </el-table-column>
+                        <el-table-column
+                                prop="categoryName"
+                                label="所属分类"
+                                width="120">
+                        </el-table-column>
+                        <el-table-column
+                                fixed="right"
+                                label="操作"
+                                width="100">
+                            <template slot-scope="scope">
+                                <el-button @click="deleteAttr(scope.row)" type="text" size="small">删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </template>
+            </el-main>
+        </el-container>
+
+    </el-container>
+
+
+</div>
+
+</body>
+<script src="../js/axios.min.js"></script>
+<link rel="stylesheet" href="../js/elment/http_unpkg.com_element-ui_lib_theme-chalk_index.css">
+<script src="../js/vue2.js"></script>
+<!-- 引入组件库 -->
+<script src="../js/elment/http_unpkg.com_element-ui_lib_index.js"></script>
+<script>
+    axios.get('http://127.0.0.1:8888/productService/pmsCategory/case')
+        .then(function (response) {
+            console.log('解析请求')
+            var data = response.data;
+            if (data.code == 8888) {
+                console.log('请求成功')
+                console.log(data.data)
+                localStorage.setItem("categoryCase", JSON.stringify(data.data));
+            } else {
+            }
+        }).catch(function (error) {
+
+    });
+
+
+</script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            userDataList: [],
+            addAttrDialog: false,
+            mainType: '用户添加',
+            tableData: [],
+            category: {},
+            caseValue: [],
+            newAttr: {},
+            categoryAttrList: [],
+            dialogVisible: false,
+            expandedKeys: [],
+            defaultProps: {
+                children: 'children',
+                label: 'name'
+            },
+            attrOptions: JSON.parse(localStorage.getItem("categoryCase")),
+            categoryAttrPage: {
+                pageNum: 1,
+                pageSize: 10,
+                total: 0,
+            },
+            userDataPage: {
+                pageNum: 1,
+                pageSize: 10,
+                total: 0,
+            },
+            addSelectValue: [],
+
+            //    商品分类单独有
+            pmsCategory: {
+                name: '',
+                catLevel: '',
+                // parentId: '',
+                // showStatus: '',
+                // sort: '',
+                // icon: '',
+                // keywords: '',
+                // description: '',
+            },
+
+        },
+
+        methods: {
+            getTableData(row) {
+                switch (row) {
+                    case '商品分类管理':
+                        this.getCategoryList();
+                        break;
+                    case '分类属性管理':
+                        console.log('分类属性管理')
+                        this.getCategoryAttrList();
+                        break;
+                    case '用户信息管理':
+                        this.getUserDataList();
+                        break;
+                }
+            },
+            deleteAttr(row) {
+                let _this = this;
+                console.log(row)
+            },
+
+            addNewAttr() {
+
+                let _this = this;
+                console.log('添加新属性')
+                this.newAttr.catelogId = this.addSelectValue[2];
+                this.newAttr.enable = 1;
+                axios.post('http://127.0.0.1:8888/productService/pmsAttr', this.newAttr)
+                    .then(function (response) {
+                        console.log(response);
+                        if (response.data.code == 8888) {
+                            _this.$message({
+                                type: 'success',
+                                message: '添加成功!'
+                            });
+                            _this.addAttrDialog = false;
+                            _this.getCategoryAttrList();
+                        } else {
+                            _this.$message({
+                                type: 'error',
+                                message: '添加失败!'
+                            });
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+
+            },
+
+            addCategory() {
+                let now = this;
+                console.log('添加分类')
+                console.log(this.category)
+                const url = 'http://localhost:8888/productService/pmsCategory';
+                axios.post(url, this.category)
+                    .then(response => {
+                        if (response.data.code === 8888) {
+                            this.$message({
+                                type: 'success',
+                                message: '添加成功!'
+                            });
+                            now.getCategoryList();
+                            now.dialogVisible = false
+
+                            // _this.expandedKeys = [data.catId];
+                        } else {
+                            this.$message({
+                                type: 'error',
+                                message: '添加失败!'
+                            });
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+
+            },
+            getCategoryList() {
+                let _this = this;
+                const url = 'http://127.0.0.1:8888/productService/pmsCategory';
+                axios.get(url)
+                    .then(response => {
+                        console.log(11)
+                        console.log(response.data)
+                        _this.tableData = response.data.data;
+                        console.log(_this.tableData)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            mainTypeChange(str) {
+                this.mainType = str;
+                this.getTableData(str);
+            },
+            append(data) {
+                console.log(data)
+                this.category.catLevel = data.catLevel + 1 > 3 ? 3 : data.catLevel + 1;
+                this.category.parentCid = data.catId;
+                this.category.showStatus = 1;
+
+                this.dialogVisible = true;
+
+                console.log(this.category)
+
+            },
+            remove(node, data) {
+                let ids = [data.catId];
+                this.$confirm(`此操作将永久删除该文件 【${data.name}】 是否继续?`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    const url = 'http://localhost:8888/productService/pmsCategory/removeCategoryById';
+                    axios.post(url, ids)
+                        .then(response => {
+                            if (response.data.code === 8888) {
+                                this.$message({
+                                    type: 'success',
+                                    message: '删除成功!'
+                                });
+                                this.getCategoryList();
+                                this.expandedKeys = [node.parent.data.catId];
+                            } else {
+                                this.$message({
+                                    type: 'error',
+                                    message: '删除失败!'
+                                });
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+
+                }).catch(() => {
+
+                });
+
+
+            },
+            getCategoryAttrList() {
+                let _this = this;
+                const number = this.categoryAttrPage.pageNum <= 1 ? 1 : this.categoryAttrPage.pageNum;
+                axios.get('http://127.0.0.1:8888/productService/pmsAttr/page/' + number)
+                    .then(response => {
+                        console.log(response.data)
+                        _this.categoryAttrList = response.data.data;
+                        console.log(_this.categoryAttrList)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            searchCategoryAttrByCategoryId() {
+                let _this = this;
+                const catId = this.caseValue[2];
+                axios.get('http://127.0.0.1:8888/productService/pmsAttr//getCategoryAttr/' + catId)
+                    .then(response => {
+                        console.log(response.data)
+                        _this.categoryAttrList = response.data.data;
+                        console.log(_this.categoryAttrList)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            getUserDataList() {
+                let _this = this;
+                axios.get('http://127.0.0.1:8888/umsMember/queryAll/'+this.userDataPage.pageNum)
+                    .then(response => {
+                        console.log(response.data)
+                        _this.userDataList = response.data.data;
+                        console.log(_this.userDataList)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        },
+
+    })
+
+
+</script>
+
+</html>

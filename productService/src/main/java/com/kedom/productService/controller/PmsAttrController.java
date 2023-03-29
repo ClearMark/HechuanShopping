@@ -2,11 +2,13 @@ package com.kedom.productService.controller;
 
 import com.kedom.common.entity.KedomResponse;
 import com.kedom.productService.entity.PmsAttr;
+import com.kedom.productService.entity.vo.CategoryAttrVO;
 import com.kedom.productService.service.PmsAttrService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 商品属性(PmsAttr)表控制层
@@ -15,7 +17,7 @@ import javax.annotation.Resource;
  * @since 2022-11-04 10:51:14
  */
 @RestController
-@RequestMapping("/pmsAttr")
+@RequestMapping("/productService/pmsAttr")
 public class PmsAttrController {
     /**
      * 服务对象
@@ -31,9 +33,27 @@ public class PmsAttrController {
      */
     @GetMapping("/{id}")
     public KedomResponse queryById(@PathVariable("id") Long id) {
-         ResponseEntity.ok(this.pmsAttrService.queryById(id));
-    return null;
+        List<PmsAttr> pmsAttr = this.pmsAttrService.queryById(id);
+        return KedomResponse.okAddData(pmsAttr);
     }
+    @GetMapping("/page/{num}")
+    public KedomResponse queryAllAttr(@PathVariable("num") Integer num) {
+        List<CategoryAttrVO> pmsAttr = this.pmsAttrService.queryAllAttr(num);
+        return KedomResponse.okAddData(pmsAttr);
+    }
+
+    @GetMapping("/getCategoryAttr/{id}")
+    public KedomResponse getCategoryAttr(@PathVariable("id") Long id) {
+       List<CategoryAttrVO> pmsAttr = this.pmsAttrService.queryAllAttrNameByCateId(id);
+        return KedomResponse.okAddData(pmsAttr);
+    }
+
+    @GetMapping("/getCategorySearchAttr/{id}")
+    public KedomResponse getCategorySearchAttr(@PathVariable("id") Long id) {
+       List<PmsAttr> pmsAttrList=pmsAttrService.getCategorySearchAttr(id);
+        return KedomResponse.okAddData(pmsAttrList);
+    }
+
 
     /**
      * 新增数据
@@ -42,7 +62,7 @@ public class PmsAttrController {
      * @return 新增结果
      */
     @PostMapping
-    public KedomResponse add(PmsAttr pmsAttr) {
+    public KedomResponse add(@RequestBody PmsAttr pmsAttr) {
          this.pmsAttrService.insert(pmsAttr);
         return KedomResponse.ok();
     }

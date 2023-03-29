@@ -1,6 +1,7 @@
 package com.kedom.productService.dao;
 
 import com.kedom.common.entity.productServiceEntity.PmsCategory;
+import com.kedom.productService.entity.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,6 +17,9 @@ import java.util.List;
  */
 @Mapper
 public interface PmsCategoryDao {
+
+    List<PmsCategory> getProductCategoryPage(@Param("page")Page page, @Param("pmsCategory") PmsCategory pmsCategory);
+
 
     /**
      * 通过ID查询单条数据
@@ -80,5 +84,7 @@ public interface PmsCategoryDao {
     int deleteCategorysById(List<Long> ids);
 
     int checkCategoryIsThreeLevelCategory(Long cateId);
+
+    Integer getProductCategoryCount(PmsCategory pmsCategory);
 }
 

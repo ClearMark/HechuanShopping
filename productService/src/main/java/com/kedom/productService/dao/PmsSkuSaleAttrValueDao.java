@@ -1,6 +1,7 @@
 package com.kedom.productService.dao;
 
 import com.kedom.productService.entity.PmsSkuSaleAttrValue;
+import com.kedom.productService.entity.vo.Attr;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -55,7 +56,7 @@ public interface PmsSkuSaleAttrValueDao {
      * @param entities List<PmsSkuSaleAttrValue> 实例对象列表
      * @return 影响行数
      */
-    Integer insertBatch(@Param("entities") List<PmsSkuSaleAttrValue> entities);
+    Integer insertBatch(@Param("attrs") List<Attr> attrs,@Param("skuId") Long skuId);
 
     /**
      * 批量新增或按主键更新数据（MyBatis原生foreach方法）

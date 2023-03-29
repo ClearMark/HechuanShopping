@@ -26,4 +26,21 @@
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </logger>
+
+    <appender name="businessLogFile" class="ch.qos.logback.core.FileAppender">
+        <file>logback/productServiceBusinessLogFile.log</file>
+        <encoder>
+            <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <logger name="businessLog" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="businessLogFile" />
+    </logger>
+
+
+
+
 </configuration>

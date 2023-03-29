@@ -1,6 +1,7 @@
 package com.kedom.authService.controller;
 
 import com.kedom.authService.entity.MailMessage;
+import com.kedom.authService.entity.ReturnVO;
 import com.kedom.authService.entity.TokenAndUserID;
 import com.kedom.authService.service.JWTService;
 import com.kedom.authService.service.MailService;
@@ -67,14 +68,36 @@ public class AuthController {
         if (kedomResponse.getCode().equals(8888)) {
             Object userData = kedomResponse.getData();
             String accessToken = jwtService.createAccessToken(kedomResponse.getData().toString());
-            HashMap<String, String> hashMap = new HashMap();
-            hashMap.put("userData", userData.toString());
-            hashMap.put("Token", accessToken);
-            kedomResponse.setData(hashMap);
+            ReturnVO returnVO = new ReturnVO();
+            returnVO.setToken(accessToken);
+            returnVO.setUserData(userData);
+            kedomResponse.setData(returnVO);
             return kedomResponse;
         }
         return kedomResponse;
     }
+
+    @PostMapping("/seller/register")
+    public KedomResponse SellerRegister(@RequestBody UserVO registerVO, BindingResult bindingResult) {
+
+        HashMap<String, String> parameterError = getParameterError(bindingResult);
+        if (parameterError.size() != 0) {
+            return KedomResponse.errorAddData(parameterError);
+        }
+
+        String code = registerVO.getCode();
+        String email = registerVO.getEmail();
+        String redisCode = mailService.mailCodeDownloadRedis(email, 1);
+
+        if (!code.equals(redisCode)) {
+            return new KedomResponse(KedomExceptionEnum.VERIFY_CODE_ERROR);
+        }
+
+        return memberFeignService.register(registerVO);
+    }
+
+
+
 
     @GetMapping("/MailCode/{sendTo}/{type}")
     public KedomResponse MailCode(@PathVariable("sendTo") String to, @PathVariable("type")String type) {

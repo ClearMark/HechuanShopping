@@ -42,6 +42,8 @@ public class JWTService {
         }
 
         bucket.set(umsMember.getId(), 30, TimeUnit.MINUTES);
+        RBucket<String> umsMemberRBucket = redissonClient.getBucket(accessToken+"data");
+        umsMemberRBucket.set(gson.toJson(umsMember), 30, TimeUnit.MINUTES);
         return accessToken;
     }
 
@@ -68,10 +70,13 @@ public class JWTService {
     public void TokenAndUserDataVerify(TokenAndUserID tokenAndUserID) {
         String token = tokenAndUserID.getToken();
         Long userID = tokenAndUserID.getUserID();
+
         RBucket<Long> bucket = redissonClient.getBucket(token);
-        if (userID.equals(bucket.get())) {
+        System.out.println(bucket.get());
+        if (userID.toString().equals(bucket.get())) {
             return;
         }
+
         throw new KedomException(KedomExceptionEnum.TOKEN_AND_USERID_ERROR);
 
     }

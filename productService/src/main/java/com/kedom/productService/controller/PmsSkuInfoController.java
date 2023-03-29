@@ -2,6 +2,8 @@ package com.kedom.productService.controller;
 
 import com.kedom.common.entity.KedomResponse;
 import com.kedom.productService.entity.PmsSkuInfo;
+import com.kedom.productService.entity.vo.Sku;
+import com.kedom.productService.entity.vo.Skus;
 import com.kedom.productService.service.PmsSkuInfoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +17,7 @@ import javax.annotation.Resource;
  * @since 2022-11-17 14:25:38
  */
 @RestController
-@RequestMapping("/pmsSkuInfo")
+@RequestMapping("/productService/pmsSkuInfo")
 public class PmsSkuInfoController {
     /**
      * 服务对象
@@ -41,10 +43,19 @@ public class PmsSkuInfoController {
      * @param pmsSkuInfo 实体
      * @return 新增结果
      */
-    @PostMapping
-    public KedomResponse add(PmsSkuInfo pmsSkuInfo) {
+    @PostMapping("/add")
+    public KedomResponse add(@RequestBody Sku pmsSkuInfo) {
          this.pmsSkuInfoService.insert(pmsSkuInfo);
         return KedomResponse.ok();
+    }
+
+    @GetMapping("/getHotProduct")
+    public KedomResponse getHotProduct() {
+        return KedomResponse.okAddData(this.pmsSkuInfoService.getHotProduct());
+    }
+    @GetMapping("/getProductByUserId/{userId}")
+    public KedomResponse getProductByUserId(@PathVariable("userId") Long userId) {
+        return KedomResponse.okAddData(this.pmsSkuInfoService.getProductByUserId(userId));
     }
 
     /**

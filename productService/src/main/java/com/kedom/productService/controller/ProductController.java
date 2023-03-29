@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/productService/product")
 public class ProductController {
 
     @Autowired

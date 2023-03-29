@@ -1,6 +1,7 @@
 package com.kedom.productService.dao;
 
 import com.kedom.productService.entity.PmsAttr;
+import com.kedom.productService.entity.vo.CategoryAttrVO;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
@@ -87,7 +88,11 @@ public interface PmsAttrDao {
 
     int checkAttrIsExistAndEnable(String attrName, Integer attrGroupId, Long catelogId);
 
-    @MapKey("attrId")//指定map的key(Java代码中的属性名)
-    HashMap<Long, PmsAttr> queryAllAttrNameByCateId(Long catelogId, int attrType);
+
+    List<CategoryAttrVO> queryAllAttrNameByCateId(Long catelogId);
+
+    List<PmsAttr> getCategorySearchAttr(Long id);
+
+    List<CategoryAttrVO> queryAllAttr(Integer offset);
 }
 

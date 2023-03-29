@@ -12,9 +12,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(KedomException.class)
     public KedomResponse processBusinessException(KedomException kedomException) {
-        log.error(kedomException.getKedomExceptionEnum().getExceptionMessage());
         // 这里可以屏蔽掉后台的异常栈信息，直接返回"business error"
-        KedomResponse kedomResponse = new KedomResponse(kedomException);
-        return kedomResponse;
+        log.info(kedomException.getKedomExceptionEnum().getExceptionMessage());
+        return new KedomResponse(kedomException);
     }
+
+    @ExceptionHandler(Exception.class)
+    public KedomResponse processSystemException(Exception e) {
+        log.info("系统异常{}位置{}", e.getMessage(), e.getStackTrace()[0]);
+        return KedomResponse.error();
+    }
+
+
 }

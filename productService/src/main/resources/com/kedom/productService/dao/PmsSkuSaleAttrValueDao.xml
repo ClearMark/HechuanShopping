@@ -80,10 +80,10 @@
     </insert>
 
     <insert id="insertBatch">
-        insert into pms_sku_sale_attr_value(id, sku_id, attr_id, attr_name, attr_value, attr_sort)
+        insert into pms_sku_sale_attr_value(sku_id, attr_id, attr_name, attr_value)
         values
-        <foreach collection="entities" item="entity" separator=",">
-        (#{entity.id}, #{entity.skuId}, #{entity.attrId}, #{entity.attrName}, #{entity.attrValue}, #{entity.attrSort})
+        <foreach collection="attrs" item="attr" separator=",">
+        (#{skuId},#{attr.attrId}, #{attr.attrName}, #{attr.attrValue})
         </foreach>
     </insert>
 

@@ -3,6 +3,8 @@ package com.kedom.memberService.service;
 import com.kedom.common.entity.memberServiceEntity.UmsMember;
 import com.kedom.openFeignService.entity.vo.UserVO;
 
+import java.util.List;
+
 
 /**
  * 会员(UmsMember)表服务接口
@@ -54,4 +56,5 @@ public interface UmsMemberService {
 
     public UmsMember getMemberByAccessToken(String accessToken);
 
+    List<UmsMember> queryAll(Integer pageNum);
 }

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedom.sellService.dao.SmsShopDao">
+
+    <resultMap type="com.kedom.sellService.entity.SmsShop" id="SmsShopMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="levelId" column="level_id" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="shopName" column="shop_name" jdbcType="VARCHAR"/>
+        <result property="goodsNum" column="goods_num" jdbcType="INTEGER"/>
+        <result property="followNum" column="follow_num" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SmsShopMap">
+        select
+          id, level_id, username, create_time, shop_name, goods_num, follow_num
+        from sms_shop
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SmsShopMap">
+        select
+          id, level_id, username, create_time, shop_name, goods_num, follow_num
+        from sms_shop
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="levelId != null">
+                and level_id = #{levelId}
+            </if>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="shopName != null and shopName != ''">
+                and shop_name = #{shopName}
+            </if>
+            <if test="goodsNum != null">
+                and goods_num = #{goodsNum}
+            </if>
+            <if test="followNum != null">
+                and follow_num = #{followNum}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from sms_shop
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="levelId != null">
+                and level_id = #{levelId}
+            </if>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="shopName != null and shopName != ''">
+                and shop_name = #{shopName}
+            </if>
+            <if test="goodsNum != null">
+                and goods_num = #{goodsNum}
+            </if>
+            <if test="followNum != null">
+                and follow_num = #{followNum}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryByUsername" resultMap="SmsShopMap">
+    select * from sms_shop where username=#{username};
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" >
+        insert into sms_shop(id, level_id, username, create_time, shop_name, goods_num, follow_num)
+        values (#{id}, #{levelId}, #{username}, #{createTime}, #{shopName}, #{goodsNum}, #{followNum})
+    </insert>
+
+    <insert id="insertBatch">
+        insert into sms_shop(id, level_id, username, create_time, shop_name, goods_num, follow_num)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.id}, #{entity.levelId}, #{entity.username}, #{entity.createTime}, #{entity.shopName}, #{entity.goodsNum}, #{entity.followNum})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch">
+        insert into sms_shop(level_id, username, create_time, shop_name, goods_num, follow_num)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.levelId}, #{entity.username}, #{entity.createTime}, #{entity.shopName}, #{entity.goodsNum}, #{entity.followNum})
+        </foreach>
+        on duplicate key update
+        id = values(id),
+        level_id = values(level_id),
+        username = values(username),
+        create_time = values(create_time),
+        shop_name = values(shop_name),
+        goods_num = values(goods_num),
+        follow_num = values(follow_num)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sms_shop
+        <set>
+            <if test="levelId != null">
+                level_id = #{levelId},
+            </if>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="shopName != null and shopName != ''">
+                shop_name = #{shopName},
+            </if>
+            <if test="goodsNum != null">
+                goods_num = #{goodsNum},
+            </if>
+            <if test="followNum != null">
+                follow_num = #{followNum},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sms_shop where id = #{id}
+    </delete>
+
+</mapper>
+

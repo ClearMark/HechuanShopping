@@ -1,6 +1,7 @@
 package com.kedom.productService.service;
 
 import com.kedom.productService.entity.PmsSkuSaleAttrValue;
+import com.kedom.productService.entity.vo.Attr;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import java.util.List;
@@ -39,4 +40,6 @@ public interface PmsSkuSaleAttrValueService {
 
 
     void insertList(List<PmsSkuSaleAttrValue> skuSaleAttrValues);
+
+    void insertBatch(List<Attr> attr, Long skuId);
 }

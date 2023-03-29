@@ -1,5 +1,6 @@
 package com.kedom.memberService.service.impl;
 
+import com.google.gson.Gson;
 import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.common.entity.memberServiceEntity.UmsMember;
@@ -12,10 +13,12 @@ import org.redisson.client.codec.StringCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 会员(UmsMember)表服务实现类
@@ -27,7 +30,11 @@ import javax.annotation.Resource;
 public class UmsMemberServiceImpl implements UmsMemberService {
     @Resource
     private UmsMemberDao umsMemberDao;
+    @Autowired
     private RedissonClient redissonClient;
+
+    @Autowired
+    private Gson gson;
 
     Logger logger = LoggerFactory.getLogger(UmsMemberServiceImpl.class);
 
@@ -112,12 +119,15 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     @Override
     public UmsMember login(UserVO userLoginVo) {
         UmsMember umsMember = umsMemberDao.queryPublicInfoByUsername(userLoginVo.getUsername());
+        if (umsMember == null) {
+            throw new KedomException(KedomExceptionEnum.USERNAME_OR_PASSWORD_ERROR);
+        }
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         boolean matches = bCryptPasswordEncoder.matches(userLoginVo.getPassword(), umsMember.getPassword());
         if (matches) {
             return umsMember;
         } else {
-            throw new KedomException(KedomExceptionEnum.USERNAME_PASSWORD_ERROR);
+            throw new KedomException(KedomExceptionEnum.USERNAME_OR_PASSWORD_ERROR);
         }
     }
 
@@ -147,12 +157,16 @@ public class UmsMemberServiceImpl implements UmsMemberService {
 
     @Override
     public UmsMember getMemberByAccessToken(String accessToken) {
-        RBucket<Object> bucket = redissonClient.getBucket(accessToken, new StringCodec("utf-8"));
-        UmsMember umsMember;
-        if ((umsMember = (UmsMember) bucket.get()) != null) {
-            return umsMember;
-        }
-        return null;
+        RBucket<String> bucket = redissonClient.getBucket(accessToken+"data", new StringCodec("utf-8"));
+        UmsMember umsMember = gson.fromJson(bucket.get(), UmsMember.class);
+        return umsMember;
+    }
+
+    @Override
+    public List<UmsMember> queryAll(Integer pageNum) {
+         int offset = (pageNum - 1) * 10;
+        List<UmsMember> userDataList=umsMemberDao.queryAll(offset);
+        return userDataList;
     }
 
     //endregion

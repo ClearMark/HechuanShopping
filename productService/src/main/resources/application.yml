@@ -23,3 +23,4 @@ mybatis:
 imageSave:
   path: C:/productImage/
   id: 1
+  showPath: http://127.0.0.1:8888/productService/productImage/

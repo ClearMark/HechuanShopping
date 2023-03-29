@@ -5,12 +5,16 @@ import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.common.entity.productServiceEntity.PmsCategory;
 import com.kedom.productService.dao.PmsCategoryDao;
+import com.kedom.productService.entity.Page;
+import com.kedom.productService.entity.PmsCategoryAfter;
+import com.kedom.productService.entity.controllerVo.pmsCategory.CateAdePageVO;
 import com.kedom.productService.service.PmsCategoryService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * 商品三级分类(PmsCategory)表服务实现类
@@ -81,7 +85,9 @@ public class PmsCategoryServiceImpl implements PmsCategoryService {
         List<PmsCategory> allCategory = pmsCategoryDao.queryAll();
         List<PmsCategory> rootCategory = new ArrayList<>();
 
-        allCategory.stream().filter(pmsCategory -> pmsCategory.getParentCid() == 0).forEach(pmsCategory -> {
+        Stream<PmsCategory> pmsCategoryStream = allCategory.stream().filter(pmsCategory -> pmsCategory.getParentCid() == 0);
+
+        pmsCategoryStream.forEach(pmsCategory -> {
             pmsCategory.setChildren(getChildren(pmsCategory, allCategory));
             rootCategory.add(pmsCategory);
         });
@@ -106,9 +112,30 @@ public class PmsCategoryServiceImpl implements PmsCategoryService {
         }
     }
 
+    @Override
+    public List<PmsCategory> getProductCategory(CateAdePageVO cateAdePageVO) {
+
+        Page page = cateAdePageVO.getPage();
+        page.setPageBegin((page.getPageNum() - 1) * page.getPageSize());
+        List<PmsCategory> productCategoryPage = pmsCategoryDao.getProductCategoryPage(cateAdePageVO.getPage(), cateAdePageVO.getPmsCategory());
+        return productCategoryPage;
+
+    }
+
+    @Override
+    public Integer getProductCategoryCount(PmsCategory pmsCategory) {
+       return pmsCategoryDao.getProductCategoryCount(pmsCategory);
+    }
+
+    @Override
+    public List<PmsCategoryAfter> getAllProductCategoryCase() {
+        return null;
+    }
+
+
     private ArrayList<PmsCategory> getChildren(PmsCategory pmsCategory, List<PmsCategory> pmsCategories) {
         ArrayList<PmsCategory> children = new ArrayList<>();
-        pmsCategories.stream().filter(pmsCategory1 -> pmsCategory1.getParentCid().equals(pmsCategory.getCatId())).forEach(pmsCategory1 -> {
+        pmsCategories.stream().filter(pmsCategory1 -> pmsCategory.getCatId().equals(pmsCategory1.getParentCid())).forEach(pmsCategory1 -> {
             pmsCategory1.setChildren(getChildren(pmsCategory1, pmsCategories));
             children.add(pmsCategory1);
         });

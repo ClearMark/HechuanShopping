@@ -7,6 +7,7 @@ import com.kedom.openFeignService.entity.vo.UserVO;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 会员(UmsMember)表控制层
@@ -33,23 +34,30 @@ public class UmsMemberController {
 
     @PostMapping("/login")
     public KedomResponse login(@RequestBody UserVO userLoginVo) {
-
         UmsMember umsMember = umsMemberService.login(userLoginVo);
         umsMember.setPassword(null);
         return KedomResponse.okAddData(umsMember);
     }
 
-    @PutMapping
-    public KedomResponse updateUserInfo(UmsMember umsMember,@RequestHeader("accessToken") String accessToken) {
+    @PostMapping("/updateMemberInfo")
+    public KedomResponse updateUserInfo(@RequestBody UmsMember umsMember,@RequestHeader("accessToken") String accessToken) {
         //校验参数
         UmsMember redisMember = umsMemberService.getMemberByAccessToken(accessToken);
         umsMember.setId(redisMember.getId());
         umsMember.setUsername(redisMember.getUsername());
         umsMemberService.updateDB(umsMember);
         umsMemberService.updateCache(umsMember, accessToken);
-
         return KedomResponse.ok();
     }
+
+    @GetMapping("/queryAll/{pageNum}")
+    public KedomResponse queryAll(@PathVariable("pageNum") Integer pageNum) {
+       List<UmsMember> userDataList = umsMemberService.queryAll(pageNum);
+        return KedomResponse.okAddData(userDataList);
+    }
+
+
+
 
 
 //    @ExceptionHandler(Exception.class)
@@ -64,4 +72,3 @@ public class UmsMemberController {
 
 
 }
-

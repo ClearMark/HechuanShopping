@@ -33,6 +33,8 @@ public class PmsAttrGroupController {
     @GetMapping("/{cateGoryId}")
     public KedomResponse queryAttrGroupByCateGoryId(@RequestParam HashMap<String,Object> paramMap, @PathVariable("cateGoryId") Long cateGoryId) {
         ArrayList<PmsAttrGroup> pmsAttrGroups = this.pmsAttrGroupService.queryAttrGroupByCateGoryId(paramMap,cateGoryId);
+
+
         return null;
     }
 

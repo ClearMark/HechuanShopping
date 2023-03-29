@@ -1,6 +1,7 @@
 package com.kedom.productService.dao;
 
 import com.kedom.productService.entity.PmsSkuInfo;
+import com.kedom.productService.entity.vo.Sku;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
@@ -48,7 +49,7 @@ public interface PmsSkuInfoDao {
      * @param pmsSkuInfo 实例对象
      * @return 影响行数
      */
-    Byte insert(PmsSkuInfo pmsSkuInfo);
+    int insert(Sku pmsSkuInfo);
 
     /**
      * 批量新增数据（MyBatis原生foreach方法）
@@ -88,5 +89,9 @@ public interface PmsSkuInfoDao {
     Integer existsSkuBySkuId(Long skuId);
 
     PmsSkuInfo querySkuIntoWareInfoBySkuId(Long skuId);
+
+    List<Sku> getHotProduct();
+
+    List<Sku> getProductByUserId(Long userId);
 }
 

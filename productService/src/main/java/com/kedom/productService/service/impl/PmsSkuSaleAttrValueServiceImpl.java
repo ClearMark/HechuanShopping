@@ -4,6 +4,7 @@ import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.productService.dao.PmsSkuSaleAttrValueDao;
 import com.kedom.productService.entity.PmsSkuSaleAttrValue;
+import com.kedom.productService.entity.vo.Attr;
 import com.kedom.productService.service.PmsSkuSaleAttrValueService;
 import org.springframework.stereotype.Service;
 
@@ -67,6 +68,15 @@ public class PmsSkuSaleAttrValueServiceImpl implements PmsSkuSaleAttrValueServic
     public void insertList(List<PmsSkuSaleAttrValue> skuSaleAttrValues) {
         int count= this.pmsSkuSaleAttrValueDao.insertList(skuSaleAttrValues);
         if(count==0)
+        {
+            throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
+        }
+    }
+
+    @Override
+    public void insertBatch(List<Attr> attr,Long skuId) {
+        Integer integer = pmsSkuSaleAttrValueDao.insertBatch(attr,skuId);
+        if(integer==0)
         {
             throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
         }

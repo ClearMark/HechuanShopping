@@ -1,0 +1,294 @@
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+<div id="app">
+    <label>个人中心</label>
+    <el-button type="text" @click="showShippingAddressDialog">管理收货地址</el-button>
+
+    <el-dialog title="收获地址" :visible.sync="ShippingAddressDialogVisible">
+        <el-dialog
+                width="30%"
+                title="添加地址"
+                :visible.sync="innerVisible"
+                append-to-body>
+
+<el-form :model="newAddress" label-width="80px">
+    <el-form-item label="收货人">
+        <el-input v-model="newAddress.name"></el-input>
+    </el-form-item>
+    <el-form-item label="手机号">
+        <el-input v-model="newAddress.phone"></el-input>
+    </el-form-item>
+    <el-form-item label="所在省份/直辖市">
+        <el-select v-model="newAddress.province" filterable placeholder="请选择省/直辖市">
+            <el-option
+                    v-for="item in provinceOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+        </el-select>
+    </el-form-item>
+        <el-form-item label="所在市">
+            <el-select v-model="newAddress.city" filterable placeholder="请选择市">
+                <el-option
+                        v-for="item in cityOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                </el-option>
+            </el-select>
+        </el-form-item>
+            <el-form-item label="所在区">
+                <el-select v-model="newAddress.region" filterable placeholder="请选择区">
+                    <el-option
+                            v-for="item in regionOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+    <el-form-item label="详细地址">
+        <el-input v-model="newAddress.detailAddress"></el-input>
+    </el-form-item>
+    <el-form-item label="邮政编码">
+        <el-input v-model="newAddress.postCode"></el-input>
+    </el-form-item>
+    <el-form-item label="省市区代码">
+        <el-input v-model="newAddress.areacode"></el-input>
+    </el-form-item>
+    <el-form-item label="是否默认">
+        <el-switch
+                v-model="newAddress.default_status"
+                active-text="是"
+                inactive-text="否">
+        </el-switch>
+    </el-form-item>
+    <el-form-item>
+        <el-button type="primary" @click="innerVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveNewAddress">保存</el-button>
+    </el-form-item>
+</el-form>
+
+
+
+        </el-dialog>
+        <label>收货地址</label>
+        <el-table
+                :data="AddressList"
+                style="width: 100%">
+            <el-table-column
+                    prop="name"
+                    label="姓名"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="phone"
+                    label="电话"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="detail_address"
+                    label="地址">
+            </el-table-column>
+        </el-table>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="ShippingAddressDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="innerVisible = true">新增收获地址</el-button>
+        </div>
+    </el-dialog>
+  </span>
+    </el-dialog>
+    <div style="width: 30%">
+        <el-form ref="form" :model="memberForm" label-width="80px">
+            <el-form-item label="账号">
+                <el-input v-model="memberForm.username" disabled="disabled"></el-input>
+            </el-form-item>
+            <el-form-item label="昵称">
+                <el-input v-model="memberForm.nickname"></el-input>
+            </el-form-item>
+            <el-form-item label="手机号">
+                <el-input v-model="memberForm.mobile"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱">
+                <el-input v-model="memberForm.email"></el-input>
+            </el-form-item>
+            <el-form-item label="个性签名">
+                <el-input v-model="memberForm.sign"></el-input>
+            </el-form-item>
+            <el-form-item label="所在城市">
+                <el-input v-model="memberForm.city"></el-input>
+            </el-form-item>
+            <el-form-item label="职业">
+                <el-input v-model="memberForm.job"></el-input>
+            </el-form-item>
+            <el-form-item label="性别">
+                <el-radio-group v-model="memberForm.gender" size="medium">
+                    <el-radio border label="男"></el-radio>
+                    <el-radio border label="女"></el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item prop="date1" label="生日">
+                <el-date-picker type="date" placeholder="选择日期" v-model="memberForm.birth" value-format="yyyy-MM-dd"  style="width: 100%;" ></el-date-picker>
+            </el-form-item>
+            <el-form-item prop="date1" label="注册时间">
+                <el-date-picker type="date" placeholder="选择日期" v-model="memberForm.createTime" value-format="yyyy-MM-dd" style="width: 100%;" disabled="disabled"></el-date-picker>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit()">保存</el-button>
+                <el-button>返回</el-button>
+            </el-form-item>
+        </el-form>
+
+    </div>
+
+</div>
+
+
+</body>
+
+<!-- 引入组件库 -->
+<script src="../js/axios.min.js"></script>
+<link rel="stylesheet" href="../js/elment/http_unpkg.com_element-ui_lib_theme-chalk_index.css">
+<script src="../js/vue2.js"></script>
+<script src="../js/elment/http_unpkg.com_element-ui_lib_index.js"></script>
+<script>
+
+
+</script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            memberForm:JSON.parse(localStorage.getItem("userData")),//会员信息
+            newAddress:{},//新地址消息
+            ShippingAddressDialogVisible: false,//展示收货地址对话框
+            innerVisible: false,//展示新增收货地址对话框
+            AddressList: JSON.parse(localStorage.getItem("AddressList")),//收货地址列表
+            provinceOptions: [
+                {
+                    "label": "北京市",
+                    "value": "北京市"
+                },
+                {
+                    "label": "天津市",
+                    "value": "天津市"
+                },
+                {
+                    "label": "河北省",
+                    "value": "河北省"
+                },
+                {
+                    "label": "山西省",
+                    "value": "山西省"
+                },
+                {
+                    "label": "内蒙古自治区",
+                    "value": "内蒙古自治区"
+                },
+                {
+                    "label": "辽宁省",
+                    "value": "辽宁省"
+                },
+                {
+                    "label": "吉林省",
+                    "value": "吉林省"
+                },
+                {
+                    "label": "黑龙江省",
+                    "value": "黑龙江省"
+                },
+                {
+                    "label": "上海市",
+                    "value": "上海市"
+                },
+                {
+                    "label": "江苏省",
+                    "value": "江苏省"
+                },
+                {
+                    "label": "浙江省",
+                    "value": "浙江省"
+                },
+                {
+                    "label": "安徽省",
+                    "value": "安徽省"
+                },
+                {
+                    "label": "福建省",
+                    "value": "福建省"
+                },
+                {
+                    "label": "江西省",
+                    "value": "江西省"
+                },
+                {
+                    "label": "山东省",
+                    "value": "山东省"
+                },
+                {
+                    "label": "河南省",
+                    "value": "河南省"
+                },
+                {
+                    "label": "湖北省",
+                    "value": "湖北省"
+                },
+                {
+                    "label": "湖南省",
+                    "value": "湖南省"
+                },
+                {
+                    "label": "广东省",
+                    "value": "广东省"
+                }], //省份
+            },
+
+        methods: {
+            onSubmit() {
+                console.log("保存会员信息");
+                axios.post('http://127.0.0.1:8888/umsMember/updateMemberInfo',this.memberForm,{
+                    headers: {
+                        accessToken: localStorage.getItem("Token"),
+                    },
+                }).then(function (response) {
+                    console.log("保存会员信息成功");
+                    localStorage.setItem("userData",JSON.stringify(this.memberForm));
+                    alert("保存成功");
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            saveNewAddress(){
+                this.newAddress.memberId=(localStorage.getItem("userID"));
+                this.newAddress.defaultStatus==true?this.newAddress.defaultStatus=1:this.newAddress.defaultStatus=0;
+                axios.post('http://127.0.0.1:8888/umsMember/umsMemberReceiveAddress',this.newAddress).then(function (response) {
+                    AddressList.push(this.newAddress);
+                    alert("保存成功");
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            loadAddress(){
+
+                },
+            showShippingAddressDialog(){
+               const _this=this;
+                axios.get('http://127.0.0.1:8888/umsMember/umsMemberReceiveAddress/member/'+this.memberForm.id).then(function (response) {
+                    _this.AddressList=response.data.data;
+                }).catch(function (error) {
+                    console.log(error);
+                });
+                console.log(this.AddressList);
+                this.ShippingAddressDialogVisible = true
+            },
+        },
+    })
+
+</script>
+
+</html>

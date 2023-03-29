@@ -16,6 +16,16 @@
         <result property="attrGroupSort" column="attr_group_sort" jdbcType="INTEGER"/>
     </resultMap>
 
+
+    <resultMap type="com.kedom.productService.entity.vo.CategoryAttrVO" id="CategoryAttrVO">
+        <result property="attrId" column="attr_id" jdbcType="INTEGER"/>
+        <result property="attrName" column="attr_name" jdbcType="VARCHAR"/>
+        <result property="catelogId" column="catelog_id" jdbcType="INTEGER"/>
+        <result property="categoryName" column="name" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+
     <!--查询单个-->
     <select id="queryById" resultMap="PmsAttrMap">
         select
@@ -111,8 +121,23 @@
         select count(*) from pms_attr where attr_name = #{attrName} and attr_group_id=#{attrGroupId} and catelog_id=#{catelogId} and enable = 1
 
     </select>
-    <select id="queryAllAttrNameByCateId" resultMap="PmsAttrMap">
-        select attr_id,attr_name from pms_attr where catelog_id = #{catelogId} and search_type=#{attrType} and enable = 1
+    <select id="queryAllAttrNameByCateId" resultMap="CategoryAttrVO">
+        select pa.attr_id, pa.attr_name, pa.catelog_id, pc.name
+        from pms_attr pa right join pms_category pc on pa.catelog_id = pc.cat_id
+        where pa.enable = 1 and pc.show_status = 1 and pc.cat_id = #{catelogId}
+    </select>
+
+    <select id="getCategorySearchAttr" resultMap="PmsAttrMap">
+        select
+          attr_id, attr_name, icon, value_select,catelog_id
+        from pms_attr
+        where catelog_id = #{catelogId} and search_type = 1 and enable = 1 and attr_type = 1
+    </select>
+
+    <select id="queryAllAttr" resultMap="CategoryAttrVO">
+        select pa.attr_id, pa.attr_name, pa.catelog_id, pc.name
+        from pms_attr pa left join pms_category pc on pa.catelog_id = pc.cat_id
+        where pa.enable = 1 and pc.show_status = 1 limit #{offset}, 10
     </select>
 
     <!--新增所有列-->

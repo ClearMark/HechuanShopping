@@ -2,6 +2,9 @@ package com.kedom.productService.service;
 
 
 import com.kedom.common.entity.productServiceEntity.PmsCategory;
+import com.kedom.productService.entity.PmsCategoryAfter;
+import com.kedom.productService.entity.controllerVo.pmsCategory.CateAdePageVO;
+
 import java.util.List;
 
 /**
@@ -50,4 +53,10 @@ public interface PmsCategoryService {
     void removeCategoryById(List<Long> ids);
 
     void checkCategoryIsThereLevelCategory(Long cateId);
+
+    List<PmsCategory> getProductCategory(CateAdePageVO cateAdePageVO);
+
+    Integer getProductCategoryCount(PmsCategory pmsCategory);
+
+    List<PmsCategoryAfter> getAllProductCategoryCase();
 }

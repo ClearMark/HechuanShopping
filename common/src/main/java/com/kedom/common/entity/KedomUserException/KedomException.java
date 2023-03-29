@@ -12,5 +12,8 @@ public class KedomException extends RuntimeException implements OperationExcepti
     public KedomException(KedomExceptionEnum kedomExceptionEnum) {
         super(kedomExceptionEnum.getExceptionMessage());
         this.kedomExceptionEnum = kedomExceptionEnum;
+
     }
+
+
 }

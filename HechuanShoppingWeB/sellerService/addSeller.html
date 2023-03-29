@@ -1,0 +1,39 @@
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+<label>完善商家信息</label>
+<div id="app">
+    <el-form :model="shop"  label-width="100px" class="demo-ruleForm">
+        <el-form-item label="店铺名">
+            <el-input v-model="shop.name"></el-input>
+        </el-form-item>
+    </el-form>
+
+
+
+
+</div>
+</body>
+
+<!-- 引入组件库 -->
+<script src="../js/axios.min.js"></script>
+<link rel="stylesheet" href="../js/elment/http_unpkg.com_element-ui_lib_theme-chalk_index.css">
+<script src="../js/vue2.js"></script>
+<script src="../js/elment/http_unpkg.com_element-ui_lib_index.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            shop:{},
+        },
+
+        methods: {}
+
+    })
+
+
+</script>
+
+</html>

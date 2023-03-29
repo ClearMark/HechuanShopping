@@ -9,8 +9,10 @@
         <outputRelativeToContentRoot value="true" />
         <module name="openFeignService" />
         <module name="auth-service" />
+        <module name="sellService" />
         <module name="common" />
         <module name="memberService" />
+        <module name="carService" />
         <module name="AuthService" />
         <module name="gateway" />
         <module name="productService" />
@@ -28,11 +30,13 @@
       <module name="AuthService" options="-parameters" />
       <module name="auth-service" options="-parameters" />
       <module name="auth_service" options="-parameters" />
+      <module name="carService" options="-parameters" />
       <module name="common" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="memberService" options="-parameters" />
       <module name="openFeignService" options="-parameters" />
       <module name="productService" options="-parameters" />
+      <module name="sellService" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>
   </component>

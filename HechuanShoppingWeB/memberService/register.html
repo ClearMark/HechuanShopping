@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<style>
+/* CSS样式 */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f2f2f2;
+}
+form {
+margin: auto;
+width: 400px;
+padding: 20px;
+border: 1px solid #ccc;
+background-color: #fff;
+}
+
+.form-control {
+width: 100%;
+padding: 12px 20px;
+margin: 8px 0;
+box-sizing: border-box;
+}
+
+.button {
+background-color: #4CAF50;
+color: white;
+padding: 14px 20px;
+margin: 8px 0;
+border: none;
+cursor: pointer;
+width: 100%;
+}
+
+.button:hover {
+opacity: 0.8;
+}
+
+.error {
+color: red;
+}
+</style>
+</head>
+<body>
+<h1>注册</h1>
+<form action="">
+  <label for="username">账号:</label><br>
+  <input type="text" id="username" class="form-control" placeholder="请输入账号"><br>
+  <label for="password">密码:</label><br>
+  <input type="password" id="password" class="form-control" placeholder="请输入密码"><br>
+  <label for="email">邮箱:</label><br>
+  <input type="email" id="email" class="form-control" placeholder="请输入邮箱"><br>
+  <input type="button" class="button" value="获取邮箱验证码" onclick="getCode()" id="getCodeButten"/><br>
+  <label for="code">邮箱验证码:</label><br>
+  <input type="text" id="code" class="form-control" placeholder="请输入邮箱验证码"><br>
+  <input type="button" class="button" value="注册" onclick="register()"/>
+  <input type="button" class="button" onclick="backlogin()" value="返回"/>
+  <p id="error" class="error"></p>
+</form>
+</body>
+  <script src="../js/axios.min.js"></script>
+  <script src="../js/jquery-3.5.1.min.js"></script>
+  <script>
+function getCode(){
+	const email=$("#email").val();
+	console.log(email)
+	axios.get('http://127.0.0.1:8888/auth/MailCode/'+email+'/register')
+	  .then(function (response) {
+		  console.log('解析请求')
+		var data=response.data;
+	    if(data.code==8888){
+			console.log('登录成功')
+			$("#getCodeButten").val('获取成功')
+		}
+		else{
+			console.log(data.message)
+		}
+	  })
+	  .catch(function (error) {
+	    console.log(error);
+	  });
+	
+}
+	  
+function backlogin(){
+		window.location.href="login.html"
+	}
+		
+function register(){
+	const par={
+		username:$("#username").val(),
+		password:$("#password").val(),
+		email:$("#email").val(),
+		code:$("#code").val()
+	}
+	
+	
+	
+	
+	axios.post('http://127.0.0.1:8888/auth/register',par)
+	  .then(function (response) {
+		  console.log('解析请求')
+		var data=response.data;
+	    if(data.code==8888){
+			alert('注册成功 点击跳回登录')
+			localStorage.setItem("username",$("#username").val())
+			window.location.href="login.html"
+		}
+		else{
+			alert(data.message)
+		}
+	  }).catch(function (error) {
+		    alert("网络异常 请稍后在试")
+		  });
+}
+  </script>
+  
+</html>

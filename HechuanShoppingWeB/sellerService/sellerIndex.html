@@ -1,0 +1,277 @@
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<style>
+    .el-tag + .el-tag {
+        margin-left: 10px;
+    }
+
+    .button-new-tag {
+        margin-left: 10px;
+        height: 32px;
+        line-height: 30px;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    .input-new-tag {
+        width: 90px;
+        margin-left: 10px;
+        vertical-align: bottom;
+    }
+</style>
+<body>
+<div id="app">
+
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+        <el-menu-item index="1" @click="changeShowType('店铺信息管理')">店铺信息管理</el-menu-item>
+        <el-menu-item index="2" @click="changeShowType('商品管理')">商品管理</el-menu-item>
+        <el-menu-item index="3" disabled>消息中心</el-menu-item>
+        <el-menu-item index="4" @click="changeShowType('订单管理')">订单管理</a></el-menu-item>
+    </el-menu>
+    <el-main v-if="showType=='店铺信息管理'">
+        <template>
+            店铺信息管理
+
+
+        </template>
+    </el-main>
+    <el-main v-if="showType=='商品管理'">
+        <template>
+            <template>
+                <div class="box_right">
+                    <div class="demo-image__placeholder">
+                        <div class="block" v-for="product in productList" :key="product.id" style="width: 70px">
+                            <el-image :src="product.DefaultImg"></el-image>
+                            <el-image  :src="product.DefaultImg" style="height: 180px;width: 360px;" ></el-image>
+
+                            <span class="demonstration">{{product.skuName}}</span>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <template>
+                <el-button type="text" @click="productAddDialog = true">添加商品</el-button>
+                <el-dialog
+                        :visible.sync="productAddDialog"
+                        width="70%">
+                    <el-steps :active="active" finish-status="success">
+                        <el-step title="选择商品分类"></el-step>
+                        <el-step title="完善商品属性"></el-step>
+                    </el-steps>
+                    <el-form ref="form" :model="productMode" label-width="80px" v-if="active=='0'">
+                        <el-form-item label="商品分类">
+                            <div class="block">
+                                <span class="demonstration">单选可搜索</span>
+                                <el-cascader
+                                        placeholder="试试搜索：指南"
+                                        :options="options"
+                                        v-model="caseValue"
+                                        filterable></el-cascader>
+                            </div>
+                        </el-form-item>
+                    </el-form>
+
+                    <div v-if="active=='1'">
+                        <el-form ref="form" :model="sku" label-width="80px">
+                            <el-form-item label="商品名称">
+                                <el-input v-model="sku.skuName"></el-input>
+                            </el-form-item>
+                            <el-form-item label="商品描述">
+                                <el-input v-model="sku.skuDesc"></el-input>
+                            </el-form-item>
+                            <el-form-item
+                                    label="价格"
+                                    prop="price"
+                                    :rules="[
+      { required: true, message: '价格不能为空'},
+      { type: 'number', message: '价格必须为数字值'}
+    ]"
+                            >
+                                <el-input v-model.number="sku.price" autocomplete="off"></el-input>
+                            </el-form-item>
+                            <div v-for="attr in categoryAttr" :key="attr.id">
+                                <el-form-item :label="attr.attrName">
+                                    <el-input v-model="attr.attrValue"></el-input>
+                                </el-form-item>
+                            </div>
+                            <el-form-item label="商品封面" >
+                            <el-upload v-if="!showImage"
+                                    class="upload-demo"
+                                    drag
+                                    :show-file-list="false"
+                                    name="files"
+                                    :on-success="uploadSuccess"
+                                    action="http://127.0.0.1:8888/productService/product/saveFile"
+                                    multiple>
+                                <i class="el-icon-upload"></i>
+                                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+<!--                                <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
+                            </el-upload>
+                                <div >
+                                    <el-image v-if="showImage" :src="sku.skuDefaultImg" style="height: 180px;width: 360px;" ></el-image>
+                                </div>
+                                <el-button style="margin-left: 160px" v-if="showImage" @click="showImage=false" type="danger" icon="el-icon-delete" circle></el-button>
+                            </el-form-item>
+
+
+                        </el-form>
+                    </div>
+
+                    <el-button style="margin-top: 12px;" @click="skuAddButton">{{productAddNext}}</el-button>
+                </el-dialog>
+
+            </template>
+
+        </template>
+    </el-main>
+    <el-main v-if="showType=='订单管理'">
+
+        <template>
+            订单管理
+        </template>
+
+    </el-main>
+
+
+</div>
+
+</body>
+
+<!-- 引入组件库 -->
+<script src="../js/axios.min.js"></script>
+<link rel="stylesheet" href="../js/elment/http_unpkg.com_element-ui_lib_theme-chalk_index.css">
+<script src="../js/vue2.js"></script>
+<script src="../js/elment/http_unpkg.com_element-ui_lib_index.js"></script>
+<script>
+    axios.get('http://127.0.0.1:8888/productService/pmsCategory/case')
+        .then(function (response) {
+            console.log('解析请求')
+            var data = response.data;
+            if (data.code == 8888) {
+                console.log('请求成功')
+                console.log(data.data)
+                localStorage.setItem("categoryCase", JSON.stringify(data.data));
+            } else {
+            }
+        }).catch(function (error) {
+    });
+
+    const userID = localStorage.getItem("userID");
+    axios.get('http://127.0.0.1:8888/productService/pmsSkuInfo/getProductByUserId/'+userID)
+        .then(function (response) {
+            console.log('解析请求')
+            var data = response.data;
+            if (data.code == 8888) {
+                console.log('请求成功')
+                console.log(data.data)
+                localStorage.setItem("productList", JSON.stringify(data.data));
+            } else {
+            }
+        }).catch(function (error) {
+    });
+
+
+
+</script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            showType: "2222",
+            productAddDialog: false,
+            active: 0,
+            showImage: false,
+            caseValue: [],
+            productAddNext: "下一步",
+            productMode: {},
+            options: JSON.parse(localStorage.getItem("categoryCase")),
+            dynamicTags: ['标签一', '标签二', '标签三'],
+            inputVisible: false,
+            inputValue: '',
+            sku:{},
+
+
+            categoryAttr: [],
+            productList:JSON.parse(localStorage.getItem("productList"))
+              ,
+        },
+        methods: {
+            changeShowType(type) {
+                this.showType = type;
+                console.log(type)
+            },
+            skuAddButton() {
+                if (this.active++ > 2) this.active = 0;
+                if (this.active == 1) {
+                    console.log(111111)
+                    this.getCaseAttr(this.caseValue[2])
+                    this.sku.catalogId=this.caseValue[2]
+                    this.productAddNext = "添加商品"
+                    return;
+                }
+                if (this.active == 2) {
+                    console.log(222222)
+                    this.sku.attr=this.categoryAttr
+                    this.sku.userId=localStorage.getItem("userID")
+                    axios.post('http://127.0.0.1:8888/productService/pmsSkuInfo/add',this.sku).then((res) => {
+                        console.log(res)
+                    })
+                    }
+            },
+            getCaseList(item) {
+                item.forEach((item) => {
+                    this.options.push(item.value)
+                    if (item.children) {
+                        this.getCaseList(item.children)
+                    }
+                })
+            },
+            getCaseAttr(item) {
+                axios.get('http://127.0.0.1:8888/productService/pmsAttr/getCategoryAttr/' + item).then((res) => {
+                    this.categoryAttr = res.data.data
+
+                    console.log(this.categoryAttr)
+                })
+            },
+
+            handleClose(tag, attr) {
+                attr.attrValueList.splice(attr.attrValueList.indexOf(tag), 1);
+                //删除元素
+            },
+
+            showInput(attr) {
+                this.inputVisible = true;
+                const atteName = attr.atteName
+                this.$nextTick(_ => {
+                    this.$refs.atteName.$refs.input.focus();
+                });
+            },
+
+            handleInputConfirm(attr) {
+                let inputValue = this.inputValue;
+                if (inputValue) {
+                    attr.attrValueList.push(inputValue);
+                }
+                this.inputVisible = false;
+                this.inputValue = '';
+            },
+            showInfo() {
+                console.log(this.categoryAttr)
+            },
+
+            uploadSuccess(response, file, fileList) {
+                console.log('上传成功')
+                console.log(response.data)
+                this.sku.skuDefaultImg = response.data[0];
+                console.log(this.sku.skuDefaultImg)
+                this.showImage = true;
+            },
+
+        }
+    })
+
+
+</script>
+</html>
