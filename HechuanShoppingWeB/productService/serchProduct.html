@@ -1,0 +1,197 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        .search-input {
+            position: relative;
+            /* This is added to allow the select element to be positioned absolutely within the input */
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+
+        .search-button {
+            width: 40%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .search-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header {
+
+        }
+
+        .logo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            font-size: 1.5em;
+        }
+    </style>
+
+
+</head>
+<body>
+<div class="logo">
+    <span onclick="backIndex()">合川特色购物商城</span></div>
+<div id="app" style="width: 100%">
+    <div class="title">
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="输入商品名" id="key" v-model="key">
+            <button class="search-button" onclick="search()">Search</button>
+        </div>
+    </div>
+    <div class="demo-image__placeholder" v-if="showProduct">
+        <div class="block" v-for="product in productList" style="width:360px;display: inline-block; padding-right: 10px"
+             @click="intoUserProduct(product.skuId)">
+            <el-image :src="product.skuDefaultImg" style="height: 180px;width: 360px;"></el-image>
+            <span class="demonstration">{{product.skuName}}</span>
+            <br/>
+            <span class="demonstration">￥{{product.price}}</span>
+        </div>
+    </div>
+    <button @click="show">获取可视区域高度</button>
+</div>
+</body>
+
+<!-- 引入组件库 -->
+<script src="../js/axios.min.js"></script>
+<link rel="stylesheet" href="../js/elment/http_unpkg.com_element-ui_lib_theme-chalk_index.css">
+<script src="../js/vue2.js"></script>
+<script src="../js/jquery-3.5.1.min.js"></script>
+<script src="../js/elment/http_unpkg.com_element-ui_lib_index.js"></script>
+<script>
+    let _this = this
+    let geturl = window.location.href
+    let getqyinfo = geturl.split('?')[1]   //qycode=1001&qyname=%E4%BC%81%E4%B8%9A%E5%BF%99   截取到参数部分
+    let getqys = new URLSearchParams('?' + getqyinfo)  //将参数放在URLSearchParams函数中
+    let key = getqys.get('key')  //获取参数值
+</script>
+<script>
+    function search() {
+        console.log(111)
+        const searchStr = $("#key").val();
+        if (searchStr == null || searchStr == "") {
+            alert('请输入关键词')
+            return
+        }
+        window.location.href = 'serchProduct.html?key=' + searchStr
+    }
+
+    function backIndex() {
+        window.location.href = './index.html'
+    }
+</script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            key: '',
+            productList: [],
+            showProduct: false,
+            offset: 0,
+            limit: 3,
+        },
+
+        methods: {
+            async getProductInfo() {
+                let _this = this
+                let geturl = window.location.href
+                let getqyinfo = geturl.split('?')[1]   //qycode=1001&qyname=%E4%BC%81%E4%B8%9A%E5%BF%99   截取到参数部分
+                let getqys = new URLSearchParams('?' + getqyinfo)  //将参数放在URLSearchParams函数中
+                let key = getqys.get('key')  //获取参数值
+                this.key = key
+                await axios.get('http://127.0.0.1:8888/productService/product/key/' + this.key + '/' + this.offset)
+                    .then(response => {
+                        _this.productList = response.data.data
+                        _this.showProduct = true
+                        _this.offset = _this.offset + _this.limit
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+            },
+            intoUserProduct(id) {
+                window.location.href = "../memberService/userProduct.html?productId=" + id;
+            },
+            getClientHeight() {
+                var clientHeight = 0;
+                if (document.body.clientHeight && document.documentElement.clientHeight) {
+                    clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight)
+                } else {
+                    clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight)
+                }
+                return clientHeight
+            },
+
+            getScrollHeight() {
+                return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)
+            },
+            getScrollTop() {
+                var scrollTop = 0;
+                //window.pageYOffset = document.documentElement.scrollTop
+                if (document.documentElement && document.documentElement.scrollTop) {
+                    scrollTop = document.documentElement.scrollTop
+                } else if (document.body) {
+                    scrollTop = document.body.scrollTop
+                }
+                return scrollTop
+            },
+            windowScroll() {
+
+                let _this = this;
+                //获取三个值
+                var scrollTop = this.getScrollTop()
+                var clientHeight = this.getClientHeight()
+                var scrollHeight = this.getScrollHeight()
+                //如果满足公式则，确实到底了
+                if (scrollTop + clientHeight - scrollHeight >= 0) {
+                    console.log("滚动了")
+                    axios.get('http://127.0.0.1:8888/productService/product/key/' + key + '/' + this.offset)
+                        .then(response => {
+                            for (let i = 0; i < response.data.data.length; i++) {
+                                _this.productList.push(response.data.data[i]);
+                            }
+
+                            _this.offset = _this.offset + 20
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                }
+
+            }
+
+
+        },
+        created() {
+            this.getProductInfo()
+        },
+        mounted() {
+            window.addEventListener('scroll', this.windowScroll, true) //监听页面滚动
+        },
+        destroyed() {
+            window.removeEventListener("scroll", this.windowScroll);//销毁滚动事件
+        }
+
+    })
+
+
+</script>
+
+</html>

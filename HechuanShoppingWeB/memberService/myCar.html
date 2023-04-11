@@ -1,0 +1,229 @@
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+<div id="app">
+    <h1>我的购物车</h1>
+    <el-card style="width: 1200px;" v-if="showCar">
+
+        <el-descriptions title="收货信息">
+            <template slot="extra">
+                <el-button type="primary" size="small">切换收货地址</el-button>
+            </template>
+            <el-descriptions-item label="姓名">{{nowAddress.name}}</el-descriptions-item>
+            <el-descriptions-item label="手机号">{{nowAddress.phone}}</el-descriptions-item>
+            <el-descriptions-item label="省/直辖市">{{nowAddress.province}}</el-descriptions-item>
+            <el-descriptions-item label="市">{{nowAddress.city}}</el-descriptions-item>
+            <el-descriptions-item label="区">{{nowAddress.region}}</el-descriptions-item>
+            <el-descriptions-item label="详细地址">{{nowAddress.detailAddress}}</el-descriptions-item>
+        </el-descriptions>
+
+
+        <template>
+            <el-table :data="car" @select="handleSum" @select-all="handleSum" ref="multipleTable">
+                <!-- 复选框 -->
+                <el-table-column type="selection" width="55"></el-table-column>
+                <el-table-column label="图片" width="180" height="90">
+                    <template slot-scope="scope">
+                        <img :src="scope.row.img" width="100" height="60">
+                    </template>
+                </el-table-column>
+                <el-table-column prop="name" label="名称" width="180"></el-table-column>
+                <el-table-column label="数量" width="280">
+                    <!-- 使用计数器来添加数量，绑定表格数据行对应的count -->
+                    <template slot-scope="scope">
+                        <el-input-number v-model="scope.row.count" @change="changeCount(scope.row)" :min="1"
+                                         :max="100000"></el-input-number>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="price" label="单价" width="180">
+                    <template slot-scope="prices">
+                        <span>￥{{prices.row.price}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="金额" width="180">
+                    <template slot-scope="money">
+                        <span style="color: red">￥{{money.row.price*money.row.count}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100">
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.$index,scope.row)">删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+
+
+            </el-table>
+        </template>
+
+        <div style="position: fixed;bottom: 5px;margin-left: 85%">
+            <div style="margin: 20px;">
+                总价：<span style="color: red;">￥{{sum}}</span>
+            </div>
+            <el-button type="primary" @click="createOrder">结算</el-button>
+            <el-button type="primary" @click="back">返回</el-button>
+        </div>
+
+    </el-card>
+</div>
+</body>
+
+<!-- 引入组件库 -->
+<script src="../js/axios.min.js"></script>
+<link rel="stylesheet" href="../js/elment/http_unpkg.com_element-ui_lib_theme-chalk_index.css">
+<script src="../js/vue2.js"></script>
+<script src="../js/elment/http_unpkg.com_element-ui_lib_index.js"></script>
+<script src="https://unpkg.com/vue-infinite-loading@^2/dist/vue-infinite-loading.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            nowAddress: {},
+            AddressList: [],
+
+            sum: 0,
+            activeName: 'first',
+            showCar: false,
+            selectSku: [],
+            // 添加进购物车的商品数组
+            car: [],
+            offset: 0,
+            limit: 8,
+        },
+
+
+        methods: {
+
+            changeCount(sku) {
+                this.car.forEach(item => {
+                    if (item.id == sku.id) {
+                        item.count = sku.count;
+                    }
+                })
+                this.selectSku.forEach(item => {
+                    if (item.id == sku.id) {
+                        item.count = sku.count;
+                    }
+                })
+                axios.post('http://127.0.0.1:8888/umsMember/umsCar/update', sku).then(res => {
+                    console.log(res);
+                }).catch(err => {
+                    console.log(err);
+                })
+
+                this.handleSum();
+            },
+
+            // 计算总价
+            handleSum() {
+                this.sum = 0;
+                this.$nextTick(() => {
+                    // console.log(this.$refs.multipleTable.selection);
+                    // this.$refs.multipleTable.selection获取被选中的行
+                    this.$refs.multipleTable.selection.forEach(item => {
+                        this.sum += (item.price * item.count)
+                    });
+                })
+            },
+            back() {
+                window.history.back()
+            },
+            // 删除操作
+            handleDelete(i, j) {
+                this.car.splice(i, 1);
+                this.handleSum();
+                axios.get('http://127.0.0.1:8888/umsMember/umsCar/delete/' + j.id).then(res => {
+                    console.log(res);
+                }).catch(err => {
+                    console.log(err);
+                })
+            },
+            // 添加操作
+
+            createOrder() {
+                this.$nextTick(() => {
+                    this.selectSku = [];
+                    let _this = this;
+                    // console.log(this.$refs.multipleTable.selection);
+                    // this.$refs.multipleTable.selection获取被选中的行
+                    this.$refs.multipleTable.selection.forEach(item => {
+                        _this.selectSku.push(item);
+                    });
+                })
+                console.log(this.selectSku);
+            },
+            async getCar() {
+                let userId = localStorage.getItem("userID");
+                let _this = this;
+                await axios.get('http://127.0.0.1:8888/umsMember/umsCar/' + userId + "/" + _this.offset + "/" + _this.limit).then(res => {
+                    console.log(res);
+                    for (let i = 0; i < res.data.data.length; i++) {
+                        _this.car.push(res.data.data[i]);
+                    }
+                    _this.offset += _this.limit;
+                    this.showCar = true;
+                }).catch(err => {
+                    console.log(err);
+                })
+            },
+            getClientHeight() {
+                var clientHeight = 0;
+                if (document.body.clientHeight && document.documentElement.clientHeight) {
+                    clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight)
+                } else {
+                    clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight)
+                }
+                return clientHeight
+            },
+
+            getScrollHeight() {
+                return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)
+            },
+            getScrollTop() {
+                var scrollTop = 0;
+                //window.pageYOffset = document.documentElement.scrollTop
+                if (document.documentElement && document.documentElement.scrollTop) {
+                    scrollTop = document.documentElement.scrollTop
+                } else if (document.body) {
+                    scrollTop = document.body.scrollTop
+                }
+                return scrollTop
+            },
+            windowScroll() {
+
+                let _this = this;
+                //获取三个值
+                var scrollTop = this.getScrollTop()
+                var clientHeight = this.getClientHeight()
+                var scrollHeight = this.getScrollHeight()
+                // console.log(scrollTop)
+                // console.log(clientHeight)
+                // console.log(scrollHeight)
+                // console.log("结果="+(scrollTop+clientHeight-scrollHeight))
+
+                //如果满足公式则，确实到底了
+                if (scrollTop + clientHeight - scrollHeight >= -10) {
+                    this.getCar();
+                }
+
+            },
+
+        },
+        created() {
+            this.getCar();
+
+        },
+        mounted() {
+            window.addEventListener('scroll', this.windowScroll, true) //监听页面滚动
+        },
+        destroyed() {
+            window.removeEventListener("scroll", this.windowScroll);//销毁滚动事件
+        }
+    })
+
+
+</script>
+
+</html>

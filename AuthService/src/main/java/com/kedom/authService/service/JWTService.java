@@ -3,10 +3,10 @@ package com.kedom.authService.service;
 
 import com.google.gson.Gson;
 import com.kedom.authService.entity.TokenAndUserID;
-import com.kedom.authService.entity.UmsMember;
 import com.kedom.authService.util.AuthTool;
 import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
+import com.kedom.common.entity.memberServiceEntity.UmsMember;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
@@ -30,7 +30,6 @@ public class JWTService {
 
     public String createAccessToken(String entity) {
         UmsMember umsMember = gson.fromJson(entity, UmsMember.class);
-
         String beforeToken = "clearMark" + System.currentTimeMillis();
         String accessToken = Md5Crypt.md5Crypt(beforeToken.getBytes());
 

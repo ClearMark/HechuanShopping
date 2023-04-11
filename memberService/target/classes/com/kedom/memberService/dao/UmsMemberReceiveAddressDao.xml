@@ -107,8 +107,8 @@
             </if>
         </where>
     </select>
-    <select id="queryMemberById" resultType="com.kedom.memberService.entity.UmsMemberReceiveAddress">
-        SELECT * FROM ums_member_receive_address WHERE member_id= #{memberId}
+    <select id="queryMemberById" resultMap="UmsMemberReceiveAddressMap">
+        SELECT * FROM ums_member_receive_address WHERE member_id= #{memberId} order by default_status desc
     </select>
 
     <!--新增所有列-->

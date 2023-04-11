@@ -16,7 +16,7 @@ import javax.annotation.Resource;
  * @since 2022-12-02 23:55:27
  */
 @RestController
-@RequestMapping("/pmsSkuWare")
+@RequestMapping("/productService/pmsSkuWare")
 public class PmsSkuWareController {
     /**
      * 服务对象
@@ -34,6 +34,11 @@ public class PmsSkuWareController {
     public KedomResponse queryById(@PathVariable("id") Long id) {
         ResponseEntity.ok(this.pmsSkuWareService.queryById(id));
         return null;
+    }
+
+    @GetMapping("/skuId/{skuId}")
+    public KedomResponse queryBySkuId(@PathVariable("skuId") Long skuId) {
+        return KedomResponse.okAddData(this.pmsSkuWareService.queryBySkuId(skuId));
     }
 
     /**

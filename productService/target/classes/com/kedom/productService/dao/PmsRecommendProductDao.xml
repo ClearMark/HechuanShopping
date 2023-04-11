@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedom.productService.dao.PmsRecommendProductDao">
+
+    <resultMap type="com.kedom.productService.entity.PmsRecommendProduct" id="PmsRecommendProductMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="skuId" column="sku_id" jdbcType="INTEGER"/>
+        <result property="catId" column="cat_ID" jdbcType="INTEGER"/>
+        <result property="crtateTime" column="crtate_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PmsRecommendProductMap">
+        select
+          id, user_id, sku_id, cat_ID, crtate_time
+        from pms_recommend_product
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="PmsRecommendProductMap">
+        select
+          id, user_id, sku_id, cat_ID, crtate_time
+        from pms_recommend_product
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="skuId != null">
+                and sku_id = #{skuId}
+            </if>
+            <if test="catId != null">
+                and cat_ID = #{catId}
+            </if>
+            <if test="crtateTime != null">
+                and crtate_time = #{crtateTime}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from pms_recommend_product
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="skuId != null">
+                and sku_id = #{skuId}
+            </if>
+            <if test="catId != null">
+                and cat_ID = #{catId}
+            </if>
+            <if test="crtateTime != null">
+                and crtate_time = #{crtateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" >
+        insert into pms_recommend_product(id, user_id, sku_id, cat_ID, crtate_time)
+        values (#{id}, #{userId}, #{skuId}, #{catId}, #{crtateTime})
+    </insert>
+
+    <insert id="insertBatch">
+        insert into pms_recommend_product(id, user_id, sku_id, cat_ID, crtate_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.id}, #{entity.userId}, #{entity.skuId}, #{entity.catId}, #{entity.crtateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch">
+        insert into pms_recommend_product(user_id, sku_id, cat_ID, crtate_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.userId}, #{entity.skuId}, #{entity.catId}, #{entity.crtateTime})
+        </foreach>
+        on duplicate key update
+        id = values(id),
+        user_id = values(user_id),
+        sku_id = values(sku_id),
+        cat_ID = values(cat_ID),
+        crtate_time = values(crtate_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update pms_recommend_product
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="skuId != null">
+                sku_id = #{skuId},
+            </if>
+            <if test="catId != null">
+                cat_ID = #{catId},
+            </if>
+            <if test="crtateTime != null">
+                crtate_time = #{crtateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from pms_recommend_product where id = #{id}
+    </delete>
+
+</mapper>
+

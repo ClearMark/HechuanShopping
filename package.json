@@ -1,0 +1,7 @@
+{
+  "name": "HechuanShopping",
+  "version": "1.0.0",
+  "dependencies": {
+    "province-city-china": "^8.5.6"
+  }
+}

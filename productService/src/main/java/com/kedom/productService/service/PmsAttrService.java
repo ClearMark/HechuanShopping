@@ -3,7 +3,6 @@ package com.kedom.productService.service;
 import com.kedom.productService.entity.PmsAttr;
 import com.kedom.productService.entity.vo.CategoryAttrVO;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -44,4 +43,6 @@ public interface PmsAttrService {
     List<PmsAttr> getCategorySearchAttr(Long id);
 
     List<CategoryAttrVO> queryAllAttr(Integer num);
+
+    void deleteAttrById(Long id);
 }

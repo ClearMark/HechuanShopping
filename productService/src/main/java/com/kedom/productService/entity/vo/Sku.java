@@ -24,12 +24,5 @@ public class Sku {
     private String skuDefaultImg;
     private Long catalogId;
     private Long userId;
-
-    public Long getSkuId() {
-        return skuId;
-    }
-
-    public void setSkuId(Long skuId) {
-        this.skuId = skuId;
-    }
+    private Long stock;
 }

@@ -216,6 +216,9 @@
     <delete id="deleteById">
         delete from pms_attr where attr_id = #{attrId}
     </delete>
+    <delete id="deleteAttrById">
+        delete from pms_attr where attr_id = #{attrId}
+    </delete>
 
 </mapper>
 

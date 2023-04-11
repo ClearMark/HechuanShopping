@@ -12,7 +12,7 @@
         <result property="publishStatus" column="publish_status" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-        <result property="createId" column="shop_id" jdbcType="INTEGER"/>
+        <result property="createId" column="user_id" jdbcType="INTEGER"/>
     </resultMap>
 
     <!--查询单个-->
@@ -108,6 +108,12 @@
         where spu_name like concat('%', #{spuName}, '%')
           and publish_status = 1
         limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <select id="queryByCategory" resultMap="PmsSpuInfoMap">
+        select * from pms_sku_info
+        left join pms_sku_sale_attr_value on pms_sku_info.sku_id = pms_sku_sale_attr_value.sku_id
+        where catalog_id = #{pamrs.catId} and price between #{pamrs.priceLow} and #{pamrs.priceHigh}
     </select>
 
     <!--新增所有列-->

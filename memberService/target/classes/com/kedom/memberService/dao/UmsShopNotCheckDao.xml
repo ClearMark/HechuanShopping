@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedom.memberService.dao.UmsShopNotCheckDao">
+
+    <resultMap type="com.kedom.memberService.entity.UmsShopNotCheck" id="UmsShopNotCheckMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="shopName" column="shop_name" jdbcType="INTEGER"/>
+        <result property="idCardFront" column="id_card_front" jdbcType="VARCHAR"/>
+        <result property="idCardBack" column="id_card_back" jdbcType="VARCHAR"/>
+        <result property="permitFront" column="permit_front" jdbcType="VARCHAR"/>
+        <result property="permitBack" column="permit_back" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UmsShopNotCheckMap">
+        select
+          id, shop_name, id_card_front, id_card_back, permit_front, permit_back, user_id, status
+        from ums_shop_not_check
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UmsShopNotCheckMap">
+        select
+          id, shop_name, id_card_front, id_card_back, permit_front, permit_back, user_id, status
+        from ums_shop_not_check
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="shopName != null">
+                and shop_name = #{shopName}
+            </if>
+            <if test="idCardFront != null and idCardFront != ''">
+                and id_card_front = #{idCardFront}
+            </if>
+            <if test="idCardBack != null and idCardBack != ''">
+                and id_card_back = #{idCardBack}
+            </if>
+            <if test="permitFront != null and permitFront != ''">
+                and permit_front = #{permitFront}
+            </if>
+            <if test="permitBack != null and permitBack != ''">
+                and permit_back = #{permitBack}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from ums_shop_not_check
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="shopName != null">
+                and shop_name = #{shopName}
+            </if>
+            <if test="idCardFront != null and idCardFront != ''">
+                and id_card_front = #{idCardFront}
+            </if>
+            <if test="idCardBack != null and idCardBack != ''">
+                and id_card_back = #{idCardBack}
+            </if>
+            <if test="permitFront != null and permitFront != ''">
+                and permit_front = #{permitFront}
+            </if>
+            <if test="permitBack != null and permitBack != ''">
+                and permit_back = #{permitBack}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="allNotCheck" resultMap="UmsShopNotCheckMap">
+        select * from ums_shop_not_check where status = 0
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" >
+        insert into ums_shop_not_check(id, shop_name, id_card_front, id_card_back, permit_front, permit_back, user_id, status)
+        values (#{id}, #{shopName}, #{idCardFront}, #{idCardBack}, #{permitFront}, #{permitBack}, #{userId}, #{status})
+    </insert>
+
+    <insert id="insertBatch">
+        insert into ums_shop_not_check(id, shop_name, id_card_front, id_card_back, permit_front, permit_back, user_id, status)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.id}, #{entity.shopName}, #{entity.idCardFront}, #{entity.idCardBack}, #{entity.permitFront}, #{entity.permitBack}, #{entity.userId}, #{entity.status})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch">
+        insert into ums_shop_not_check(shop_name, id_card_front, id_card_back, permit_front, permit_back, user_id, status)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.shopName}, #{entity.idCardFront}, #{entity.idCardBack}, #{entity.permitFront}, #{entity.permitBack}, #{entity.userId}, #{entity.status})
+        </foreach>
+        on duplicate key update
+        id = values(id),
+        shop_name = values(shop_name),
+        id_card_front = values(id_card_front),
+        id_card_back = values(id_card_back),
+        permit_front = values(permit_front),
+        permit_back = values(permit_back),
+        user_id = values(user_id),
+        status = values(status)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update ums_shop_not_check
+        <set>
+            <if test="shopName != null">
+                shop_name = #{shopName},
+            </if>
+            <if test="idCardFront != null and idCardFront != ''">
+                id_card_front = #{idCardFront},
+            </if>
+            <if test="idCardBack != null and idCardBack != ''">
+                id_card_back = #{idCardBack},
+            </if>
+            <if test="permitFront != null and permitFront != ''">
+                permit_front = #{permitFront},
+            </if>
+            <if test="permitBack != null and permitBack != ''">
+                permit_back = #{permitBack},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from ums_shop_not_check where id = #{id}
+    </delete>
+
+</mapper>
+

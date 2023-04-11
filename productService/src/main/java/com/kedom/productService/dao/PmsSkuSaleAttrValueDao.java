@@ -2,10 +2,11 @@ package com.kedom.productService.dao;
 
 import com.kedom.productService.entity.PmsSkuSaleAttrValue;
 import com.kedom.productService.entity.vo.Attr;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
+
 import java.util.List;
-import org.apache.ibatis.annotations.Mapper;
 
 
 /**
@@ -84,5 +85,9 @@ public interface PmsSkuSaleAttrValueDao {
     Byte deleteById(Long id);
 
     int insertList(List<PmsSkuSaleAttrValue> skuSaleAttrValues);
+
+    List<PmsSkuSaleAttrValue> queryBySkuId(Long skuId);
+
+    void updateAttr(@Param("attr") Attr attr, @Param("skuId") Long skuId);
 }
 

@@ -1,0 +1,207 @@
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+<div id="app">
+    <el-form :model="userForm" label-width="100px" class="demo-ruleForm" style="width: 60%">
+        <el-form-item label="用户名">
+            <el-input type="text" v-model="userForm.username"></el-input>
+        </el-form-item>
+        <el-form-item label="密码">
+            <el-input type="password" v-model="userForm.pass"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码">
+            <el-input type="password" v-model="userForm.checkPass"></el-input>
+        </el-form-item>
+
+        <el-form-item label="邮箱" :inline="true">
+            <el-input v-model="userForm.email">
+                <el-button
+                        plain style="padding-right:10px"
+                        slot="suffix" type="text"
+                        @click="getCode"
+                        :disabled="canClick">{{getCodeButton}}
+                </el-button>
+            </el-input>
+        </el-form-item>
+
+        <el-form-item label="邮箱验证码">
+            <el-input type="text" v-model="userForm.code"></el-input>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click="register">提交</el-button>
+            <el-button @click="back">返回</el-button>
+        </el-form-item>
+    </el-form>
+</div>
+</body>
+
+<!-- 引入组件库 -->
+<script src="../js/axios.min.js"></script>
+<link rel="stylesheet" href="../js/elment/http_unpkg.com_element-ui_lib_theme-chalk_index.css">
+<script src="../js/vue2.js"></script>
+<script src="../js/elment/http_unpkg.com_element-ui_lib_index.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            userForm: {},
+            getCodeButton: '获取验证码',
+            canClick: false,
+            totalTime: 60,
+        },
+
+        methods: {
+            passVerify() {
+                if (this.userForm.pass !== this.userForm.checkPass) {
+                    return false;
+                }
+                return true;
+            },
+            register() {
+                if (this.userForm.username === '' || this.userForm.username === null || this.userForm.username === undefined) {
+                    this.$notify.error({
+                        title: '错误',
+                        message: '账户不能为空'
+                    });
+                    return;
+                }
+                if (this.userForm.pass === '' || this.userForm.pass === null || this.userForm.pass === undefined) {
+                    this.$notify.error({
+                        title: '错误',
+                        message: '密码不能为空'
+                    });
+                    return;
+                }
+                if (this.userForm.checkPass === '' || this.userForm.checkPass === null || this.userForm.checkPass === undefined) {
+                    this.$notify.error({
+                        title: '错误',
+                        message: '重复密码不能为空'
+                    });
+                    return;
+                }
+                if (!this.passVerify()) {
+                    this.$notify.error({
+                        title: '错误',
+                        message: '密码不一致'
+                    });
+                    return;
+                }
+                console.log(this.userForm.email)
+                if (this.userForm.email === '' || this.userForm.email === null || this.userForm.email === undefined) {
+                    this.$notify.error({
+                        title: '错误',
+                        message: '邮箱不能为空'
+                    });
+                    return;
+                }
+                if (this.userForm.code === '' || this.userForm.code === null || this.userForm.code === undefined) {
+                    this.$notify.error({
+                        title: '错误',
+                        message: '验证码不能为空'
+                    });
+                    return;
+                }
+                this.userForm.password = this.userForm.pass
+                let _this = this;
+                axios.post('http://127.0.0.1:8888/auth/register', this.userForm)
+                    .then(function (response) {
+                        console.log('解析请求')
+                        var data = response.data;
+                        if (data.code == 8888) {
+                            this.$notify({
+                                title: '成功',
+                                message: '注册成功',
+                                type: 'success'
+                            });
+                            localStorage.setItem("username", _this.userForm.username)
+                            window.location.href = "./login.html"
+                        } else {
+                            _this.$notify.error({
+                                title: '错误',
+                                message: data.msg
+                            });
+                        }
+                    }).catch(function (error) {
+                    _this.$notify.error({
+                        title: '网络异常',
+                        message: data.msg
+                    });
+                });
+
+            },
+            getCode() {
+                if (this.userForm.username === '' || this.userForm.username === null || this.userForm.username === undefined) {
+                    this.$notify.error({
+                        title: '错误',
+                        message: '账户不能为空'
+                    });
+                    return;
+                }
+                if (this.userForm.pass === '' || this.userForm.pass === null || this.userForm.pass === undefined) {
+                    this.$notify.error({
+                        title: '错误',
+                        message: '密码不能为空'
+                    });
+                    return;
+                }
+                if (this.userForm.checkPass === '' || this.userForm.checkPass === null || this.userForm.checkPass === undefined) {
+                    this.$notify.error({
+                        title: '错误',
+                        message: '重复密码不能为空'
+                    });
+                    return;
+                }
+                if (!this.passVerify()) {
+                    this.$notify.error({
+                        title: '错误',
+                        message: '密码不一致'
+                    });
+                    return;
+                }
+                console.log(this.userForm.email)
+                if (this.userForm.email === '' || this.userForm.email === null || this.userForm.email === undefined) {
+                    this.$notify.error({
+                        title: '错误',
+                        message: '邮箱不能为空'
+                    });
+                    return;
+                }
+                axios.get('http://127.0.0.1:8888/auth/MailCode/' + this.userForm.email + '/register')
+                    .then(function (response) {
+                        console.log('解析请求')
+                        var data = response.data;
+                        if (data.code == 8888) {
+                        } else {
+                            console.log(data.message)
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+
+                this.getCodeButton = this.totalTime + 's后重新发送'
+                let clock = window.setInterval(() => {
+                    this.totalTime--
+                    this.getCodeButton = this.totalTime + 's后重新发送'
+                    if (this.totalTime < 0) {
+                        window.clearInterval(clock)
+                        this.getCodeButton = '重新发送短信'
+                        this.totalTime = 60
+                        this.canClick = false
+                    }
+                }, 1000)
+            },
+            back() {
+                window.history.back();
+            }
+        },
+
+    })
+
+
+</script>
+
+</html>

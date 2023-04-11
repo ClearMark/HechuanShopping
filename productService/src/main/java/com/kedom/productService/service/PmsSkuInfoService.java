@@ -1,5 +1,6 @@
 package com.kedom.productService.service;
 
+import com.kedom.productService.entity.GetProductByCategoryVO;
 import com.kedom.productService.entity.PmsSkuInfo;
 import com.kedom.productService.entity.vo.Sku;
 
@@ -45,7 +46,15 @@ public interface PmsSkuInfoService {
     PmsSkuInfo querySkuIntoWareInfoBySkuId(Long skuId);
 
 
-    List<Sku> getHotProduct();
+    List<Sku> getHotProduct(Integer offset, Integer limit);
 
     List<Sku> getProductByUserId(Long userId);
+
+    void updateProduct(Sku sku);
+
+    List<PmsSkuInfo> queryByKey(List<String> words, Integer offset);
+
+    List<PmsSkuInfo> queryByCategory(GetProductByCategoryVO pamrs);
+
+    List<PmsSkuInfo> getRecommendProductByUser(Integer userId, Integer offset, Integer limit);
 }

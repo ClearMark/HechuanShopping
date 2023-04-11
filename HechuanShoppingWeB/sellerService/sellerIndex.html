@@ -1,6 +1,7 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="Pragma" content="no-cache">
 </head>
 <style>
     .el-tag + .el-tag {
@@ -40,20 +41,30 @@
     <el-main v-if="showType=='商品管理'">
         <template>
             <template>
-                <div class="box_right">
+                <div class="box_right" style="display: inline-block;">
                     <div class="demo-image__placeholder">
-                        <div class="block" v-for="product in productList" :key="product.id" style="width: 70px">
-                            <el-image :src="product.DefaultImg"></el-image>
-                            <el-image  :src="product.DefaultImg" style="height: 180px;width: 360px;" ></el-image>
-
-                            <span class="demonstration">{{product.skuName}}</span>
+                        <div class="block" v-for="product in productList"
+                             style="width:360px;display: inline-block;padding-left: 10px">
+                            <a @click="adminProduct(product)">
+                                <el-image :src="product.skuDefaultImg" style="height: 180px;width: 360px;"></el-image>
+                                <span class="demonstration">{{product.skuName}}</span>
+                            </a>
+                            <div>
+                                <el-tag>当前库存:{{product.stock}}</el-tag>
+                                <el-button type="danger" round>删除商品</el-button>
+                            </div>
                         </div>
+
+                        <button class="el-icon-plus" style="height: 180px;width: 360px; vertical-align: top;"
+                                @click="productAddDialog = true"></button>
                     </div>
+
                 </div>
+
             </template>
             <template>
-                <el-button type="text" @click="productAddDialog = true">添加商品</el-button>
                 <el-dialog
+                        :before-close="closeAddSkuDialog"
                         :visible.sync="productAddDialog"
                         width="70%">
                     <el-steps :active="active" finish-status="success">
@@ -115,7 +126,6 @@
                                 <el-button style="margin-left: 160px" v-if="showImage" @click="showImage=false" type="danger" icon="el-icon-delete" circle></el-button>
                             </el-form-item>
 
-
                         </el-form>
                     </div>
 
@@ -158,19 +168,7 @@
         }).catch(function (error) {
     });
 
-    const userID = localStorage.getItem("userID");
-    axios.get('http://127.0.0.1:8888/productService/pmsSkuInfo/getProductByUserId/'+userID)
-        .then(function (response) {
-            console.log('解析请求')
-            var data = response.data;
-            if (data.code == 8888) {
-                console.log('请求成功')
-                console.log(data.data)
-                localStorage.setItem("productList", JSON.stringify(data.data));
-            } else {
-            }
-        }).catch(function (error) {
-    });
+
 
 
 
@@ -179,9 +177,10 @@
     new Vue({
         el: '#app',
         data: {
-            showType: "2222",
+            showType: "商品管理",
             productAddDialog: false,
             active: 0,
+            isShowProduct: false,
             showImage: false,
             caseValue: [],
             productAddNext: "下一步",
@@ -190,14 +189,31 @@
             dynamicTags: ['标签一', '标签二', '标签三'],
             inputVisible: false,
             inputValue: '',
-            sku:{},
-
-
+            sku: {},
             categoryAttr: [],
-            productList:JSON.parse(localStorage.getItem("productList"))
-              ,
+            productList: [],
         },
         methods: {
+
+            async getProduct() {
+                const userID = localStorage.getItem("userID");
+                let _this = this;
+                await axios.get('http://127.0.0.1:8888/productService/pmsSkuInfo/getProductByUserId/' + userID)
+                    .then(function (response) {
+                        console.log('解析请求')
+                        var data = response.data;
+                        if (data.code == 8888) {
+                            console.log('请求成功')
+                            console.log(data.data)
+                            _this.productList = data.data
+                            _this.isShowProduct = true
+                        } else {
+                        }
+                    }).catch(function (error) {
+                    });
+            },
+
+
             changeShowType(type) {
                 this.showType = type;
                 console.log(type)
@@ -213,12 +229,16 @@
                 }
                 if (this.active == 2) {
                     console.log(222222)
-                    this.sku.attr=this.categoryAttr
-                    this.sku.userId=localStorage.getItem("userID")
-                    axios.post('http://127.0.0.1:8888/productService/pmsSkuInfo/add',this.sku).then((res) => {
+                    this.sku.attr = this.categoryAttr
+                    this.sku.stock = 0
+                    this.sku.userId = localStorage.getItem("userID")
+                    axios.post('http://127.0.0.1:8888/productService/pmsSkuInfo/add', this.sku).then((res) => {
                         console.log(res)
+                        this.productList.push(this.sku)
                     })
-                    }
+                    this.active = 0;
+                    this.productAddDialog = false;
+                }
             },
             getCaseList(item) {
                 item.forEach((item) => {
@@ -261,6 +281,18 @@
                 console.log(this.categoryAttr)
             },
 
+            async adminProduct(product) {
+                await axios.get('http://127.0.0.1:8888/productService/pmsSkuSaleAttrValue/skuId/' + product.skuId)
+                    .then(function (response) {
+                        console.log('解析请求')
+                        product.attr = response.data.data;
+                        console.log(product)
+                        localStorage.setItem("adminProduct", JSON.stringify(product));
+                    }).catch(function (error) {
+                    });
+                window.location.href = "adminProduct.html"
+            },
+
             uploadSuccess(response, file, fileList) {
                 console.log('上传成功')
                 console.log(response.data)
@@ -268,6 +300,17 @@
                 console.log(this.sku.skuDefaultImg)
                 this.showImage = true;
             },
+
+            closeAddSkuDialog() {
+                this.productAddDialog = false;
+                this.active = 0;
+                this.productAddNext = "下一步";
+                this.sku = {};
+            },
+
+        },
+        created() {
+            this.productList = this.getProduct();
 
         }
     })

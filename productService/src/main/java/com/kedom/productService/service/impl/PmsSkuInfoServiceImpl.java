@@ -3,10 +3,13 @@ package com.kedom.productService.service.impl;
 import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.productService.dao.PmsSkuInfoDao;
+import com.kedom.productService.entity.GetProductByCategoryVO;
 import com.kedom.productService.entity.PmsSkuInfo;
+import com.kedom.productService.entity.PmsSkuWare;
 import com.kedom.productService.entity.vo.Sku;
 import com.kedom.productService.service.PmsSkuInfoService;
 import com.kedom.productService.service.PmsSkuSaleAttrValueService;
+import com.kedom.productService.service.PmsSkuWareService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -23,7 +26,8 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
     @Resource
     private PmsSkuInfoDao pmsSkuInfoDao;
 
-
+    @Resource
+    private PmsSkuWareService pmsSkuWareService;
     @Resource
     private PmsSkuSaleAttrValueService pmsSkuSaleAttrValueService;
 
@@ -47,10 +51,12 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
      */
     @Override
     public void insert(Sku pmsSkuInfo) {
-       int count= this.pmsSkuInfoDao.insert(pmsSkuInfo);
+        int count = this.pmsSkuInfoDao.insert(pmsSkuInfo);
         pmsSkuSaleAttrValueService.insertBatch(pmsSkuInfo.getAttr(), pmsSkuInfo.getSkuId());
-
-
+        PmsSkuWare pmsSkuWare = new PmsSkuWare();
+        pmsSkuWare.setSkuId(pmsSkuInfo.getSkuId());
+        pmsSkuWare.setStock(0);
+        pmsSkuWareService.insert(pmsSkuWare);
     }
 
     /**
@@ -92,14 +98,45 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
     }
 
     @Override
-    public List<Sku> getHotProduct() {
-        return pmsSkuInfoDao.getHotProduct();
+    public List<Sku> getHotProduct(Integer offset, Integer limit) {
+        return pmsSkuInfoDao.getHotProduct(offset, limit);
     }
 
     @Override
     public List<Sku> getProductByUserId(Long userId) {
 
         return pmsSkuInfoDao.getProductByUserId(userId);
+    }
+
+    @Override
+    public void updateProduct(Sku sku) {
+        pmsSkuInfoDao.updateProduct(sku);
+        for (int i = 0; i < sku.getAttr().size(); i++) {
+            pmsSkuSaleAttrValueService.updateAttr(sku.getAttr().get(i), sku.getSkuId());
+        }
+    }
+
+    @Override
+    public List<PmsSkuInfo> queryByKey(List<String> words, Integer offset) {
+        return pmsSkuInfoDao.queryByKey(words, offset);
+    }
+
+    @Override
+    public List<PmsSkuInfo> queryByCategory(GetProductByCategoryVO pamrs) {
+        if (pamrs.getPriceLow() == null) {
+            pamrs.setPriceLow(0L);
+        }
+        if (pamrs.getPriceHigh() == null) {
+            pamrs.setPriceHigh(999999999L);
+        }
+        List<PmsSkuInfo> list = pmsSkuInfoDao.queryByCategory(pamrs, pamrs.getAttrs());
+        return list;
+    }
+
+    @Override
+    public List<PmsSkuInfo> getRecommendProductByUser(Integer userId, Integer offset, Integer limit) {
+
+        return pmsSkuInfoDao.getRecommendProductByUser(userId, offset, limit);
     }
 
 }

@@ -3,7 +3,6 @@ package com.kedom.productService.controller;
 import com.kedom.common.entity.KedomResponse;
 import com.kedom.productService.entity.PmsSkuInfo;
 import com.kedom.productService.entity.vo.Sku;
-import com.kedom.productService.entity.vo.Skus;
 import com.kedom.productService.service.PmsSkuInfoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,17 +44,31 @@ public class PmsSkuInfoController {
      */
     @PostMapping("/add")
     public KedomResponse add(@RequestBody Sku pmsSkuInfo) {
-         this.pmsSkuInfoService.insert(pmsSkuInfo);
+        this.pmsSkuInfoService.insert(pmsSkuInfo);
         return KedomResponse.ok();
     }
 
-    @GetMapping("/getHotProduct")
-    public KedomResponse getHotProduct() {
-        return KedomResponse.okAddData(this.pmsSkuInfoService.getHotProduct());
+    @GetMapping("/getHotProduct/{offset}/{limit}")
+    public KedomResponse getHotProduct(@PathVariable("offset") Integer offset, @PathVariable("limit") Integer limit) {
+        return KedomResponse.okAddData(this.pmsSkuInfoService.getHotProduct(offset, limit));
     }
+
+    @GetMapping("/getRecommendProductByUser/{userId}/{offset}/{limit}")
+    public KedomResponse getRecommendProductByUser(@PathVariable Integer userId, @PathVariable("offset") Integer offset, @PathVariable("limit") Integer limit) {
+        Object recommendProductByUser = this.pmsSkuInfoService.getRecommendProductByUser(userId, offset, limit);
+        return KedomResponse.okAddData(recommendProductByUser);
+    }
+
+
     @GetMapping("/getProductByUserId/{userId}")
     public KedomResponse getProductByUserId(@PathVariable("userId") Long userId) {
         return KedomResponse.okAddData(this.pmsSkuInfoService.getProductByUserId(userId));
+    }
+
+    @PostMapping("/updateProduct")
+    public KedomResponse updateProduct(@RequestBody Sku sku) {
+        pmsSkuInfoService.updateProduct(sku);
+        return KedomResponse.ok();
     }
 
     /**
@@ -66,7 +79,7 @@ public class PmsSkuInfoController {
      */
     @PutMapping
     public KedomResponse edit(PmsSkuInfo pmsSkuInfo) {
-         this.pmsSkuInfoService.update(pmsSkuInfo);
+        this.pmsSkuInfoService.update(pmsSkuInfo);
         return KedomResponse.ok();
     }
 

@@ -4,114 +4,203 @@
 		<meta charset="utf-8">
 		<title></title>
 		<style>
-			div label {
-				margin: 20px 0;
-				font-family: "Georgia", serif;
-				color: #212121;
-			}
-		</style>
+
+            .logo {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 20px;
+                background-color: #333;
+                color: #fff;
+                font-size: 1.5em;
+            }
+
+            .selected {
+                color: red;
+            / / 加粗 font-weight: bold;
+            }
+
+            .notSelected {
+                color: black;
+            }
+        </style>
 	</head>
-	<body>
-		<div id="two"></div>
-		<div id="three"></div>
-		<div id="categorySearchAttr"></div>
-	</body>
-	<script src="../js/axios.min.js"></script>
-	<script src="../js/jquery-3.5.1.min.js"></script>
-	<script>
-		//获得平台属性
-		function getCategroyAttr(categroyID) {
-			axios.get(
-					'http://127.0.0.1:8888/productService/pmsAttr/getCategorySearchAttr/' +
-					oneDefaultThreeCatrgroy.catId)
-				.then(function(response) {
-					console.log('解析请求')
-					var data = response.data;
-					if (data.code == 8888) {
-						console.log('请求成功')
-						
-						console.log(data.data);
-						return data.data
-					} else {
-						alert(data.message)
-					}
-				})
-				.catch(function(error) {
-					console.log(error);
-				});
-		}
-	</script>
-	
-	<script>
-		//获取父节点
-		var twoCategoryDiv = document.getElementById("two");
-		//获取二级标题
-		var twoCategoryList = JSON.parse(localStorage.getItem('category'))
+    <body>
+    <div id="app">
+        <div class="logo">
+            <span onclick="backIndex()">合川特色购物商城</span></div>
+        <label :class="index==nowTwoCategory?'selected':'notSelected'" v-for="(two,index,i) in allTwoCategory"
+               @click="showThree(index,i)">{{two.name}}|</label>
+        <br>
+        <label :class="index==nowThreeCategory?'selected':'notSelected'" v-for="(three,index,i) in threeCategory"
+               @click="showAttr(three,index)">{{three.name}}|</label>
+        <br>
+        <el-label>已选分类:{{allTwoCategory[nowTwoCategory].name}}->{{threeCategory[nowThreeCategory].name}}</el-label>
+        <el-form :inline="true" class="demo-form-inline">
+            <el-laber>商品属性</el-laber>
+            <br>
+            <el-form-item label="价格:">
+                <el-input v-model="priceLow"></el-input>
+            </el-form-item>
+            <el-form-item>
+                ----
+            </el-form-item>
+            <el-form-item>
+                <el-input v-model="priceHigh"></el-input>
+            </el-form-item>
+            <el-form-item :label="attr.attrName" v-for="attr in attrs" :key="attr.attrId">
+                <el-input v-model="attr.attrValue"></el-input>
+            </el-form-item>
+
+            <el-form-item>
+                <el-button type="primary" @click="getProduct">查询</el-button>
+            </el-form-item>
+        </el-form>
+        <div class="demo-image__placeholder" v-if="showProduct">
+            <div class="block" v-for="product in productList"
+                 style="width:360px;display: inline-block; padding-right: 10px"
+                 @click="intoUserProduct(product.skuId)">
+                <el-image :src="product.skuDefaultImg" style="height: 180px;width: 360px;"></el-image>
+                <span class="demonstration">{{product.skuName}}</span>
+                <br/>
+                <span class="demonstration">￥{{product.price}}</span>
+            </div>
+        </div>
+    </div>
 
 
-		const oneDefaultThreeCatrgroy = (twoCategoryList[0].children)[0];
-		console.log("默认三级" + oneDefaultThreeCatrgroy.name)
-		
-		getCategroyAttr(oneDefaultThreeCatrgroy.catId);
+    </body>
+    <script src="../js/axios.min.js"></script>
+    <link rel="stylesheet" href="../js/elment/http_unpkg.com_element-ui_lib_theme-chalk_index.css">
+    <script src="../js/vue2.js"></script>
+    <script src="../js/elment/http_unpkg.com_element-ui_lib_index.js"></script>
+    <script>
+        function backIndex() {
+            window.location.href = './index.html'
+        }
+    </script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                allTwoCategory: [],
+                threeCategory: [],
+                nowTwoCategory: 0,
+                nowThreeCategory: 0,
+                attrs: [],
+                priceLow: null,
+                priceHigh: null,
+                productList: [],
+                showProduct: false,
+                offset: 0,
+                limit: 5,
+
+            },
+
+            methods: {
+                showThree(index) {
+                    console.log(index)
+                    this.nowTwoCategory = index
+                    this.nowThreeCategory = 0
+                    this.threeCategory = this.allTwoCategory[index].children
+                },
+                showAttr(three, index) {
+                    this.nowThreeCategory = index;
+                    this.attrs = []
+                    let _this = this
+                    axios.get('http://127.0.0.1:8888/productService/pmsAttr/getCategoryAttr/' + three.catId).then(res => {
+                        for (let i = 0; i < res.data.data.length; i++) {
+                            let attr = {
+                                attrName: res.data.data[i].attrName,
+                                attrValue: "",
+                                attrId: res.data.data[i].attrId
+                            }
+                            _this.attrs.push(attr)
+
+                        }
+                        console.log("获取到视频" + _this.attrs)
+                    })
+                },
+                intoUserProduct(id) {
+                    window.location.href = "../memberService/userProduct.html?productId=" + id;
+
+                },
+
+                getProduct() {
+                    let _this = this
+                    let params = {
+                        catId: this.threeCategory[this.nowThreeCategory].catId,
+                        offset: this.offset,
+                        limit: this.limit,
+                        attrs: this.attrs,
+                        priceLow: this.priceLow,
+                        priceHigh: this.priceHigh
+                    }
+                    axios.post('http://127.0.0.1:8888/productService/product/getProductByCategory', params).then(res => {
+                        for (let i = 0; i < res.data.data.length; i++) {
+                            _this.productList.push(res.data.data[i]);
+                        }
+                        _this.showProduct = true
+                        _this.offset += _this.limit
+                    })
+                },
+
+                getClientHeight() {
+                    var clientHeight = 0;
+                    if (document.body.clientHeight && document.documentElement.clientHeight) {
+                        clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight)
+                    } else {
+                        clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight)
+                    }
+                    return clientHeight
+                },
+
+                getScrollHeight() {
+                    return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)
+                },
+                getScrollTop() {
+                    var scrollTop = 0;
+                    //window.pageYOffset = document.documentElement.scrollTop
+                    if (document.documentElement && document.documentElement.scrollTop) {
+                        scrollTop = document.documentElement.scrollTop
+                    } else if (document.body) {
+                        scrollTop = document.body.scrollTop
+                    }
+                    return scrollTop
+                },
+
+                windowScroll() {
+                    let _this = this;
+                    //获取三个值
+                    var scrollTop = this.getScrollTop()
+                    var clientHeight = this.getClientHeight()
+                    var scrollHeight = this.getScrollHeight()
+                    //如果满足公式则，确实到底了
+                    if (scrollTop + clientHeight - scrollHeight >= 0) {
+                        console.log("滚动了")
+                        _this.getProduct()
+                    }
+
+                },
 
 
+            },
+            created() {
+                this.allTwoCategory = JSON.parse(localStorage.getItem('category'))
+                this.threeCategory = this.allTwoCategory[0].children
+                this.showAttr(this.threeCategory[0], 0)
+                this.getProduct()
+            },
+            mounted() {
+                window.addEventListener('scroll', this.windowScroll, true) //监听页面滚动
+            },
+            destroyed() {
+                window.removeEventListener("scroll", this.windowScroll);//销毁滚动事件
+            }
+
+        })
 
 
-
-		//遍历二级标题
-		twoCategoryList.forEach((category, index) => {
-			// Create a new HTML element for each category
-			const element = document.createElement("label");
-
-
-			// Add a click event listener to the element
-			element.addEventListener("click", () => {
-				// Handle the click event for the element
-				var threeCategoryDiv = document.getElementById("three");
-				threeCategoryDiv.innerHTML = "";
-
-				const defaultThreeCatrgroy = (category.children)[0];
-				console.log("默认三级" + defaultThreeCatrgroy.name)
-				getCategroyAttr(defaultThreeCatrgroy.catId);
-
-
-
-				var threeCategoryList = category.children
-
-				threeCategoryList.forEach((category, index) => {
-					// Create a new HTML element for each category
-					const element = document.createElement("label");
-					threeCategoryDiv.appendChild(element);
-					element.innerText = category.name + '/';
-					element.addEventListener("click", () => {
-					getCategroyAttr(category.catId);
-
-
-
-
-
-					});
-
-
-				});
-			});
-			twoCategoryDiv.appendChild(element);
-			// if(count%3==0)
-			// {
-			//  var brLa = document.createElement("br");
-			//  categoryDiv.appendChild(brLa);
-			//  console.log('换行')
-			// }
-			// else
-			// {
-			//  category.name+='/'
-			// }
-
-			element.innerText = category.name + '|';
-			// count++;
-			// Append the element to the array
-			// elements.push(element);
-		});
 	</script>
 
 	

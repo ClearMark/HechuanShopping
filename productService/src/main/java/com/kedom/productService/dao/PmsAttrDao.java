@@ -2,13 +2,11 @@ package com.kedom.productService.dao;
 
 import com.kedom.productService.entity.PmsAttr;
 import com.kedom.productService.entity.vo.CategoryAttrVO;
-import org.apache.ibatis.annotations.MapKey;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
 
-import java.util.HashMap;
 import java.util.List;
-import org.apache.ibatis.annotations.Mapper;
 
 
 /**
@@ -94,5 +92,7 @@ public interface PmsAttrDao {
     List<PmsAttr> getCategorySearchAttr(Long id);
 
     List<CategoryAttrVO> queryAllAttr(Integer offset);
+
+    void deleteAttrById(Long id);
 }
 

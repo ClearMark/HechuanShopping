@@ -73,8 +73,8 @@
 				console.log(data.data.Token)
 				console.log(data.data.userData)
 
-				localStorage.setItem("Token",data.data.Token)
-              localStorage.setItem("userData",JSON.stringify(data.data.userData))
+              localStorage.setItem("Token", data.data.Token)
+                localStorage.setItem("userData", JSON.stringify(data.data.userData))
               localStorage.setItem("userID",data.data.userData.id)
 				window.location.href="../productService/index.html"
 			}

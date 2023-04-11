@@ -1,5 +1,7 @@
 package com.kedom.productService.service;
 
+import com.kedom.productService.entity.GetProductByCategoryVO;
+import com.kedom.productService.entity.PmsSkuInfo;
 import com.kedom.productService.entity.PmsSpuInfo;
 
 import java.util.List;
@@ -43,4 +45,6 @@ public interface PmsSpuInfoService {
 
 
     List<PmsSpuInfo> queryBySpuNameAndPage(String spuKey, Integer pageNum, Integer pageSize);
+
+    List<PmsSkuInfo> queryByCategory(GetProductByCategoryVO pamrs);
 }

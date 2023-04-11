@@ -74,12 +74,22 @@ public class PmsSkuSaleAttrValueServiceImpl implements PmsSkuSaleAttrValueServic
     }
 
     @Override
-    public void insertBatch(List<Attr> attr,Long skuId) {
-        Integer integer = pmsSkuSaleAttrValueDao.insertBatch(attr,skuId);
-        if(integer==0)
-        {
+    public void insertBatch(List<Attr> attr, Long skuId) {
+        Integer integer = pmsSkuSaleAttrValueDao.insertBatch(attr, skuId);
+        if (integer == 0) {
             throw new KedomException(KedomExceptionEnum.INSERT_ERROR);
         }
+    }
+
+    @Override
+    public List<PmsSkuSaleAttrValue> queryBySkuId(Long skuId) {
+
+        return pmsSkuSaleAttrValueDao.queryBySkuId(skuId);
+    }
+
+    @Override
+    public void updateAttr(Attr attr, Long skuId) {
+        pmsSkuSaleAttrValueDao.updateAttr(attr, skuId);
     }
 
 }

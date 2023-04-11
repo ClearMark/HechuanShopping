@@ -1,6 +1,8 @@
 package com.kedom.productService.dao;
 
+import com.kedom.productService.entity.GetProductByCategoryVO;
 import com.kedom.productService.entity.PmsSpuInfo;
+import com.kedom.productService.entity.vo.Attr;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
@@ -81,5 +83,7 @@ public interface PmsSpuInfoDao {
     Integer spuPutOnShelves(PmsSpuInfo pmsSpuInfo);
 
     List<PmsSpuInfo> queryBySpuNameAndPage(String spuKey, Integer pageNum, Integer pageSize);
+
+    List<PmsSpuInfo> queryByCategory(@Param("pamrs") GetProductByCategoryVO pamrs, @Param("attrs") List<Attr> attrs);
 }
 

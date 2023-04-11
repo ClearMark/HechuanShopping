@@ -35,4 +35,6 @@ public interface PmsSkuWareService {
     void update(PmsSkuWare pmsSkuWare);
 
     void updateWare(PmsSkuWare pmsSkuWare);
+
+    PmsSkuWare queryBySkuId(Long skuId);
 }

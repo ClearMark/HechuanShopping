@@ -10,7 +10,6 @@ import com.kedom.productService.service.PmsAttrService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -100,6 +99,11 @@ public class PmsAttrServiceImpl implements PmsAttrService {
         int offset = (num - 1) * 10;
         List<CategoryAttrVO> categoryAttrVOS = pmsAttrDao.queryAllAttr(offset);
         return categoryAttrVOS;
+    }
+
+    @Override
+    public void deleteAttrById(Long id) {
+        pmsAttrDao.deleteAttrById(id);
     }
 
 }

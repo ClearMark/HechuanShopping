@@ -4,7 +4,6 @@ import com.kedom.common.entity.KedomResponse;
 import com.kedom.productService.entity.PmsAttr;
 import com.kedom.productService.entity.vo.CategoryAttrVO;
 import com.kedom.productService.service.PmsAttrService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -85,9 +84,10 @@ public class PmsAttrController {
      * @param id 主键
      * @return 删除是否成功
      */
-    @DeleteMapping
-    public KedomResponse deleteById(Long id) {
-     return null;
+    @DeleteMapping("/{id}")
+    public KedomResponse deleteById(@PathVariable("id") Long id) {
+        this.pmsAttrService.deleteAttrById(id);
+        return KedomResponse.ok();
     }
 
 }

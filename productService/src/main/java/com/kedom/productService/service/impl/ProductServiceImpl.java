@@ -1,10 +1,13 @@
 package com.kedom.productService.service.impl;
 
-import com.kedom.productService.entity.*;
-import com.kedom.productService.entity.vo.BaseAttrs;
-import com.kedom.productService.entity.vo.Images;
+import com.hankcs.hanlp.HanLP;
+import com.kedom.productService.entity.GetProductByCategoryVO;
+import com.kedom.productService.entity.PmsSkuInfo;
+import com.kedom.productService.entity.PmsSkuSaleAttrValue;
+import com.kedom.productService.entity.PmsSpuInfo;
+import com.kedom.productService.entity.vo.Attr;
 import com.kedom.productService.entity.vo.ProductVO;
-import com.kedom.productService.entity.vo.Skus;
+import com.kedom.productService.entity.vo.Sku;
 import com.kedom.productService.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -186,9 +188,79 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    @Cacheable(value = "product",key = "'aaa'")
-    public String a()
-    {
+    @Override
+    public Sku getProduct(Long id) {
+        Sku sku = new Sku();
+        sku.setAttr(new ArrayList<>());
+        //查询sku基本信息
+        PmsSkuInfo pmsSkuInfo = pmsSkuInfoService.queryById(id);
+        BeanUtils.copyProperties(pmsSkuInfo, sku);
+        //查询sku图片
+//        List<PmsSkuImages> pmsSkuImages = pmsSkuImagesService.selectList(new EntityWrapper<PmsSkuImages>().eq("sku_id", id));
+//        sku.setImages(pmsSkuImages);
+        //查询sku销售属性
+        List<PmsSkuSaleAttrValue> pmsSkuSaleAttrValues = pmsSkuSaleAttrValueService.queryBySkuId(id);
+        for (int i = 0; i < pmsSkuSaleAttrValues.size(); i++) {
+            Attr attr = new Attr();
+            attr.setAttrId(pmsSkuSaleAttrValues.get(i).getAttrId());
+            attr.setAttrName(pmsSkuSaleAttrValues.get(i).getAttrName());
+            attr.setAttrValue(pmsSkuSaleAttrValues.get(i).getAttrValue());
+            sku.getAttr().add(attr);
+        }
+        return sku;
+    }
+
+    @Override
+    public List<Sku> getProductByKey(String spuKey, Integer offset) {
+        //分词
+        List<String> words = HanLP.extractKeyword(spuKey, 10);
+        List<PmsSkuInfo> pmsSkuInfos = pmsSkuInfoService.queryByKey(words, offset);
+        List<Sku> skus = pmsSkuInfos.stream().map(pmsSkuInfo -> {
+            Sku sku = new Sku();
+            BeanUtils.copyProperties(pmsSkuInfo, sku);
+            return sku;
+        }).collect(Collectors.toList());
+
+        for (int i = 0; i < skus.size(); i++) {
+            skus.get(i).setAttr(new ArrayList<>());
+            List<PmsSkuSaleAttrValue> pmsSkuSaleAttrValues = pmsSkuSaleAttrValueService.queryBySkuId(skus.get(i).getSkuId());
+            for (int j = 0; j < pmsSkuSaleAttrValues.size(); j++) {
+                Attr attr = new Attr();
+                attr.setAttrId(pmsSkuSaleAttrValues.get(j).getAttrId());
+                attr.setAttrName(pmsSkuSaleAttrValues.get(j).getAttrName());
+                attr.setAttrValue(pmsSkuSaleAttrValues.get(j).getAttrValue());
+                skus.get(i).getAttr().add(attr);
+            }
+        }
+        return skus;
+
+    }
+
+    @Override
+    public List<Sku> getProductByCategory(GetProductByCategoryVO pamrs) {
+        List<PmsSkuInfo> pmsSkuInfos = pmsSkuInfoService.queryByCategory(pamrs);
+        List<Sku> skus = pmsSkuInfos.stream().map(pmsSkuInfo -> {
+            Sku sku = new Sku();
+            BeanUtils.copyProperties(pmsSkuInfo, sku);
+            return sku;
+        }).collect(Collectors.toList());
+
+        for (int i = 0; i < skus.size(); i++) {
+            skus.get(i).setAttr(new ArrayList<>());
+            List<PmsSkuSaleAttrValue> pmsSkuSaleAttrValues = pmsSkuSaleAttrValueService.queryBySkuId(skus.get(i).getSkuId());
+            for (int j = 0; j < pmsSkuSaleAttrValues.size(); j++) {
+                Attr attr = new Attr();
+                attr.setAttrId(pmsSkuSaleAttrValues.get(j).getAttrId());
+                attr.setAttrName(pmsSkuSaleAttrValues.get(j).getAttrName());
+                attr.setAttrValue(pmsSkuSaleAttrValues.get(j).getAttrValue());
+                skus.get(i).getAttr().add(attr);
+            }
+        }
+        return skus;
+    }
+
+    @Cacheable(value = "product", key = "'aaa'")
+    public String a() {
         return "a";
     }
 

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * sku销售属性&值(PmsSkuSaleAttrValue)表控制层
@@ -15,7 +16,7 @@ import javax.annotation.Resource;
  * @since 2022-11-17 14:25:38
  */
 @RestController
-@RequestMapping("/pmsSkuSaleAttrValue")
+@RequestMapping("/productService/pmsSkuSaleAttrValue")
 public class PmsSkuSaleAttrValueController {
     /**
      * 服务对象
@@ -43,8 +44,14 @@ public class PmsSkuSaleAttrValueController {
      */
     @PostMapping
     public KedomResponse add(PmsSkuSaleAttrValue pmsSkuSaleAttrValue) {
-         this.pmsSkuSaleAttrValueService.insert(pmsSkuSaleAttrValue);
+        this.pmsSkuSaleAttrValueService.insert(pmsSkuSaleAttrValue);
         return KedomResponse.ok();
+    }
+
+    @GetMapping("/skuId/{skuId}")
+    public KedomResponse queryBySkuId(@PathVariable("skuId") Long skuId) {
+        List<PmsSkuSaleAttrValue> list = this.pmsSkuSaleAttrValueService.queryBySkuId(skuId);
+        return KedomResponse.okAddData(list);
     }
 
     /**
@@ -55,7 +62,7 @@ public class PmsSkuSaleAttrValueController {
      */
     @PutMapping
     public KedomResponse edit(PmsSkuSaleAttrValue pmsSkuSaleAttrValue) {
-         this.pmsSkuSaleAttrValueService.update(pmsSkuSaleAttrValue);
+        this.pmsSkuSaleAttrValueService.update(pmsSkuSaleAttrValue);
         return KedomResponse.ok();
     }
 

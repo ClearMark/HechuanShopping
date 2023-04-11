@@ -72,6 +72,12 @@
             </if>
         </where>
     </select>
+    <select id="queryBySkuId" resultMap="PmsSkuSaleAttrValueMap">
+select *
+        from pms_sku_sale_attr_value a left join pms_attr b on a.attr_id = b.attr_id
+        where a.sku_id = #{skuId}
+
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" >
@@ -130,6 +136,9 @@
             </if>
         </set>
         where id = #{id}
+    </update>
+    <update id="updateAttr">
+        update pms_sku_sale_attr_value set attr_value = #{attr.attrValue} where sku_id = #{skuId} and attr_id = #{attr.attrId}
     </update>
 
     <!--通过主键删除-->

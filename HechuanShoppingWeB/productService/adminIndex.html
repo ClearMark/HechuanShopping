@@ -21,16 +21,16 @@
         <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
             <el-menu :default-openeds="['1']">
                 <el-submenu index="1">
-                    <template slot="title"><i class="el-icon-message"></i>用户管理</template>
+                    <template slot="title"><i class="el-icon-message"></i>信息管理管理</template>
                     <el-menu-item-group>
                         <el-menu-item index="1-1" @click="mainTypeChange('用户信息管理')">用户信息管理</el-menu-item>
                         <el-menu-item index="1-2">商家信息管理</el-menu-item>
                     </el-menu-item-group>
                 </el-submenu>
                 <el-submenu index="2">
-                    <template slot="title"><i class="el-icon-setting"></i>订单管理</template>
+                    <template slot="title"><i class="el-icon-setting"></i>店铺/订单管理</template>
                     <el-menu-item-group>
-                        <el-menu-item index="2-1">选项1</el-menu-item>
+                        <el-menu-item index="2-1" @click="mainTypeChange('店铺审核管理')">店铺审核管理</el-menu-item>
                         <el-menu-item index="2-2">选项2</el-menu-item>
                     </el-menu-item-group>
                 </el-submenu>
@@ -103,7 +103,86 @@
                 </template>
             </el-main>
 
+            <el-main v-if="mainType=='店铺审核管理'">
+                <template>
+                    <el-table
+                            :data="checkShopList"
+                            border
+                            style="width: 50%">
+                        <el-table-column
+                                fixed
+                                prop="shopName"
+                                label="店铺名称"
+                                width="150">
+                        </el-table-column>
+                        <el-table-column
+                                fixed
+                                prop="userId"
+                                label="申请人"
+                                width="150">
+                        </el-table-column>
+                        <el-table-column
+                                prop="createTime"
+                                label="申请日期"
+                                width="120">
+                        </el-table-column>
+                        <el-table-column
+                                fixed="right"
+                                label="操作"
+                                width="100">
+                            <template slot-scope="scope">
+                                <el-button type="text" size="small" @click="Box(scope.row)">编辑/查看</el-button>
+                            </template>
 
+                        </el-table-column>
+
+                    </el-table>
+                    <el-dialog
+                            title="提示"
+                            :visible.sync="checkShopBox"
+                            width="50%"
+                            :before-close="boxHandleClose">
+                        <el-form :model="checkShoping" label-width="100px" class="demo-ruleForm">
+
+                            <el-form-item label="身份证正面">
+
+                                <div>
+                                    <el-image :src="checkShoping.idCardFront"
+                                              style="height: 180px;width: 360px;"></el-image>
+                                </div>
+                            </el-form-item>
+                            <el-form-item label="身份证反面">
+
+                                <div>
+                                    <el-image :src="checkShoping.idCardBack"
+                                              style="height: 180px;width: 360px;"></el-image>
+                                </div>
+                            </el-form-item>
+                            <el-form-item label="经营执照正面">
+
+                                <div>
+                                    <el-image :src="checkShoping.permitFront"
+                                              style="height: 180px;width: 360px;"></el-image>
+                                </div>
+                            </el-form-item>
+                            <el-form-item label="经营执照反面">
+
+                                <div>
+                                    <el-image :src="checkShoping.permitBack"
+                                              style="height: 180px;width: 360px;"></el-image>
+                                </div>
+                            </el-form-item>
+                        </el-form>
+
+
+                        <span slot="footer" class="dialog-footer">
+    <el-button type="primary" @click="checkOK">通过</el-button>
+    <el-button @click="checkShopInfo()">驳回</el-button>
+  </span>
+                    </el-dialog>
+                </template>
+
+            </el-main>
 
             <el-main v-if="mainType=='商品分类管理'">
 
@@ -176,9 +255,6 @@
                             width="30%"
                             :before-close="handleClose">
                         <el-form :model="newAttr" class="demo-form-inline">
-                            <el-form-item label="属性名">
-                                <el-input v-model="newAttr.attrName" placeholder="属性名"></el-input>
-                            </el-form-item>
                             <el-form-item label="选择分类">
                                 <el-cascader
                                         placeholder="搜索指定分类属性"
@@ -186,6 +262,10 @@
                                         v-model="addSelectValue"
                                         filterable></el-cascader>
                             </el-form-item>
+                            <el-form-item label="属性名">
+                                <el-input v-model="newAttr.attrName" placeholder="属性名"></el-input>
+                            </el-form-item>
+
 
                         </el-form>
 
@@ -197,7 +277,7 @@
                     <el-table
                             :data="categoryAttrList"
                             border
-                            style="width: 50%">
+                            style="width: 40%">
                         <el-table-column
                                 fixed
                                 prop="attrId"
@@ -220,7 +300,8 @@
                                 label="操作"
                                 width="100">
                             <template slot-scope="scope">
-                                <el-button @click="deleteAttr(scope.row)" type="text" size="small">删除</el-button>
+                                <el-button :plain="true" @click="deleteAttr(scope.row)" type="text" size="small">删除
+                                </el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -261,9 +342,12 @@
         el: '#app',
         data: {
             userDataList: [],
+            checkShopList: [],
             addAttrDialog: false,
             mainType: '用户添加',
             tableData: [],
+            checkShopBox: false,
+            checkShoping: {},
             category: {},
             caseValue: [],
             newAttr: {},
@@ -302,6 +386,21 @@
         },
 
         methods: {
+            Box(shops) {
+                this.checkShoping = shops;
+                this.checkShopBox = true;
+            },
+
+            boxHandleClose(done) {
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        done();
+                    })
+                    .catch(_ => {
+                    });
+            },
+
+
             getTableData(row) {
                 switch (row) {
                     case '商品分类管理':
@@ -314,11 +413,27 @@
                     case '用户信息管理':
                         this.getUserDataList();
                         break;
+                    case '店铺审核管理':
+                        this.getCheckShopList();
+                        break;
                 }
             },
             deleteAttr(row) {
                 let _this = this;
-                console.log(row)
+                axios.delete('http://127.0.0.1:8888/productService/pmsAttr/' + row.attrId)
+                    .then(function (response) {
+                        console.log(response);
+                        if (response.data.code == 8888) {
+                            _this.$message({
+                                message: '删除成功',
+                                type: 'success'
+                            });
+                            _this.getCategoryAttrList()
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             },
 
             addNewAttr() {
@@ -469,9 +584,12 @@
                         console.log(error);
                     });
             },
+            checkOK() {
+
+            },
             getUserDataList() {
                 let _this = this;
-                axios.get('http://127.0.0.1:8888/umsMember/queryAll/'+this.userDataPage.pageNum)
+                axios.get('http://127.0.0.1:8888/umsMember/queryAll/' + this.userDataPage.pageNum)
                     .then(response => {
                         console.log(response.data)
                         _this.userDataList = response.data.data;
@@ -480,6 +598,16 @@
                     .catch(function (error) {
                         console.log(error);
                     });
+            },
+            async getCheckShopList() {
+                console.log('获取待审核店铺列表')
+                let _this = this;
+                await axios.get('http://127.0.0.1:8888/umsMember/umsShopNotCheck/allNotCheck').then(response => {
+                    _this.checkShopList = response.data.data;
+                    console.log(_this.checkShopList)
+                }).catch(function (error) {
+                    console.log(error);
+                });
             }
         },
 

@@ -3,6 +3,8 @@ package com.kedom.productService.service.impl;
 import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.productService.dao.PmsSpuInfoDao;
+import com.kedom.productService.entity.GetProductByCategoryVO;
+import com.kedom.productService.entity.PmsSkuInfo;
 import com.kedom.productService.entity.PmsSpuInfo;
 import com.kedom.productService.service.PmsSpuInfoService;
 import com.kedom.productService.util.IDUtil;
@@ -88,6 +90,18 @@ public class PmsSpuInfoServiceImpl implements PmsSpuInfoService {
     @Override
     public List<PmsSpuInfo> queryBySpuNameAndPage(String spuKey, Integer pageNum, Integer pageSize) {
         List<PmsSpuInfo> spuList = pmsSpuInfoDao.queryBySpuNameAndPage(spuKey, pageNum, pageSize);
+        return null;
+    }
+
+    @Override
+    public List<PmsSkuInfo> queryByCategory(GetProductByCategoryVO pamrs) {
+        if (pamrs.getPriceLow() == null) {
+            pamrs.setPriceLow(0L);
+        }
+        if (pamrs.getPriceHigh() == null) {
+            pamrs.setPriceHigh(999999999L);
+        }
+
         return null;
     }
 

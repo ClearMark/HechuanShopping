@@ -16,6 +16,7 @@ mybatis:
     offsetAsPageNum: true
     rowBoundsWithCount: true
     reasonable: true
+    log.level: debug
 
 
 

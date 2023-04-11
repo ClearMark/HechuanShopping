@@ -1,0 +1,121 @@
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+<div id="app">
+    <el-form ref="form" :model="sku" label-width="80px">
+        <el-form-item label="商品名称">
+            <el-input v-model="sku.skuName"></el-input>
+        </el-form-item>
+        <el-form-item label="商品描述">
+            <el-input v-model="sku.skuDesc"></el-input>
+        </el-form-item>
+        <el-form-item
+                label="价格"
+                prop="price"
+                :rules="[
+      { required: true, message: '价格不能为空'},
+      { type: 'number', message: '价格必须为数字值'}
+    ]"
+        >
+            <el-input v-model.number="sku.price" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="库存">
+            <el-input v-model="sku.stock"></el-input>
+        </el-form-item>
+        <div v-for="attr in sku.attr">
+            <el-form-item :label="attr.attrName">
+                <el-input v-model="attr.attrValue"></el-input>
+            </el-form-item>
+        </div>
+
+        <el-form-item label="商品封面">
+            <el-upload v-if="!showImage"
+                       class="upload-demo"
+                       drag
+                       :show-file-list="false"
+                       name="files"
+                       :on-success="uploadSuccess"
+                       action="http://127.0.0.1:8888/productService/product/saveFile"
+                       multiple>
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            </el-upload>
+            <div>
+                <el-image v-if="showImage" :src="sku.skuDefaultImg" style="height: 180px;width: 360px;"></el-image>
+            </div>
+            <el-button style="margin-left: 160px" v-if="showImage" @click="showImage=false" type="danger"
+                       icon="el-icon-delete" circle></el-button>
+        </el-form-item>
+        <el-button :plain="true" style="margin-top: 12px;" @click="updateProduct">保存</el-button>
+    </el-form>
+
+
+</div>
+</body>
+
+<!-- 引入组件库 -->
+<script src="../js/axios.min.js"></script>
+<link rel="stylesheet" href="../js/elment/http_unpkg.com_element-ui_lib_theme-chalk_index.css">
+<script src="../js/vue2.js"></script>
+<script src="../js/elment/http_unpkg.com_element-ui_lib_index.js"></script>
+<script>
+
+
+</script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            sku: JSON.parse(localStorage.getItem("adminProduct")),
+            showImage: true,
+        },
+
+        methods: {
+            uploadSuccess(response, file, fileList) {
+                console.log('上传成功')
+                console.log(response.data)
+                this.sku.skuDefaultImg = response.data[0];
+                console.log(this.sku.skuDefaultImg)
+                this.showImage = true;
+            },
+            updateProduct() {
+                const thisNew = this;
+                axios.post('http://127.0.0.1:8888/productService/pmsSkuInfo/updateProduct', this.sku).then(async (res) => {
+                    console.log(res)
+                    thisNew.$message({
+                        message: '修改成功',
+                        type: 'success'
+                    });
+
+                    setTimeout("window.location.href='sellerIndex.html?s='+Date.now()", 1000);
+
+                    const userID = localStorage.getItem("userID");
+                    await axios.get('http://127.0.0.1:8888/productService/pmsSkuInfo/getProductByUserId/' + userID)
+                        .then(function (response) {
+                            console.log('解析请求')
+                            var data = response.data;
+                            if (data.code == 8888) {
+                                console.log('请求成功')
+                                console.log(data.data)
+                                localStorage.setItem("productList", JSON.stringify(data.data));
+                            } else {
+                            }
+                        }).catch(function (error) {
+                        });
+
+
+                })
+            },
+
+        },
+        beforeCreate() {
+            let product = JSON.parse(localStorage.getItem("adminProduct"));
+        }
+    })
+
+
+</script>
+
+</html>

@@ -3,6 +3,7 @@ package com.kedom.productService.entity;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 
 @Data
@@ -53,7 +54,7 @@ public class PmsSkuInfo implements Serializable {
     /**
      * 价格
      */
-    private Double price;
+    private BigDecimal price;
     /**
      * 销量
      */
@@ -62,6 +63,8 @@ public class PmsSkuInfo implements Serializable {
      * 商家ID
      */
     private Long createId;
+
+    private Long stock;
 
 
 }

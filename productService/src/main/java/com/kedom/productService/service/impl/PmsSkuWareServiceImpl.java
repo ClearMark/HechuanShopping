@@ -110,4 +110,11 @@ public class PmsSkuWareServiceImpl implements PmsSkuWareService {
 
     }
 
+    @Override
+    public PmsSkuWare queryBySkuId(Long skuId) {
+
+        PmsSkuWare pmsSkuWare = pmsSkuWareDao.queryBySkuId(skuId);
+        return pmsSkuWare;
+    }
+
 }

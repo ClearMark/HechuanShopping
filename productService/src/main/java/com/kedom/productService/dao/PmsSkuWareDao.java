@@ -87,5 +87,7 @@ public interface PmsSkuWareDao {
     int existsSkuWareBySkuId(Long skuId);
 
     Integer updateWare(PmsSkuInfo pmsSkuInfo);
+
+    PmsSkuWare queryBySkuId(Long skuId);
 }
 

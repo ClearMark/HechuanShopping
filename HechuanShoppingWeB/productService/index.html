@@ -1,344 +1,452 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
-	<head>
-		<meta charset="utf-8">
-		<title>我的商城</title>
-		<style>
-			/* 以下是CSS样式 */
-			body {
-				font-family: sans-serif;
-			}
+<head>
+    <meta charset="utf-8">
+    <title>我的商城</title>
+    <style>
+        /* 以下是CSS样式 */
+        body {
+            font-family: sans-serif;
+        }
 
-			.header {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				padding: 10px 20px;
-				background-color: #333;
-				color: #fff;
-			}
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+        }
 
-			.header .logo {
-				font-size: 1.5em;
-			}
+        .header .logo {
+            font-size: 1.5em;
+        }
 
-			.header .user-menu {
-				display: flex;
-				align-items: center;
-				display: none;
-			}
+        .header .user-menu {
+            display: flex;
+            align-items: center;
+            display: none;
+        }
 
-			.header .user-menu a {
-				color: #fff;
-				text-decoration: none;
-				margin-left: 10px;
-			}
+        .header .user-menu a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 10px;
+        }
 
-			.main {
-				padding: 20px;
-			}
+        .main {
+            padding: 20px;
+        }
 
-			.main .title {
-				font-size: 1.5em;
-				margin-bottom: 20px;
-			}
+        .main .title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
 
-			.main .products {
-				display: grid;
-				grid-template-columns: repeat(3, 1fr);
-				grid-gap: 20px;
-			}
+        .main .products {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 20px;
+        }
 
-			.main .products .product {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-			}
+        .main .products .product {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-			.main .products .product img {
-				width: 200px;
-				height: 200px;
-			}
+        .main .products .product img {
+            width: 200px;
+            height: 200px;
+        }
 
-			.main .products .product .name {
-				font-size: 1.2em;
-				margin-top: 10px;
-			}
+        .main .products .product .name {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
 
-			.main .products .product .price {
-				color: #f60;
-				font-size: 1.2em;
-			}
+        .main .products .product .price {
+            color: #f60;
+            font-size: 1.2em;
+        }
 
-			.search-container {
-				display: flex;
-				flex-direction: row;
-				align-items: center;
-			}
+        .search-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
 
-			/* Styling for the search input */
-			.search-input {
-				position: relative;
-				/* This is added to allow the select element to be positioned absolutely within the input */
-				width: 100%;
-				padding: 12px;
-				border: 1px solid #ccc;
-				font-size: 16px;
-				border-radius: 4px;
-				padding-left: 60px;
-			}
+        /* Styling for the search input */
+        .search-input {
+            position: relative;
+            /* This is added to allow the select element to be positioned absolutely within the input */
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            border-radius: 4px;
+        }
 
-			/* Styling for the search button */
-			.search-button {
-				width: 40%;
-				padding: 12px;
-				background-color: #4CAF50;
-				color: white;
-				font-size: 16px;
-				cursor: pointer;
-				border-radius: 4px;
-			}
+        /* Styling for the search button */
+        .search-button {
+            width: 40%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
 
-			/* Styling for the select element */
-			select {
-				position: absolute;
-				/* This positions the select element absolutely within the input field */
-				top: 81px;
-				left: 29px;
-				font-size: 16px;
-				height: 43px;
-				/* This makes the select element the same height as the input field */
-			}
+        /* Styling for the select element */
+        select {
+            position: absolute;
+            /* This positions the select element absolutely within the input field */
+            top: 81px;
+            left: 29px;
+            font-size: 16px;
+            height: 43px;
+            /* This makes the select element the same height as the input field */
+        }
 
-			#category{
-				position: absolute;
-				/* This positions the select element absolutely within the input field */
-				top: 140px;
-				left: 29px;
-				font-size: 16px;
-				height: 43px;
-				/* This makes the select element the same height as the input field */
-			}
-			#app{
-				position: absolute;
-				/* This positions the select element absolutely within the input field */
-				left: 315px;
-				font-size: 16px;
-				height: 43px;
-				/* This makes the select element the same height as the input field */
-			}
-		</style>
-	</head>
-	<body>
-		<div class="header">
-			<div class="logo">合川特色购物商城</div>
-			<div class="user-menu" id="No_ok_user">
-				<a href="../memberService/login.html">登录</a>
-				<a href="../memberService/register.html">注册</a>
-			</div>
-			<div class="user-menu" id="ok_user">
-				<a>购物车</a>
-				<a>我的收藏</a>
-				<a id="no_ok_seller">商家入驻</a>
-				<a id="ok_seller">我的店铺</a>
-				<a href="../memberService/memberCenter.html">个人中心</a>
-			</div>
-		</div>
-		<div class="main">
-			<div class="title">
-				<div class="search-container">
-					<input type="text" class="search-input" placeholder="输入商品或者店铺名" id="searchStr">
-					<select id="searchType">
-						<option value="product">商品</option>
-						<option value="shop">店铺</option>
-					</select>
-					<button class="search-button" onclick="search()">Search</button>
-				</div>
-			</div>
-			<div class="main-left" id="category">
-				<label>分类</label><br />
-			</div>
-			<div class="main-right" id="app">
-				<label>商品展示</label><br/>
-				<div class="demo-image__placeholder">
-					<div class="block" v-for="product in products">
-						<span class="demonstration">{{product.name}}</span>
-						<el-image :src="product.skuDefaultImg"></el-image>
-					</div>
-			</div>
-		</div>
-	</body>
+        #category {
+            position: absolute;
+            /* This positions the select element absolutely within the input field */
+            top: 140px;
+            left: 29px;
+            font-size: 16px;
+            height: 43px;
+            /* This makes the select element the same height as the input field */
+        }
 
-	<script src="../js/axios.min.js"></script>
-	<script src="../js/jquery-3.5.1.min.js"></script>
-	<script>
-		window.onload = function() {
-			indexload();
+        #app {
+            position: absolute;
+            /* This positions the select element absolutely within the input field */
+            left: 315px;
+            font-size: 16px;
+            height: 43px;
+            /* This makes the select element the same height as the input field */
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="logo">合川特色购物商城</div>
+    <div class="user-menu" id="No_ok_user">
+        <a href="../memberService/login.html">登录</a>
+        <a href="../memberService/register.html">注册</a>
+    </div>
+    <div class="user-menu" id="ok_user">
+        <a href="../memberService/myCar.html">购物车</a>
+        <a>订单中心</a>
+        <a id="no_ok_seller" href="../sellerService/addSeller.html">商家入驻</a>
+        <a id="ok_seller" href="../sellerService/sellerIndex.html">我的店铺</a>
+        <a href="../memberService/memberCenter.html">个人中心</a>
+    </div>
+</div>
+<div class="main">
+    <div class="title">
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="输入商品或者店铺名" id="searchStr">
+            <button class="search-button" onclick="search()">Search</button>
+        </div>
+    </div>
+    <div class="main-left" id="category">
+        <label>分类</label><br/>
+    </div>
+    <div class="main-right" id="app">
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+            <el-menu-item index="1">热门商品</el-menu-item>
+            <el-menu-item index="2">为你推荐</el-menu-item>
+        </el-menu>
+        <div class="demo-image__placeholder" v-if="activeIndex=='1'">
+            <div class="block" v-for="product in hotProducts"
+                 style="width:360px;display: inline-block; padding-right: 10px" @click="intoUserProduct(product.skuId)">
+                <el-image :src="product.skuDefaultImg" style="height: 180px;width: 360px;"></el-image>
+                <span class="demonstration">{{product.skuName}}</span>
+                <br/>
+                <span class="demonstration">￥{{product.price}}</span>
+            </div>
+        </div>
+        <div class="demo-image__placeholder" v-if="activeIndex=='2'">
+            <div class="block" v-for="product in recommendProducts"
+                 style="width:360px;display: inline-block; padding-right: 10px" @click="intoUserProduct(product.skuId)">
+                <el-image :src="product.skuDefaultImg" style="height: 180px;width: 360px;"></el-image>
+                <span class="demonstration">{{product.skuName}}</span>
+                <br/>
+                <span class="demonstration">￥{{product.price}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
 
-			axios.get('http://127.0.0.1:8888/umsMember/umsMemberReceiveAddress/member/'+this.memberForm.id).then(function (response) {
-				this.AddressList=response.data.data;
-				localStorage.setItem("AddressList",JSON.stringify(response.data.data));
-			}).catch(function (error) {
-				console.log(error);
-			});
-		}
+<script src="../js/axios.min.js"></script>
+<script src="../js/jquery-3.5.1.min.js"></script>
+<script>
+    window.onload = function () {
+        indexload();
+    }
 
-		function indexload() {
-
-
-			let token = localStorage.getItem("Token");
-			let userID = localStorage.getItem("userID");
-
-
-
-
-			if (token != null && userID != null) {
-				let par={};
-				par.token = token;
-				par.userID = userID
-				console.log(par)
-
-				axios.post('http://127.0.0.1:8888/auth/TokenAndUserDataVerify', par)
-					.then(function(response) {
-						console.log('解析请求')
-						var data = response.data;
-						if (data.code == 8888) {
-							$("#No_ok_user").hide()
-							$("#ok_user").show()
-						} else {
-							$("#No_ok_user").show()
-							$("#ok_user").hide()
-							localStorage.clear();
-						}
-					}).catch(function(error) {
-						$("#No_ok_user").show()
-						$("#ok_user").hide()
-						localStorage.clear();
-					});
-			} else {
-				$("#No_ok_user").show()
-				$("#ok_user").hide()
-				localStorage.clear();
-			}
-
-			//判断TOken与UserData是否对应
-
-		}
-	</script>
-	<script>
-		var categories
-		axios.get('http://127.0.0.1:8888/productService/pmsCategory')
-			.then(function(response) {
-				console.log('解析请求')
-				var data = response.data;
-				if (data.code == 8888) {
-					console.log('请求成功')
-					console.log(data.data);
-					createCategory(data.data);
-				} else {
-					console.log(data.message)
-				}
-			})
-			.catch(function(error) {
-				console.log(error);
-			});
-		function createCategory(categories) {
-			var nameMapca
-			var count = 1;
-			// Use the forEach method to create a new array of elements
-			const elements = [];
-			localStorage.setItem('categoryList', JSON.stringify(categories))
-			console.log(categories)
-			var categoryDiv = document.getElementById("category");
-			categories.forEach((category, index) => {
-				// Create a new HTML element for each category
-				const element = document.createElement("label");
-
-				console.log(1)
-				// Add a click event listener to the element
-				element.addEventListener("click", () => {
-					// Handle the click event for the element
-					alert(`You clicked on ${category.name}`);
-					localStorage.setItem('category', JSON.stringify(category.children))
-					window.location.href = 'categoryProduct.html'
-
-				});
-				categoryDiv.appendChild(element);
-				if (count % 3 == 0) {
-					var brLa = document.createElement("br");
-					categoryDiv.appendChild(brLa);
-					console.log('换行')
-				} else {
-			  category.name += '/'
-				}
-				element.innerText = category.name;
-				count++;
-				// Append the element to the array
-				// elements.push(element);
-			});
-
-			// // Create a new HTML element to represent a row
-			// let row = document.createElement("div");
-
-			// Use the forEach method to append the elements to the page
-			// elements.forEach((element, index) => {
-			//   // Check if the current index is a multiple of 3
-			//   // if (index % 3 === 0 && index !== 0) {
-			//   //   // If it is, append the row to the page
-			//   //   document.body.appendChild(row);
-			//   //   // Create a new HTML element to represent a row
-			//   //   row = document.createElement("div");
-			//   // }
-
-			//   // Append the element to the row
-			//   row.appendChild(element);
-			// });
-
-			// Append the last row to the page
-		}
-	</script>
-	<script>
-		function search(){
-			const searchStr=$("#searchStr").val();
-			if(searchStr==null||searchStr=="")
-			{
-				alert('请输入关键词')
-			}
-			if($("#searchType").val()=='product'){
-				window.location.href='serchproduct.html?productName='+searchStr
-			}
-			else{
-				
-			}
-			
-		}
-	</script>
-	<script>
-  axios.get('http://127.0.0.1:8888/productService/pmsSkuInfo/getHotProduct').then(function (response) {
+    function indexload() {
 
 
-	  localStorage.setItem("products",JSON.stringify(response.data.data));
-			}).catch(function (error) {
-				console.log(error);
-			});
+        let token = localStorage.getItem("Token");
+        let userID = localStorage.getItem("userID");
 
 
-	</script>
+        if (token != null && userID != null) {
+            let par = {};
+            par.token = token;
+            par.userID = userID
+            console.log(par)
 
-	<link rel="stylesheet" href="../js/elment/http_unpkg.com_element-ui_lib_theme-chalk_index.css">
-	<script src="../js/vue2.js"></script>
-	<script src="../js/elment/http_unpkg.com_element-ui_lib_index.js"></script>
-	<script>
-		new Vue({
-			el: '#app',
-			data: {
-				products: JSON.parse(localStorage.getItem("products")),
-			},
+            axios.post('http://127.0.0.1:8888/auth/TokenAndUserDataVerify', par)
+                .then(function (response) {
+                    console.log('解析请求')
+                    var data = response.data;
+                    if (data.code == 8888) {
+                        $("#No_ok_user").hide()
+                        $("#ok_user").show()
+                        axios.get('http://127.0.0.1:8888/umsMember/umsShop/user/' + userID)
+                            .then(function (response) {
+                                console.log('解析请求')
+                                var data = response.data;
+                                if (data.code == 8888) {
+                                    if (data.data == 0) {
+                                        $("#no_ok_seller").show()
+                                        $("#ok_seller").hide()
+                                    } else {
+                                        $("#no_ok_seller").hide()
+                                        $("#ok_seller").show()
+                                    }
 
-			methods: {}
+                                }
+                            }).catch(function (error) {
+                            $("#no_ok_seller").show()
+                            $("#ok_seller").hide()
+                        });
 
-		})
+
+                    } else {
+                        $("#No_ok_user").show()
+                        $("#ok_user").hide()
+                        localStorage.clear();
+                    }
+                }).catch(function (error) {
+                $("#No_ok_user").show()
+                $("#ok_user").hide()
+                localStorage.clear();
+            });
+        } else {
+            $("#No_ok_user").show()
+            $("#ok_user").hide()
+            localStorage.clear();
+        }
+
+        //判断TOken与UserData是否对应
+
+    }
+</script>
+<script>
+    var categories
+    axios.get('http://127.0.0.1:8888/productService/pmsCategory')
+        .then(function (response) {
+            console.log('解析请求')
+            var data = response.data;
+            if (data.code == 8888) {
+                console.log('请求成功')
+                console.log(data.data);
+                createCategory(data.data);
+            } else {
+                console.log(data.message)
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    function createCategory(categories) {
+        var nameMapca
+        var count = 1;
+        // Use the forEach method to create a new array of elements
+        const elements = [];
+        localStorage.setItem('categoryList', JSON.stringify(categories))
+        console.log(categories)
+        var categoryDiv = document.getElementById("category");
+        categories.forEach((category, index) => {
+            // Create a new HTML element for each category
+            const element = document.createElement("label");
+
+            console.log(1)
+            // Add a click event listener to the element
+            element.addEventListener("click", () => {
+                // Handle the click event for the element
+                // alert(`You clicked on ${category.name}`);
+                localStorage.setItem('category', JSON.stringify(category.children))
+                window.location.href = 'categoryProduct.html'
+
+            });
+            categoryDiv.appendChild(element);
+            if (count % 3 == 0) {
+                var brLa = document.createElement("br");
+                categoryDiv.appendChild(brLa);
+            } else {
+                category.name += '/'
+            }
+            element.innerText = category.name;
+            count++;
+            // Append the element to the array
+            // elements.push(element);
+        });
+
+        // // Create a new HTML element to represent a row
+        // let row = document.createElement("div");
+
+        // Use the forEach method to append the elements to the page
+        // elements.forEach((element, index) => {
+        //   // Check if the current index is a multiple of 3
+        //   // if (index % 3 === 0 && index !== 0) {
+        //   //   // If it is, append the row to the page
+        //   //   document.body.appendChild(row);
+        //   //   // Create a new HTML element to represent a row
+        //   //   row = document.createElement("div");
+        //   // }
+
+        //   // Append the element to the row
+        //   row.appendChild(element);
+        // });
+
+        // Append the last row to the page
+    }
+</script>
+<script>
+    function search() {
+        const searchStr = $("#searchStr").val();
+        if (searchStr == null || searchStr == "") {
+            alert('请输入关键词')
+            return
+        }
+        window.location.href = 'serchProduct.html?key=' + searchStr
+
+    }
+</script>
+
+<link rel="stylesheet" href="../js/elment/http_unpkg.com_element-ui_lib_theme-chalk_index.css">
+<script src="../js/vue2.js"></script>
+<script src="../js/elment/http_unpkg.com_element-ui_lib_index.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            activeIndex: "3",
+            hotProducts: [],
+            recommendProducts: [],
+            hotOffset: 0,
+            recommendOffset: 0,
+            limit: 15,
+        },
+
+        created() {
+            this.getHotProduct();
+            this.getRecommendProduct();
+        },
 
 
-	</script>
+        methods: {
+            handleSelect(key, keyPath) {
+                this.activeIndex = key;
+                if (key == 1) {
+                    console.log('热销商品')
+                    this.getHotProduct();
+                } else if (key == 2) {
+                    console.log('推荐商品')
+                    this.getRecommendProduct();
+                }
+            },
+            async getHotProduct() {
+                console.log('请求热销商品')
+                let _this = this;
+                await axios.get('http://127.0.0.1:8888/productService/pmsSkuInfo/getHotProduct/' + _this.hotOffset + "/" + _this.limit).then(function (response) {
+                    for (let i = 0; i < response.data.data.length; i++) {
+                        _this.hotProducts.push(response.data.data[i]);
+                    }
+                    _this.hotOffset += _this.limit
+                }).catch(function (error) {
+                    console.log(error);
+                });
+                this.activeIndex = "1";
+
+            },
+            getRecommendProduct() {
+                console.log('请求推荐商品')
+                let _this = this;
+                let userId = localStorage.getItem('userID')
+                axios.get('http://127.0.0.1:8888/productService/pmsSkuInfo/getRecommendProductByUser/' + userId + "/" + _this.hotOffset + "/" + _this.limit).then(function (response) {
+                    for (let i = 0; i < response.data.data.length; i++) {
+                        _this.recommendProducts.push(response.data.data[i]);
+                    }
+                    _this.recommendOffset += _this.limit
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            intoUserProduct(id) {
+                window.location.href = "../memberService/userProduct.html?productId=" + id;
+            },
+            getClientHeight() {
+                var clientHeight = 0;
+                if (document.body.clientHeight && document.documentElement.clientHeight) {
+                    clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight)
+                } else {
+                    clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight)
+                }
+                return clientHeight
+            },
+
+            getScrollHeight() {
+                return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)
+            },
+            getScrollTop() {
+                var scrollTop = 0;
+                //window.pageYOffset = document.documentElement.scrollTop
+                if (document.documentElement && document.documentElement.scrollTop) {
+                    scrollTop = document.documentElement.scrollTop
+                } else if (document.body) {
+                    scrollTop = document.body.scrollTop
+                }
+                return scrollTop
+            },
+
+            windowScroll() {
+                let _this = this;
+                //获取三个值
+                var scrollTop = this.getScrollTop()
+                var clientHeight = this.getClientHeight()
+                var scrollHeight = this.getScrollHeight()
+                console.log("st" + scrollTop)
+                console.log("ch" + clientHeight)
+                console.log("sh" + scrollHeight)
+                console.log(scrollTop + clientHeight - scrollHeight)
+
+
+                //如果满足公式则，确实到底了
+                if (scrollTop + clientHeight - scrollHeight >= -700 && this.activeIndex === "1") {
+                    this.getHotProduct();
+                }
+                if (scrollTop + clientHeight - scrollHeight >= -250 && this.activeIndex === "2") {
+                    this.getRecommendProduct();
+                }
+            },
+        },
+        mounted() {
+            window.addEventListener('scroll', this.windowScroll, true) //监听页面滚动
+        },
+        destroyed() {
+            window.removeEventListener("scroll", this.windowScroll);//销毁滚动事件
+        }
+    })
+
+
+</script>
 </html>
