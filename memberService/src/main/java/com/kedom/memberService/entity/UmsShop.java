@@ -44,6 +44,8 @@ public class UmsShop implements Serializable {
      */
     private Integer followNum;
 
+    private Integer notCheckId;
+
 
 }
 

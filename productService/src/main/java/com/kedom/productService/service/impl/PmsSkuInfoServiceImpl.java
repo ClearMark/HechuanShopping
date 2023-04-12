@@ -6,6 +6,7 @@ import com.kedom.productService.dao.PmsSkuInfoDao;
 import com.kedom.productService.entity.GetProductByCategoryVO;
 import com.kedom.productService.entity.PmsSkuInfo;
 import com.kedom.productService.entity.PmsSkuWare;
+import com.kedom.productService.entity.SkuHotVO;
 import com.kedom.productService.entity.vo.Sku;
 import com.kedom.productService.service.PmsSkuInfoService;
 import com.kedom.productService.service.PmsSkuSaleAttrValueService;
@@ -137,6 +138,11 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
     public List<PmsSkuInfo> getRecommendProductByUser(Integer userId, Integer offset, Integer limit) {
 
         return pmsSkuInfoDao.getRecommendProductByUser(userId, offset, limit);
+    }
+
+    @Override
+    public List<PmsSkuInfo> getSkuHot(SkuHotVO skuHotVO) {
+        return pmsSkuInfoDao.getSkuHot(skuHotVO);
     }
 
 }

@@ -3,8 +3,10 @@ package com.kedom.memberService.service.impl;
 import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.memberService.dao.UmsShopNotCheckDao;
+import com.kedom.memberService.entity.UmsShop;
 import com.kedom.memberService.entity.UmsShopNotCheck;
 import com.kedom.memberService.service.UmsShopNotCheckService;
+import com.kedom.memberService.service.UmsShopService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -20,6 +22,9 @@ import java.util.List;
 public class UmsShopNotCheckServiceImpl implements UmsShopNotCheckService {
     @Resource
     private UmsShopNotCheckDao umsShopNotCheckDao;
+
+    @Resource
+    private UmsShopService umsShopService;
 
     /**
      * 通过ID查询单条数据
@@ -66,6 +71,18 @@ public class UmsShopNotCheckServiceImpl implements UmsShopNotCheckService {
 
         List<UmsShopNotCheck> list = umsShopNotCheckDao.allNotCheck();
         return list;
+    }
+
+    @Override
+    public void checkShop(UmsShopNotCheck umsShopNotCheck) {
+        if (umsShopNotCheck.getStatus() == 1) {
+            UmsShop umsShop = new UmsShop();
+            umsShop.setShopName(umsShopNotCheck.getShopName());
+            umsShop.setNot_check_id(umsShopNotCheck.getId());
+            umsShopService.insert(umsShop);
+        }
+
+        umsShopNotCheckDao.checkShop(umsShopNotCheck);
     }
 
 }

@@ -14,8 +14,13 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="UmsShopMap">
-        select
-          id, level_id, user_id, create_time, shop_name, goods_num, follow_num
+        select id,
+               level_id,
+               user_id,
+               create_time,
+               shop_name,
+               goods_num,
+               follow_num
         from ums_shop
         where id = #{id}
     </select>
@@ -23,7 +28,7 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="UmsShopMap">
         select
-          id, level_id, user_id, create_time, shop_name, goods_num, follow_num
+        id, level_id, user_id, create_time, shop_name, goods_num, follow_num
         from ums_shop
         <where>
             <if test="id != null">
@@ -80,11 +85,13 @@
         </where>
     </select>
     <select id="queryByUserId" resultType="com.kedom.memberService.entity.UmsShop">
-        select * from ums_shop where user_id = #{userId}
+        select *
+        from ums_shop
+        where user_id = #{userId}
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" >
+    <insert id="insert">
         insert into ums_shop(id, level_id, user_id, create_time, shop_name, goods_num, follow_num)
         values (#{id}, #{levelId}, #{userId}, #{createTime}, #{shopName}, #{goodsNum}, #{followNum})
     </insert>
@@ -93,7 +100,8 @@
         insert into ums_shop(id, level_id, user_id, create_time, shop_name, goods_num, follow_num)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.id}, #{entity.levelId}, #{entity.userId}, #{entity.createTime}, #{entity.shopName}, #{entity.goodsNum}, #{entity.followNum})
+            (#{entity.id}, #{entity.levelId}, #{entity.userId}, #{entity.createTime}, #{entity.shopName},
+            #{entity.goodsNum}, #{entity.followNum})
         </foreach>
     </insert>
 
@@ -101,7 +109,8 @@
         insert into ums_shop(level_id, user_id, create_time, shop_name, goods_num, follow_num)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.id}, #{entity.levelId}, #{entity.userId}, #{entity.createTime}, #{entity.shopName}, #{entity.goodsNum}, #{entity.followNum})
+            (#{entity.id}, #{entity.levelId}, #{entity.userId}, #{entity.createTime}, #{entity.shopName},
+            #{entity.goodsNum}, #{entity.followNum})
         </foreach>
         on duplicate key update
         id = values(id),
@@ -141,7 +150,9 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from ums_shop where id = #{id}
+        delete
+        from ums_shop
+        where id = #{id}
     </delete>
 
 </mapper>

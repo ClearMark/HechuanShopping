@@ -40,4 +40,6 @@ public interface UmsCarService {
     List<UmsCar> queryByUserId(Integer id, Integer offset, Integer limit);
 
     void deleteById(Integer id);
+
+    void orderOK(List<Integer> orderOK);
 }

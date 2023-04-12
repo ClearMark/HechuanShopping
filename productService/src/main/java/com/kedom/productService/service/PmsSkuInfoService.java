@@ -2,6 +2,7 @@ package com.kedom.productService.service;
 
 import com.kedom.productService.entity.GetProductByCategoryVO;
 import com.kedom.productService.entity.PmsSkuInfo;
+import com.kedom.productService.entity.SkuHotVO;
 import com.kedom.productService.entity.vo.Sku;
 
 import java.util.List;
@@ -57,4 +58,6 @@ public interface PmsSkuInfoService {
     List<PmsSkuInfo> queryByCategory(GetProductByCategoryVO pamrs);
 
     List<PmsSkuInfo> getRecommendProductByUser(Integer userId, Integer offset, Integer limit);
+
+    List<PmsSkuInfo> getSkuHot(SkuHotVO skuHotVO);
 }

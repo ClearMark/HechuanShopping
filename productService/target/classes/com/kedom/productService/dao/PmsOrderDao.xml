@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedom.productService.dao.PmsOrderDao">
+
+    <resultMap type="com.kedom.productService.entity.PmsOrder" id="PmsOrderMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="memberId" column="member_id" jdbcType="INTEGER"/>
+        <result property="orderSn" column="order_sn" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="totalAmount" column="total_amount" jdbcType="NUMERIC"/>
+        <result property="freightAmount" column="freight_amount" jdbcType="NUMERIC"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="receiverName" column="receiver_name" jdbcType="VARCHAR"/>
+        <result property="receiverPhone" column="receiver_phone" jdbcType="VARCHAR"/>
+        <result property="receiverPostCode" column="receiver_post_code" jdbcType="VARCHAR"/>
+        <result property="receiverProvince" column="receiver_province" jdbcType="VARCHAR"/>
+        <result property="receiverCity" column="receiver_city" jdbcType="VARCHAR"/>
+        <result property="receiverRegion" column="receiver_region" jdbcType="VARCHAR"/>
+        <result property="receiverDetailAddress" column="receiver_detail_address" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PmsOrderMap">
+        select
+          id, member_id, order_sn, create_time, total_amount, freight_amount, status, receiver_name, receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address
+        from pms_order
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="PmsOrderMap">
+        select
+          id, member_id, order_sn, create_time, total_amount, freight_amount, status, receiver_name, receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address
+        from pms_order
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="memberId != null">
+                and member_id = #{memberId}
+            </if>
+            <if test="orderSn != null and orderSn != ''">
+                and order_sn = #{orderSn}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="totalAmount != null">
+                and total_amount = #{totalAmount}
+            </if>
+            <if test="freightAmount != null">
+                and freight_amount = #{freightAmount}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+            <if test="receiverName != null and receiverName != ''">
+                and receiver_name = #{receiverName}
+            </if>
+            <if test="receiverPhone != null and receiverPhone != ''">
+                and receiver_phone = #{receiverPhone}
+            </if>
+            <if test="receiverPostCode != null and receiverPostCode != ''">
+                and receiver_post_code = #{receiverPostCode}
+            </if>
+            <if test="receiverProvince != null and receiverProvince != ''">
+                and receiver_province = #{receiverProvince}
+            </if>
+            <if test="receiverCity != null and receiverCity != ''">
+                and receiver_city = #{receiverCity}
+            </if>
+            <if test="receiverRegion != null and receiverRegion != ''">
+                and receiver_region = #{receiverRegion}
+            </if>
+            <if test="receiverDetailAddress != null and receiverDetailAddress != ''">
+                and receiver_detail_address = #{receiverDetailAddress}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from pms_order
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="memberId != null">
+                and member_id = #{memberId}
+            </if>
+            <if test="orderSn != null and orderSn != ''">
+                and order_sn = #{orderSn}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="totalAmount != null">
+                and total_amount = #{totalAmount}
+            </if>
+            <if test="freightAmount != null">
+                and freight_amount = #{freightAmount}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+            <if test="receiverName != null and receiverName != ''">
+                and receiver_name = #{receiverName}
+            </if>
+            <if test="receiverPhone != null and receiverPhone != ''">
+                and receiver_phone = #{receiverPhone}
+            </if>
+            <if test="receiverPostCode != null and receiverPostCode != ''">
+                and receiver_post_code = #{receiverPostCode}
+            </if>
+            <if test="receiverProvince != null and receiverProvince != ''">
+                and receiver_province = #{receiverProvince}
+            </if>
+            <if test="receiverCity != null and receiverCity != ''">
+                and receiver_city = #{receiverCity}
+            </if>
+            <if test="receiverRegion != null and receiverRegion != ''">
+                and receiver_region = #{receiverRegion}
+            </if>
+            <if test="receiverDetailAddress != null and receiverDetailAddress != ''">
+                and receiver_detail_address = #{receiverDetailAddress}
+            </if>
+        </where>
+    </select>
+    <select id="queryByUserId" resultMap="PmsOrderMap">
+        select * from pms_order where member_id = #{userId} limit #{offset}, #{limit}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" >
+        insert into pms_order(id, member_id, order_sn,  total_amount, freight_amount,  receiver_name, receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address)
+        values (#{id}, #{memberId}, #{orderSn}, #{totalAmount}, #{freightAmount},  #{receiverName}, #{receiverPhone}, #{receiverPostCode}, #{receiverProvince}, #{receiverCity}, #{receiverRegion}, #{receiverDetailAddress})
+    </insert>
+
+    <insert id="insertBatch">
+        insert into pms_order(id, member_id, order_sn, create_time, total_amount, freight_amount, status, receiver_name, receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.id}, #{entity.memberId}, #{entity.orderSn}, #{entity.createTime}, #{entity.totalAmount}, #{entity.freightAmount}, #{entity.status}, #{entity.receiverName}, #{entity.receiverPhone}, #{entity.receiverPostCode}, #{entity.receiverProvince}, #{entity.receiverCity}, #{entity.receiverRegion}, #{entity.receiverDetailAddress})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch">
+        insert into pms_order(member_id, order_sn, create_time, total_amount, freight_amount, status, receiver_name, receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.memberId}, #{entity.orderSn}, #{entity.createTime}, #{entity.totalAmount}, #{entity.freightAmount}, #{entity.status}, #{entity.receiverName}, #{entity.receiverPhone}, #{entity.receiverPostCode}, #{entity.receiverProvince}, #{entity.receiverCity}, #{entity.receiverRegion}, #{entity.receiverDetailAddress})
+        </foreach>
+        on duplicate key update
+        id = values(id),
+        member_id = values(member_id),
+        order_sn = values(order_sn),
+        create_time = values(create_time),
+        total_amount = values(total_amount),
+        freight_amount = values(freight_amount),
+        status = values(status),
+        receiver_name = values(receiver_name),
+        receiver_phone = values(receiver_phone),
+        receiver_post_code = values(receiver_post_code),
+        receiver_province = values(receiver_province),
+        receiver_city = values(receiver_city),
+        receiver_region = values(receiver_region),
+        receiver_detail_address = values(receiver_detail_address)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update pms_order
+        <set>
+            <if test="memberId != null">
+                member_id = #{memberId},
+            </if>
+            <if test="orderSn != null and orderSn != ''">
+                order_sn = #{orderSn},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="totalAmount != null">
+                total_amount = #{totalAmount},
+            </if>
+            <if test="freightAmount != null">
+                freight_amount = #{freightAmount},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+            <if test="receiverName != null and receiverName != ''">
+                receiver_name = #{receiverName},
+            </if>
+            <if test="receiverPhone != null and receiverPhone != ''">
+                receiver_phone = #{receiverPhone},
+            </if>
+            <if test="receiverPostCode != null and receiverPostCode != ''">
+                receiver_post_code = #{receiverPostCode},
+            </if>
+            <if test="receiverProvince != null and receiverProvince != ''">
+                receiver_province = #{receiverProvince},
+            </if>
+            <if test="receiverCity != null and receiverCity != ''">
+                receiver_city = #{receiverCity},
+            </if>
+            <if test="receiverRegion != null and receiverRegion != ''">
+                receiver_region = #{receiverRegion},
+            </if>
+            <if test="receiverDetailAddress != null and receiverDetailAddress != ''">
+                receiver_detail_address = #{receiverDetailAddress},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from pms_order where id = #{id}
+    </delete>
+
+</mapper>
+

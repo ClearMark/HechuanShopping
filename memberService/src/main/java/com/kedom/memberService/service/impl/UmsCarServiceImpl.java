@@ -72,4 +72,9 @@ public class UmsCarServiceImpl implements UmsCarService {
         umsCarDao.deleteById(id);
     }
 
+    @Override
+    public void orderOK(List<Integer> orderOK) {
+        umsCarDao.orderOK(orderOK);
+    }
+
 }

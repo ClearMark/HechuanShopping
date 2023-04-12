@@ -36,6 +36,12 @@ public class UmsShopNotCheckController {
         return null;
     }
 
+    @PostMapping("/checkShop")
+    public KedomResponse checkShop(@RequestBody UmsShopNotCheck umsShopNotCheck) {
+        umsShopNotCheckService.checkShop(umsShopNotCheck);
+        return KedomResponse.ok();
+    }
+
     /**
      * 新增数据
      *

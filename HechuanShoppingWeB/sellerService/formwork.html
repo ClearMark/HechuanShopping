@@ -6,23 +6,31 @@
 <div id="app">
     <template>
         <el-table
-                :data="tableData"
+                :data="orderList"
                 height="250"
                 border
                 style="width: 100%">
             <el-table-column
-                    prop="date"
-                    label="日期"
+                    prop="orderSn"
+                    label="订单号"
                     width="180">
             </el-table-column>
             <el-table-column
-                    prop="name"
-                    label="姓名"
+                    prop="createTime"
+                    label="下单时间"
                     width="180">
             </el-table-column>
             <el-table-column
-                    prop="address"
-                    label="地址">
+                    prop="totalAmount"
+                    label="总金额">
+            </el-table-column>
+            <el-table-column
+                    prop="status"
+                    label="状态">
+            </el-table-column>
+            <el-table-column
+                    prop="receiverDetailAddress"
+                    label="详细地址">
             </el-table-column>
             <infinite-loading
                     slot="append"
@@ -45,48 +53,38 @@
     new Vue({
         el: '#app',
         data: {
-            tableData: [{
-                date: '2016-05-03',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-02',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-04',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-08',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-06',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-07',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }],
-
+            orderList: [],
+            offset: 0,
+            limit: 10,
+            isLoad: true,
         },
 
         methods: {
             infiniteHandler($state) {
-                this.tableData.push({
-                    date: '2016-05-07',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
+                if (this.isLoad) {
+                    console.log("加载")
+                    $state.loaded();
+                    this.isLoad = false
+                }
+
+            },
+            async getOrder() {
+                let userID = JSON.parse(localStorage.getItem("userID"));
+                let _this = this;
+                await axios.get('http://127.0.0.1:8888/productService/pmsOrder/user/' + 12 + "/" + this.offset + "/" + this.limit
+                ).then(function (response) {
+                    response.data.data.forEach(function (item) {
+                        _this.orderList.push(item)
+                        _this.showOrder = true
+                    })
+
+
                 })
-                console.log("加载更多")
-                $state.loaded();
-            }
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+
         },
 
 

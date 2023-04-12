@@ -41,6 +41,12 @@ public class UmsCarController {
         return KedomResponse.ok();
     }
 
+    @PostMapping("/orderOK")
+    public KedomResponse orderOK(@RequestBody List<Integer> orderOK) {
+        this.umsCarService.orderOK(orderOK);
+        return KedomResponse.ok();
+    }
+
     /**
      * 新增数据
      *

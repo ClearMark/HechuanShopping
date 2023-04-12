@@ -111,9 +111,11 @@
     </select>
 
     <select id="queryByCategory" resultMap="PmsSpuInfoMap">
-        select * from pms_sku_info
-        left join pms_sku_sale_attr_value on pms_sku_info.sku_id = pms_sku_sale_attr_value.sku_id
-        where catalog_id = #{pamrs.catId} and price between #{pamrs.priceLow} and #{pamrs.priceHigh}
+        select *
+        from pms_sku_info
+                 left join pms_sku_sale_attr_value on pms_sku_info.sku_id = pms_sku_sale_attr_value.sku_id
+        where catalog_id = #{pamrs.catId}
+          and price between #{pamrs.priceLow} and #{pamrs.priceHigh}
     </select>
 
     <!--新增所有列-->

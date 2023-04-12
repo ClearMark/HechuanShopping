@@ -84,5 +84,7 @@ public interface UmsCarDao {
     Integer deleteById(Integer id);
 
     List<UmsCar> queryByUserId(@Param("id") Integer id, @Param("offset") Integer offset, @Param("limit") Integer limit);
+
+    void orderOK(@Param("ids") List<Integer> ids);
 }
 

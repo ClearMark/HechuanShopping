@@ -17,6 +17,7 @@
         <result property="createId" column="user_id" jdbcType="INTEGER"/>
         <result property="createId" column="user_id" jdbcType="INTEGER"/>
         <result property="stock" column="stock" jdbcType="INTEGER"/>
+        <result property="hot" column="hot" jdbcType="INTEGER"/>
 
 
     </resultMap>
@@ -142,10 +143,16 @@
         where sku_id = #{skuId}
     </select>
     <select id="getHotProduct" resultMap="PmsSkuInfoMap">
-        select * from pms_sku_info WHERE stock>0 ORDER BY hot DESC,stock DESC limit #{offset},#{limit}
+        select *
+        from pms_sku_info
+        WHERE stock > 0
+        ORDER BY hot DESC, stock DESC
+        limit #{offset},#{limit}
     </select>
     <select id="getProductByUserId" resultMap="PmsSkuInfoMap">
-        select * from pms_sku_info where user_id = #{userId}
+        select *
+        from pms_sku_info
+        where user_id = #{userId}
     </select>
     <select id="queryByKey" resultMap="PmsSkuInfoMap">
         select * from pms_sku_info where stock>0 and
@@ -156,35 +163,50 @@
     </select>
     <select id="queryByCategory" resultMap="PmsSkuInfoMap">
         select pms_sku_info.* from pms_sku_info
-       left join pms_sku_sale_attr_value on pms_sku_info.sku_id = pms_sku_sale_attr_value.sku_id
-      <where>
-          <foreach collection="attrs" item="attr"  separator="and">
-              <if test="attr.attrValue != null and attr.attrValue !=''">
-                  pms_sku_sale_attr_value.attr_id = #{attr.attrId}
-                  and
-                  pms_sku_sale_attr_value.attr_value = #{attr.attrValue}
-              </if>
-          </foreach>
-        and  catalog_id = #{pamrs.catId} and price between #{pamrs.priceLow} and #{pamrs.priceHigh}
-      </where>
+        left join pms_sku_sale_attr_value on pms_sku_info.sku_id = pms_sku_sale_attr_value.sku_id
+        <where>
+            <foreach collection="attrs" item="attr" separator="and">
+                <if test="attr.attrValue != null and attr.attrValue !=''">
+                    pms_sku_sale_attr_value.attr_id = #{attr.attrId}
+                    and
+                    pms_sku_sale_attr_value.attr_value = #{attr.attrValue}
+                </if>
+            </foreach>
+            and catalog_id = #{pamrs.catId} and price between #{pamrs.priceLow} and #{pamrs.priceHigh}
+        </where>
 
         limit #{pamrs.offset},#{pamrs.limit}
     </select>
     <select id="getRecommendProductByUser" resultMap="PmsSkuInfoMap">
-        select * from pms_sku_info where catalog_id in (
-            SELECT * FROM
-                (select cat_ID from pms_recommend_product WHERE user_id=#{userId} GROUP BY cat_ID LIMIT 5) a
-        ) and stock>0 limit #{offset},#{limit}
+        select *
+        from pms_sku_info
+        where catalog_id in (SELECT *
+                             FROM (select cat_ID
+                                   from pms_recommend_product
+                                   WHERE user_id = #{userId}
+                                   GROUP BY cat_ID
+                                   LIMIT 5) a)
+          and stock > 0
+        limit #{offset},#{limit}
 
+    </select>
+    <select id="getSkuHot" resultMap="PmsSkuInfoMap">
+        select * from pms_sku_info
+        <where>
+            <if test="skuName != null and skuName != ''">
+                and sku_name =concat('%',#{skuName},'%')
+            </if>
+        </where>
+                 limit #{offset},#{limit}
     </select>
 
 
     <!--新增所有列-->
     <insert id="insert" useGeneratedKeys="true" keyProperty="skuId">
-        insert into pms_sku_info(sku_name, sku_desc, catalog_id,sku_default_img,
-                                 price, user_id,stock)
-        values (#{skuName}, #{skuDesc}, #{catalogId},#{skuDefaultImg},
-                #{price},#{userId},#{stock})
+        insert into pms_sku_info(sku_name, sku_desc, catalog_id, sku_default_img,
+                                 price, user_id, stock)
+        values (#{skuName}, #{skuDesc}, #{catalogId}, #{skuDefaultImg},
+                #{price}, #{userId}, #{stock})
     </insert>
 
     <insert id="insertBatch">
@@ -264,18 +286,20 @@
         where sku_id = #{skuId}
     </update>
     <update id="updateProduct">
-        update pms_sku_info set
-                                sku_name = #{skuName},
-                                sku_desc = #{skuDesc},
-                                sku_default_img = #{skuDefaultImg},
-                                price = #{price},
-                                stock = #{stock}
+        update pms_sku_info
+        set sku_name        = #{skuName},
+            sku_desc        = #{skuDesc},
+            sku_default_img = #{skuDefaultImg},
+            price           = #{price},
+            stock           = #{stock}
         where sku_id = #{skuId}
     </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from pms_sku_info where sku_id = #{skuId}
+        delete
+        from pms_sku_info
+        where sku_id = #{skuId}
     </delete>
 
 </mapper>

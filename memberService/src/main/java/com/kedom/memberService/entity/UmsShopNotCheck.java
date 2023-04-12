@@ -17,7 +17,7 @@ public class UmsShopNotCheck implements Serializable {
 
     private Integer id;
 
-    private Integer shopName;
+    private String shopName;
 
     private String idCardFront;
 
@@ -30,6 +30,8 @@ public class UmsShopNotCheck implements Serializable {
     private Integer userId;
 
     private Integer status;
+
+    private String cause;
 
 
 }

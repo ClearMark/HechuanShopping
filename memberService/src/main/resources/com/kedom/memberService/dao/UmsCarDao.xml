@@ -150,6 +150,15 @@
         where id = #{id}
     </update>
 
+    <update id="orderOK">
+        update ums_car
+        set status = 1
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
     <!--通过主键删除-->
     <delete id="deleteById">
         delete

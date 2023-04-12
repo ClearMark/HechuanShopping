@@ -38,4 +38,6 @@ public interface UmsShopNotCheckService {
 
 
     List allNotCheck();
+
+    void checkShop(UmsShopNotCheck umsShopNotCheck);
 }

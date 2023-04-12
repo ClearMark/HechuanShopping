@@ -2,12 +2,14 @@ package com.kedom.productService.controller;
 
 import com.kedom.common.entity.KedomResponse;
 import com.kedom.productService.entity.PmsSkuInfo;
+import com.kedom.productService.entity.SkuHotVO;
 import com.kedom.productService.entity.vo.Sku;
 import com.kedom.productService.service.PmsSkuInfoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * sku信息(PmsSkuInfo)表控制层
@@ -32,9 +34,19 @@ public class PmsSkuInfoController {
      */
     @GetMapping("/{id}")
     public KedomResponse queryById(@PathVariable("id") Long id) {
-         ResponseEntity.ok(this.pmsSkuInfoService.queryById(id));
-    return null;
+        ResponseEntity.ok(this.pmsSkuInfoService.queryById(id));
+        return null;
     }
+
+
+    @PostMapping("/skuHot")
+    public KedomResponse getSkuHot(@RequestBody SkuHotVO skuHotVO) {
+
+        List<PmsSkuInfo> skuHot = this.pmsSkuInfoService.getSkuHot(skuHotVO);
+        return KedomResponse.okAddData(skuHot);
+
+    }
+
 
     /**
      * 新增数据

@@ -11,6 +11,11 @@
         line-height: 60px;
     }
 
+    .el-table__body-wrapper::-webkit-scrollbar {
+        /*width: 0;宽度为0隐藏*/
+        width: 0px;
+    }
+
     .el-aside {
         color: #333;
     }
@@ -39,7 +44,7 @@
                     <el-menu-item-group>
                         <el-menu-item index="3-1" @click="mainTypeChange('商品分类管理')">商品分类管理</el-menu-item>
                         <el-menu-item index="3-2" @click="mainTypeChange('分类属性管理')">分类属性管理</el-menu-item>
-                        <el-menu-item index="3-3">每日推荐商品</el-menu-item>
+                        <el-menu-item index="3-3" @click="mainTypeChange('推荐商品')">推荐商品</el-menu-item>
                     </el-menu-item-group>
                 </el-submenu>
 
@@ -60,6 +65,16 @@
             </el-header>
 
             <el-main v-if="mainType=='用户信息管理'">
+                <template>
+                    <el-form :inline="true" :model="skuHot" class="demo-form-inline">
+                        <el-form-item label="审批人">
+                            <el-input v-model="skuHot.skuName" placeholder="商品名"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="querySkuHot">查询</el-button>
+                        </el-form-item>
+                    </el-form>
+                </template>
                 <template>
                     <el-table
                             :data="userDataList"
@@ -176,10 +191,24 @@
 
 
                         <span slot="footer" class="dialog-footer">
-    <el-button type="primary" @click="checkOK">通过</el-button>
-    <el-button @click="checkShopInfo()">驳回</el-button>
+    <el-button type="primary" @click="checkShop(1)">通过</el-button>
+    <el-button @click="causesBox=true">驳回</el-button>
   </span>
                     </el-dialog>
+                    <el-dialog
+                            title="提示"
+                            :visible.sync="causesBox"
+                            width="50%">
+                        <el-form :model="checkShoping" label-width="100px" class="demo-ruleForm">
+                            <el-form-item label="驳回原因" prop="rejectReason">
+                                <el-input type="textarea" v-model="checkShoping.cause"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" @click="checkShop(2)">提交</el-button>
+                                <el-button type="primary" @click="causesBox=false">取消</el-button>
+                            </el-form-item>
+
+                        </el-form>
                 </template>
 
             </el-main>
@@ -307,6 +336,86 @@
                     </el-table>
                 </template>
             </el-main>
+
+            <el-main v-if="mainType=='推荐商品'">
+                <template>
+                    <el-form :inline="true" :model="skuHot" class="demo-form-inline">
+                        <el-form-item label="审批人">
+                            <el-input v-model="skuHot.skuName" placeholder="商品名"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="querySkuHot">查询</el-button>
+                        </el-form-item>
+                    </el-form>
+                </template>
+
+                <template>
+                    <el-table
+                            :data="skuHotSet"
+                            border
+                            style="width: 100%; height: auto">
+                        <el-table-column
+                                prop="skuDefaultImg"
+                                label="商品图片"
+                                width="180">
+                            <template slot-scope="scope">
+                                <img :src="scope.row.skuDefaultImg" style="width: 50px;height: 50px">
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="skuName"
+                                label="商品名称"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                prop="price"
+                                label="商品价格">
+                        </el-table-column>
+                        <el-table-column
+                                prop="saleCount"
+                                label="销量">
+                        </el-table-column>
+                        <el-table-column
+                                prop="hot"
+                                label="热度">
+                        </el-table-column>
+                        <el-table-column
+                                fixed="right"
+                                label="操作"
+                                width="100">
+                            <template slot-scope="scope">
+                                <el-button type="text" size="small" @click="showSkuHotDialog(scope.row)">设置热度
+                                </el-button>
+                                <el-button type="text" size="small" @click="showSkuHotDialog(scope.row)">下架商品
+                                </el-button>
+                            </template>
+
+                        </el-table-column>
+
+                    </el-table>
+                    <el-dialog
+                            title="提示"
+                            :visible.sync="skuHotDialogVisible"
+                            width="30%"
+                    >
+                        <span>选中商品热度</span>
+                        <template>
+                            <el-select v-model="hot" placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.value"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </template>
+                        <span slot="footer" class="dialog-footer">
+    <el-button @click="skuHotDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="skuHotDialogVisible = false">确 定</el-button>
+  </span>
+                    </el-dialog>
+                </template>
+            </el-main>
         </el-container>
 
     </el-container>
@@ -318,6 +427,8 @@
 <script src="../js/axios.min.js"></script>
 <link rel="stylesheet" href="../js/elment/http_unpkg.com_element-ui_lib_theme-chalk_index.css">
 <script src="../js/vue2.js"></script>
+<script src="https://unpkg.com/vue-infinite-loading@^2/dist/vue-infinite-loading.js"></script>
+
 <!-- 引入组件库 -->
 <script src="../js/elment/http_unpkg.com_element-ui_lib_index.js"></script>
 <script>
@@ -341,6 +452,21 @@
     new Vue({
         el: '#app',
         data: {
+            causesBox: false,
+            options: [
+                {value: '1'},
+                {value: '2'},
+                {value: '3'},
+                {value: '4'},
+                {value: '5'},
+            ],
+            hot: '',
+            skuHotDialogVisible: false,
+            isLoad: true,
+            skuHot: {
+                offset: 0,
+                limit: 30,
+            },
             userDataList: [],
             checkShopList: [],
             addAttrDialog: false,
@@ -349,11 +475,14 @@
             checkShopBox: false,
             checkShoping: {},
             category: {},
+            nowSkuHot: {},
             caseValue: [],
+            skuHotSet: [],
             newAttr: {},
             categoryAttrList: [],
             dialogVisible: false,
             expandedKeys: [],
+            skuHotSetIsLoad: false,
             defaultProps: {
                 children: 'children',
                 label: 'name'
@@ -386,10 +515,41 @@
         },
 
         methods: {
+            showSkuHotDialog(row) {
+                this.nowSkuHot = row;
+                this.skuHotDialogVisible = true;
+            },
+
             Box(shops) {
                 this.checkShoping = shops;
                 this.checkShopBox = true;
             },
+
+            async querySkuHot() {
+                let _this = this;
+
+                await axios.post('http://127.0.0.1:8888/productService/pmsSkuInfo/skuHot', _this.skuHot)
+                    .then(function (response) {
+                        console.log(response);
+                        if (response.data.code == 8888) {
+                            if (response.data.data.length == 0) {
+                                _this.skuHotSetIsLoad = false
+                            }
+                            response.data.data.forEach(function (item) {
+                                _this.skuHotSet.push(item)
+                                _this.skuHot.offset += _this.skuHot.limit
+                                _this.skuHotSetIsLoad = true
+                            })
+
+                        } else {
+                            _this.$message.error(response.data.message);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+
 
             boxHandleClose(done) {
                 this.$confirm('确认关闭？')
@@ -416,6 +576,9 @@
                     case '店铺审核管理':
                         this.getCheckShopList();
                         break;
+                    case '推荐商品':
+                        this.querySkuHot();
+                        break;
                 }
             },
             deleteAttr(row) {
@@ -435,7 +598,6 @@
                         console.log(error);
                     });
             },
-
             addNewAttr() {
 
                 let _this = this;
@@ -465,7 +627,6 @@
 
 
             },
-
             addCategory() {
                 let now = this;
                 console.log('添加分类')
@@ -584,7 +745,16 @@
                         console.log(error);
                     });
             },
-            checkOK() {
+            checkShop(status) {
+                let _this = this;
+                this.checkShop.status = status;
+                axios.post('http://127.0.0.1:8888/umsMember/umsShopNotCheck/checkShop', this.checkShop())
+                    .then(response => {
+                        _this.getCheckShopList();
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
 
             },
             getUserDataList() {
@@ -608,8 +778,48 @@
                 }).catch(function (error) {
                     console.log(error);
                 });
-            }
+            },
+            getClientHeight() {
+                var clientHeight = 0;
+                if (document.body.clientHeight && document.documentElement.clientHeight) {
+                    clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight)
+                } else {
+                    clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight)
+                }
+                return clientHeight
+            },
+
+            getScrollHeight() {
+                return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)
+            },
+            getScrollTop() {
+                var scrollTop = 0;
+                //window.pageYOffset = document.documentElement.scrollTop
+                if (document.documentElement && document.documentElement.scrollTop) {
+                    scrollTop = document.documentElement.scrollTop
+                } else if (document.body) {
+                    scrollTop = document.body.scrollTop
+                }
+                return scrollTop
+            },
+            windowScroll() {
+
+                let _this = this;
+                //获取三个值
+                var scrollTop = this.getScrollTop()
+                var clientHeight = this.getClientHeight()
+                var scrollHeight = this.getScrollHeight()
+                //如果满足公式则，确实到底了
+                if (scrollTop + clientHeight - scrollHeight >= 0) {
+                    console.log('到底了')
+                    if (this.mainType === '推荐商品') {
+                        this.querySkuHot();
+                        this.skuHot.offset += this.skuHot.limit;
+                    }
+                }
+            },
         },
+
 
     })
 

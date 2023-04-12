@@ -108,17 +108,23 @@
         </where>
     </select>
     <select id="queryMemberById" resultMap="UmsMemberReceiveAddressMap">
-        SELECT * FROM ums_member_receive_address WHERE member_id= #{memberId} order by default_status desc
+        SELECT *
+        FROM ums_member_receive_address
+        WHERE member_id = #{memberId}
+        order by default_status desc
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" >
-        insert into ums_member_receive_address(member_id, name, phone, post_code, province, city, region, detail_address, areacode, default_status)
-        values (#{memberId}, #{name}, #{phone}, #{postCode}, #{province}, #{city}, #{region}, #{detailAddress}, #{areacode}, #{defaultStatus})
+    <insert id="insert">
+        insert into ums_member_receive_address(member_id, name, phone, post_code, province, city, region,
+                                               detail_address, areacode, default_status)
+        values (#{memberId}, #{name}, #{phone}, #{postCode}, #{province}, #{city}, #{region}, #{detailAddress},
+                #{areacode}, #{defaultStatus})
     </insert>
 
     <insert id="insertBatch">
-        insert into ums_member_receive_address(id, member_id, name, phone, post_code, province, city, region, detail_address, areacode, default_status)
+        insert into ums_member_receive_address(id, member_id, name, phone, post_code, province, city, region,
+        detail_address, areacode, default_status)
         values
         <foreach collection="entities" item="entity" separator=",">
         (#{entity.id}, #{entity.memberId}, #{entity.name}, #{entity.phone}, #{entity.postCode}, #{entity.province}, #{entity.city}, #{entity.region}, #{entity.detailAddress}, #{entity.areacode}, #{entity.defaultStatus})

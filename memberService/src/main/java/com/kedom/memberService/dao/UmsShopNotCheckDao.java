@@ -84,5 +84,7 @@ public interface UmsShopNotCheckDao {
     int deleteById(Integer id);
 
     List<UmsShopNotCheck> allNotCheck();
+
+    void checkShop(UmsShopNotCheck umsShopNotCheck);
 }
 

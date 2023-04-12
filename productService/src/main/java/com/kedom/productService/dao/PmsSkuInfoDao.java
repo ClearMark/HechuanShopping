@@ -2,6 +2,7 @@ package com.kedom.productService.dao;
 
 import com.kedom.productService.entity.GetProductByCategoryVO;
 import com.kedom.productService.entity.PmsSkuInfo;
+import com.kedom.productService.entity.SkuHotVO;
 import com.kedom.productService.entity.vo.Attr;
 import com.kedom.productService.entity.vo.Sku;
 import org.apache.ibatis.annotations.Mapper;
@@ -103,5 +104,7 @@ public interface PmsSkuInfoDao {
     List<PmsSkuInfo> queryByCategory(@Param("pamrs") GetProductByCategoryVO pamrs, @Param("attrs") List<Attr> attrs);
 
     List<PmsSkuInfo> getRecommendProductByUser(@Param("userId") Integer userId, @Param("offset") Integer offset, @Param("limit") Integer limit);
+
+    List<PmsSkuInfo> getSkuHot(SkuHotVO skuHotVO);
 }
 

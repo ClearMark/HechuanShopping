@@ -17,6 +17,7 @@
         <result property="createId" column="user_id" jdbcType="INTEGER"/>
         <result property="createId" column="user_id" jdbcType="INTEGER"/>
         <result property="stock" column="stock" jdbcType="INTEGER"/>
+        <result property="hot" column="hot" jdbcType="INTEGER"/>
 
 
     </resultMap>
@@ -188,6 +189,15 @@
           and stock > 0
         limit #{offset},#{limit}
 
+    </select>
+    <select id="getSkuHot" resultMap="PmsSkuInfoMap">
+        select * from pms_sku_info
+        <where>
+            <if test="skuName != null and skuName != ''">
+                and sku_name =concat('%',#{skuName},'%')
+            </if>
+        </where>
+        limit #{offset},#{limit}
     </select>
 
 

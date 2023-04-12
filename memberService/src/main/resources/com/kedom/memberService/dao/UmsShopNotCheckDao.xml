@@ -162,6 +162,14 @@
         </set>
         where id = #{id}
     </update>
+    <update id="checkShop">
+        update ums_shop_not_check
+        set status = #{status}
+        <if test="status == 2">
+            ,cause = #{cause}
+        </if>
+        where id = #{id}
+    </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">

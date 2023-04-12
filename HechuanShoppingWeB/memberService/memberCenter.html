@@ -97,7 +97,6 @@
             <el-button type="primary" @click="innerVisible = true">新增收获地址</el-button>
         </div>
     </el-dialog>
-    </el-dialog>
 
 
     <div style="width: 30%">
@@ -222,9 +221,7 @@
                 window.location.href = "../productService/index.html";
             },
 
-            loadAddress() {
 
-            },
             async showShippingAddressDialog() {
                 const _this = this;
                 await axios.get('http://127.0.0.1:8888/umsMember/umsMemberReceiveAddress/member/' + this.memberForm.id).then(function (response) {

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedom.productService.dao.PmsOrderItemDao">
+
+    <resultMap type="com.kedom.productService.entity.PmsOrderItem" id="PmsOrderItemMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="orderSn" column="order_sn" jdbcType="VARCHAR"/>
+        <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+        <result property="skuId" column="sku_id" jdbcType="INTEGER"/>
+        <result property="skuName" column="sku_name" jdbcType="VARCHAR"/>
+        <result property="skuImage" column="sku_image" jdbcType="VARCHAR"/>
+        <result property="skuPrice" column="sku_price" jdbcType="NUMERIC"/>
+        <result property="skuCount" column="sku_count" jdbcType="INTEGER"/>
+        <result property="skuAttrsVals" column="sku_attrs_vals" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PmsOrderItemMap">
+        select
+          id, order_sn, category_id, sku_id, sku_name, sku_image, sku_price, sku_count, sku_attrs_vals, status
+        from pms_order_item
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="PmsOrderItemMap">
+        select
+          id, order_sn, category_id, sku_id, sku_name, sku_image, sku_price, sku_count, sku_attrs_vals, status
+        from pms_order_item
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="orderSn != null and orderSn != ''">
+                and order_sn = #{orderSn}
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="skuId != null">
+                and sku_id = #{skuId}
+            </if>
+            <if test="skuName != null and skuName != ''">
+                and sku_name = #{skuName}
+            </if>
+            <if test="skuImage != null and skuImage != ''">
+                and sku_image = #{skuImage}
+            </if>
+            <if test="skuPrice != null">
+                and sku_price = #{skuPrice}
+            </if>
+            <if test="skuCount != null">
+                and sku_count = #{skuCount}
+            </if>
+            <if test="skuAttrsVals != null and skuAttrsVals != ''">
+                and sku_attrs_vals = #{skuAttrsVals}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from pms_order_item
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="orderSn != null and orderSn != ''">
+                and order_sn = #{orderSn}
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="skuId != null">
+                and sku_id = #{skuId}
+            </if>
+            <if test="skuName != null and skuName != ''">
+                and sku_name = #{skuName}
+            </if>
+            <if test="skuImage != null and skuImage != ''">
+                and sku_image = #{skuImage}
+            </if>
+            <if test="skuPrice != null">
+                and sku_price = #{skuPrice}
+            </if>
+            <if test="skuCount != null">
+                and sku_count = #{skuCount}
+            </if>
+            <if test="skuAttrsVals != null and skuAttrsVals != ''">
+                and sku_attrs_vals = #{skuAttrsVals}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="queryByOrderId" resultMap="PmsOrderItemMap">
+        select * from pms_order_item where order_sn=#{order_sn}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" >
+        insert into pms_order_item(id, order_sn, category_id, sku_id, sku_name, sku_image, sku_price, sku_count, sku_attrs_vals, status)
+        values (#{id}, #{orderSn}, #{categoryId}, #{skuId}, #{skuName}, #{skuImage}, #{skuPrice}, #{skuCount}, #{skuAttrsVals}, #{status})
+    </insert>
+
+    <insert id="insertBatch">
+        insert into pms_order_item(id, order_sn, category_id, sku_id, sku_name, sku_image, sku_price, sku_count, sku_attrs_vals, status)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.id}, #{entity.orderSn}, #{entity.categoryId}, #{entity.skuId}, #{entity.skuName}, #{entity.skuImage}, #{entity.skuPrice}, #{entity.skuCount}, #{entity.skuAttrsVals}, #{entity.status})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch">
+        insert into pms_order_item(order_sn, category_id, sku_id, sku_name, sku_image, sku_price, sku_count, sku_attrs_vals, status)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.orderSn}, #{entity.categoryId}, #{entity.skuId}, #{entity.skuName}, #{entity.skuImage}, #{entity.skuPrice}, #{entity.skuCount}, #{entity.skuAttrsVals}, #{entity.status})
+        </foreach>
+        on duplicate key update
+        id = values(id),
+        order_sn = values(order_sn),
+        category_id = values(category_id),
+        sku_id = values(sku_id),
+        sku_name = values(sku_name),
+        sku_image = values(sku_image),
+        sku_price = values(sku_price),
+        sku_count = values(sku_count),
+        sku_attrs_vals = values(sku_attrs_vals),
+        status = values(status)
+    </insert>
+    <insert id="batchAdd">
+        insert into pms_order_item(order_sn, sku_id, sku_name, sku_image, sku_price, sku_count)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.orderSn}, #{item.skuId}, #{item.skuName}, #{item.skuImage}, #{item.skuPrice}, #{item.skuCount})
+        </foreach>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update pms_order_item
+        <set>
+            <if test="orderSn != null and orderSn != ''">
+                order_sn = #{orderSn},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId},
+            </if>
+            <if test="skuId != null">
+                sku_id = #{skuId},
+            </if>
+            <if test="skuName != null and skuName != ''">
+                sku_name = #{skuName},
+            </if>
+            <if test="skuImage != null and skuImage != ''">
+                sku_image = #{skuImage},
+            </if>
+            <if test="skuPrice != null">
+                sku_price = #{skuPrice},
+            </if>
+            <if test="skuCount != null">
+                sku_count = #{skuCount},
+            </if>
+            <if test="skuAttrsVals != null and skuAttrsVals != ''">
+                sku_attrs_vals = #{skuAttrsVals},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from pms_order_item where id = #{id}
+    </delete>
+
+</mapper>
+

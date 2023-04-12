@@ -1,0 +1,179 @@
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+<div id="app">
+    <el-card class="box-card">
+        <div slot="header" class="clearfix">
+            <span>订单列表</span>
+        </div>
+        <template>
+            <el-table
+                    v-if="showOrder"
+                    :data="orderList"
+                    height="250"
+                    border
+                    @cell-click="selectRow"
+                    style="width: 100%">
+                <el-table-column
+                        prop="orderSn"
+                        label="订单号"
+                        width="320">
+                </el-table-column>
+                <el-table-column
+                        prop="createTime"
+                        label="下单时间"
+                        width="250">
+                </el-table-column>
+                <el-table-column
+                        prop="totalAmount"
+                        label="总金额"
+                        width="140"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="status"
+                        label="状态">
+                </el-table-column>
+                <el-table-column
+                        prop="receiverDetailAddress"
+                        label="详细地址">
+                </el-table-column>
+                <infinite-loading
+                        slot="append"
+                        @infinite="infiniteHandler"
+                        force-use-infinite-wrapper=".el-table__body-wrapper">
+                </infinite-loading>
+            </el-table>
+        </template>
+    </el-card>
+    <el-card class="box-card">
+        <template>
+            <el-descriptions title="订单信息" column="5">
+                <el-descriptions-item label="订单号">{{nowOrder.orderSn}}</el-descriptions-item>
+                <el-descriptions-item label="下单时间">{{nowOrder.createTime}}</el-descriptions-item>
+                <el-descriptions-item label="总金额">{{nowOrder.totalAmount}}</el-descriptions-item>
+                <el-descriptions-item label="订单状态">{{nowOrder.status}}</el-descriptions-item>
+                <el-descriptions-item label="收货人姓名">{{nowOrder.receiverName}}</el-descriptions-item>
+                <el-descriptions-item label="收货人电话">{{nowOrder.receiverPhone}}</el-descriptions-item>
+                <el-descriptions-item label="省份/直辖市">{{nowOrder.receiverProvince}}</el-descriptions-item>
+                <el-descriptions-item label="城市">{{nowOrder.receiverCity}}</el-descriptions-item>
+                <el-descriptions-item label="区">{{nowOrder.receiverRegion}}</el-descriptions-item>
+                <el-descriptions-item label="详细地址">{{nowOrder.receiverDetailAddress}}</el-descriptions-item>
+                <el-descriptions-item label="订单商品">
+                    <el-table
+                            :data="orderItem"
+                            height="250"
+                            border
+                            style="width: 100%">
+                        <el-table-column
+                                prop="skuImage"
+                                label="商品图片"
+                                width="180">
+                            <template slot-scope="scope">
+                                <img :src="scope.row.skuImage" style="width: 50px;height: 50px">
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="skuName"
+                                label="商品名称"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                prop="skuPrice"
+                                label="商品价格">
+                        </el-table-column>
+                        <el-table-column
+                                prop="skuCount"
+                                label="商品数量">
+                        </el-table-column>
+                        <el-table-column
+                                prop="status"
+                                label="状态">
+                        </el-table-column>
+                    </el-table>
+
+
+                </el-descriptions-item>
+            </el-descriptions>
+        </template>
+    </el-card>
+
+</div>
+</body>
+
+<!-- 引入组件库 -->
+<script src="../js/axios.min.js"></script>
+<link rel="stylesheet" href="../js/elment/http_unpkg.com_element-ui_lib_theme-chalk_index.css">
+<script src="../js/vue2.js"></script>
+<script src="../js/elment/http_unpkg.com_element-ui_lib_index.js"></script>
+<script src="https://unpkg.com/vue-infinite-loading@^2/dist/vue-infinite-loading.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            showOrder: false,
+            orderList: [],
+            offset: 0,
+            limit: 10,
+            nowOrder: {},
+            isLoad: true,
+            orderItem: []
+        },
+
+        methods: {
+            async infiniteHandler($state) {
+                if (this.isLoad) {
+                    this.isLoad = false
+                    await this.getOrder();
+                    console.log("jia")
+                    $state.loaded();
+                }
+            },
+            selectRow(item) {
+                this.nowOrder = item
+                let _this = this;
+                axios.get('http://127.0.0.1:8888/productService/pmsOrderItem/OrderId/' + item.orderSn
+                ).then(function (response) {
+                    _this.orderItem = response.data.data
+                })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+
+            async getOrder() {
+                let userID = JSON.parse(localStorage.getItem("userID"));
+                let _this = this;
+                await axios.get('http://127.0.0.1:8888/productService/pmsOrder/user/' + userID + "/" + this.offset + "/" + this.limit
+                ).then(function (response) {
+                    if (response.data.data.length == 0) {
+                        _this.isLoad = false
+                    }
+                    response.data.data.forEach(function (item) {
+                        _this.orderList.push(item)
+                        _this.showOrder = true
+                    })
+                    _this.offset += _this.limit
+
+
+                })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+
+
+        },
+        created() {
+            this.getOrder()
+        }
+
+
+    })
+
+
+</script>
+
+</html>

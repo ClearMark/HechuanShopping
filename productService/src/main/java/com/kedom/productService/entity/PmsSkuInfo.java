@@ -65,6 +65,7 @@ public class PmsSkuInfo implements Serializable {
     private Long createId;
 
     private Long stock;
+    private Long hot;
 
 
 }
