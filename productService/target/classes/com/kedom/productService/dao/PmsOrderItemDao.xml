@@ -15,10 +15,60 @@
         <result property="status" column="status" jdbcType="VARCHAR"/>
     </resultMap>
 
+
+    <resultMap type="com.kedom.productService.entity.OrderItemVO" id="OrderItemVOMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="orderSn" column="order_sn" jdbcType="VARCHAR"/>
+        <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+        <result property="skuId" column="sku_id" jdbcType="INTEGER"/>
+        <result property="skuName" column="sku_name" jdbcType="VARCHAR"/>
+        <result property="skuImage" column="sku_image" jdbcType="VARCHAR"/>
+        <result property="skuPrice" column="sku_price" jdbcType="NUMERIC"/>
+        <result property="skuCount" column="sku_count" jdbcType="INTEGER"/>
+        <result property="skuAttrsVals" column="sku_attrs_vals" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="receiverName" column="receiver_name" jdbcType="VARCHAR"/>
+        <result property="receiverPhone" column="receiver_phone" jdbcType="VARCHAR"/>
+        <result property="receiverProvince" column="receiver_province" jdbcType="VARCHAR"/>
+        <result property="receiverCity" column="receiver_city" jdbcType="VARCHAR"/>
+        <result property="receiverRegion" column="receiver_region" jdbcType="VARCHAR"/>
+        <result property="receiverDetailAddress" column="receiver_detail_address" jdbcType="VARCHAR"/>
+        <result property="total" column="total" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+
+
+
+
+
+    <select id="queryOrderItemByUserId" resultMap="OrderItemVOMap">
+        SELECT b.*,c.create_time,
+               c.receiver_name,c.receiver_phone,c.receiver_province,
+                c.receiver_city,c.receiver_region,c.receiver_detail_address
+        ,count(*)  AS total
+        FROM pms_sku_info a
+                             INNER JOIN pms_order_item b ON a.sku_id = b.sku_id
+                                INNER JOIN pms_order c ON b.order_sn = c.order_sn
+          WHERE a.user_id = #{userId}
+         limit #{offset}, #{limit}
+
+    </select>
+
+
     <!--查询单个-->
     <select id="queryById" resultMap="PmsOrderItemMap">
-        select
-          id, order_sn, category_id, sku_id, sku_name, sku_image, sku_price, sku_count, sku_attrs_vals, status
+        select id,
+               order_sn,
+               category_id,
+               sku_id,
+               sku_name,
+               sku_image,
+               sku_price,
+               sku_count,
+               sku_attrs_vals,
+               status
         from pms_order_item
         where id = #{id}
     </select>
@@ -26,7 +76,7 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="PmsOrderItemMap">
         select
-          id, order_sn, category_id, sku_id, sku_name, sku_image, sku_price, sku_count, sku_attrs_vals, status
+        id, order_sn, category_id, sku_id, sku_name, sku_image, sku_price, sku_count, sku_attrs_vals, status
         from pms_order_item
         <where>
             <if test="id != null">
@@ -101,28 +151,37 @@
         </where>
     </select>
     <select id="queryByOrderId" resultMap="PmsOrderItemMap">
-        select * from pms_order_item where order_sn=#{order_sn}
+        select *
+        from pms_order_item
+        where order_sn = #{order_sn}
     </select>
 
+
     <!--新增所有列-->
-    <insert id="insert" >
-        insert into pms_order_item(id, order_sn, category_id, sku_id, sku_name, sku_image, sku_price, sku_count, sku_attrs_vals, status)
-        values (#{id}, #{orderSn}, #{categoryId}, #{skuId}, #{skuName}, #{skuImage}, #{skuPrice}, #{skuCount}, #{skuAttrsVals}, #{status})
+    <insert id="insert">
+        insert into pms_order_item(id, order_sn, category_id, sku_id, sku_name, sku_image, sku_price, sku_count,
+                                   sku_attrs_vals, status)
+        values (#{id}, #{orderSn}, #{categoryId}, #{skuId}, #{skuName}, #{skuImage}, #{skuPrice}, #{skuCount},
+                #{skuAttrsVals}, #{status})
     </insert>
 
     <insert id="insertBatch">
-        insert into pms_order_item(id, order_sn, category_id, sku_id, sku_name, sku_image, sku_price, sku_count, sku_attrs_vals, status)
+        insert into pms_order_item(id, order_sn, category_id, sku_id, sku_name, sku_image, sku_price, sku_count,
+        sku_attrs_vals, status)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.id}, #{entity.orderSn}, #{entity.categoryId}, #{entity.skuId}, #{entity.skuName}, #{entity.skuImage}, #{entity.skuPrice}, #{entity.skuCount}, #{entity.skuAttrsVals}, #{entity.status})
+            (#{entity.id}, #{entity.orderSn}, #{entity.categoryId}, #{entity.skuId}, #{entity.skuName},
+            #{entity.skuImage}, #{entity.skuPrice}, #{entity.skuCount}, #{entity.skuAttrsVals}, #{entity.status})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch">
-        insert into pms_order_item(order_sn, category_id, sku_id, sku_name, sku_image, sku_price, sku_count, sku_attrs_vals, status)
+        insert into pms_order_item(order_sn, category_id, sku_id, sku_name, sku_image, sku_price, sku_count,
+        sku_attrs_vals, status)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.id}, #{entity.orderSn}, #{entity.categoryId}, #{entity.skuId}, #{entity.skuName}, #{entity.skuImage}, #{entity.skuPrice}, #{entity.skuCount}, #{entity.skuAttrsVals}, #{entity.status})
+            (#{entity.id}, #{entity.orderSn}, #{entity.categoryId}, #{entity.skuId}, #{entity.skuName},
+            #{entity.skuImage}, #{entity.skuPrice}, #{entity.skuCount}, #{entity.skuAttrsVals}, #{entity.status})
         </foreach>
         on duplicate key update
         id = values(id),
@@ -181,7 +240,9 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from pms_order_item where id = #{id}
+        delete
+        from pms_order_item
+        where id = #{id}
     </delete>
 
 </mapper>

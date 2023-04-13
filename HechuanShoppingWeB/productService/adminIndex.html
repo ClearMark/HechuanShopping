@@ -36,7 +36,7 @@
                     <template slot="title"><i class="el-icon-setting"></i>店铺/订单管理</template>
                     <el-menu-item-group>
                         <el-menu-item index="2-1" @click="mainTypeChange('店铺审核管理')">店铺审核管理</el-menu-item>
-                        <el-menu-item index="2-2">选项2</el-menu-item>
+                        <el-menu-item index="2-2" @click="mainTypeChange('订单管理')">订单管理</el-menu-item>
                     </el-menu-item-group>
                 </el-submenu>
                 <el-submenu index="3">
@@ -209,8 +209,19 @@
                             </el-form-item>
 
                         </el-form>
+                    </el-dialog>
                 </template>
 
+            </el-main>
+
+            <el-main v-if="mainType=='订单管理'">
+
+                <template>
+                    <el-pagination
+                            layout="prev, pager, next"
+                            :total="orderTotal">
+                    </el-pagination>
+                </template>
             </el-main>
 
             <el-main v-if="mainType=='商品分类管理'">
@@ -416,6 +427,7 @@
                     </el-dialog>
                 </template>
             </el-main>
+
         </el-container>
 
     </el-container>
@@ -452,7 +464,6 @@
     new Vue({
         el: '#app',
         data: {
-            causesBox: false,
             options: [
                 {value: '1'},
                 {value: '2'},
@@ -469,9 +480,11 @@
             },
             userDataList: [],
             checkShopList: [],
+            orderTotal: 10000,
             addAttrDialog: false,
             mainType: '用户添加',
             tableData: [],
+            causesBox: false,
             checkShopBox: false,
             checkShoping: {},
             category: {},
@@ -747,10 +760,12 @@
             },
             checkShop(status) {
                 let _this = this;
-                this.checkShop.status = status;
-                axios.post('http://127.0.0.1:8888/umsMember/umsShopNotCheck/checkShop', this.checkShop())
+                this.checkShoping.status = status;
+                axios.post('http://127.0.0.1:8888/umsMember/umsShopNotCheck/checkShop', this.checkShoping)
                     .then(response => {
                         _this.getCheckShopList();
+                        _this.causesBox = false
+                        _this.checkShopBox = false
                     })
                     .catch(function (error) {
                         console.log(error);

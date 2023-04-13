@@ -13,6 +13,21 @@
         <result property="notCheckId" column="not_check_id" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap type="com.kedom.memberService.entity.ShopInfoVO" id="ShopMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="levelId" column="level_id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="shopName" column="shop_name" jdbcType="VARCHAR"/>
+        <result property="goodsNum" column="goods_num" jdbcType="INTEGER"/>
+        <result property="followNum" column="follow_num" jdbcType="INTEGER"/>
+        <result property="notCheckId" column="not_check_id" jdbcType="INTEGER"/>
+        <result property="idCardFront" column="id_card_front" jdbcType="VARCHAR"/>
+        <result property="idCardBack" column="id_card_back" jdbcType="VARCHAR"/>
+        <result property="permitFront" column="permit_front" jdbcType="VARCHAR"/>
+        <result property="permitBack" column="permit_back" jdbcType="VARCHAR"/>
+    </resultMap>
+
     <!--查询单个-->
     <select id="queryById" resultMap="UmsShopMap">
         select id,
@@ -89,6 +104,12 @@
         select *
         from ums_shop
         where user_id = #{userId}
+    </select>
+    <select id="getShopIndo" resultMap="ShopMap">
+        select a.*, id_card_front, id_card_back, permit_front, permit_back
+        from ums_shop a
+                 INNER JOIN ums_shop_not_check b on a.not_check_id = b.id
+        where a.user_id = #{userId}
     </select>
 
     <!--新增所有列-->

@@ -1,12 +1,14 @@
 package com.kedom.productService.controller;
 
 import com.kedom.common.entity.KedomResponse;
+import com.kedom.productService.entity.OrderItemVO;
 import com.kedom.productService.entity.PmsOrderItem;
 import com.kedom.productService.service.PmsOrderItemService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 订单项信息(PmsOrderItem)表控制层
@@ -38,6 +40,12 @@ public class PmsOrderItemController {
     @GetMapping("/OrderId/{id}")
     public KedomResponse queryByOrderId(@PathVariable("id") String id) {
         return KedomResponse.okAddData(this.pmsOrderItemService.queryByOrderId(id));
+    }
+
+    @GetMapping("/orderItem/{userId}/{offset}/{limit}")
+    public KedomResponse queryOrderItemByUserId(@PathVariable("userId") String userId, @PathVariable("offset") Integer offset, @PathVariable("limit") Integer limit) {
+        List<OrderItemVO> data = this.pmsOrderItemService.queryOrderItemByUserId(userId, offset, limit);
+        return KedomResponse.okAddData(data);
     }
 
     /**

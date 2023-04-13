@@ -1,5 +1,6 @@
 package com.kedom.memberService.service;
 
+import com.kedom.memberService.entity.ShopInfoVO;
 import com.kedom.memberService.entity.UmsShop;
 
 /**
@@ -36,4 +37,6 @@ public interface UmsShopService {
 
 
     UmsShop queryByUserId(Long id);
+
+    ShopInfoVO getShopIndo(Long id);
 }

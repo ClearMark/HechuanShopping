@@ -1,6 +1,7 @@
 package com.kedom.memberService.controller;
 
 import com.kedom.common.entity.KedomResponse;
+import com.kedom.memberService.entity.ShopInfoVO;
 import com.kedom.memberService.entity.UmsShop;
 import com.kedom.memberService.service.UmsShopService;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,12 @@ public class UmsShopController {
         } else {
             return KedomResponse.okAddData(data);
         }
+    }
+
+    @GetMapping("/shopIndo/{id}")
+    public KedomResponse getShopIndo(@PathVariable("id") Long id) {
+        ShopInfoVO data = this.umsShopService.getShopIndo(id);
+        return KedomResponse.okAddData(data);
     }
 
     /**

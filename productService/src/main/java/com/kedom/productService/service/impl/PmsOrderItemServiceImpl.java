@@ -3,6 +3,7 @@ package com.kedom.productService.service.impl;
 import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.productService.dao.PmsOrderItemDao;
+import com.kedom.productService.entity.OrderItemVO;
 import com.kedom.productService.entity.PmsOrderItem;
 import com.kedom.productService.service.PmsOrderItemService;
 import org.springframework.stereotype.Service;
@@ -69,6 +70,12 @@ public class PmsOrderItemServiceImpl implements PmsOrderItemService {
     @Override
     public List<PmsOrderItem> queryByOrderId(String id) {
         return pmsOrderItemDao.queryByOrderId(id);
+    }
+
+    @Override
+    public List<OrderItemVO> queryOrderItemByUserId(String userId, Integer offset, Integer limit) {
+
+        return pmsOrderItemDao.queryOrderItemByUserId(userId, offset, limit);
     }
 
 }

@@ -201,47 +201,27 @@
             par.userID = userID
             console.log(par)
 
-            axios.post('http://127.0.0.1:8888/auth/TokenAndUserDataVerify', par)
+            $("#No_ok_user").hide()
+            $("#ok_user").show()
+            axios.get('http://127.0.0.1:8888/umsMember/umsShopNotCheck/user/' + userID)
                 .then(function (response) {
                     console.log('解析请求')
                     var data = response.data;
                     if (data.code == 8888) {
-                        $("#No_ok_user").hide()
-                        $("#ok_user").show()
-                        axios.get('http://127.0.0.1:8888/umsMember/umsShop/user/' + userID)
-                            .then(function (response) {
-                                console.log('解析请求')
-                                var data = response.data;
-                                if (data.code == 8888) {
-                                    if (data.data == 0) {
-                                        $("#no_ok_seller").show()
-                                        $("#ok_seller").hide()
-                                    } else {
-                                        $("#no_ok_seller").hide()
-                                        $("#ok_seller").show()
-                                    }
-
-                                }
-                            }).catch(function (error) {
+                        if (data.data == null) {
                             $("#no_ok_seller").show()
                             $("#ok_seller").hide()
-                        });
+                        } else {
+                            $("#no_ok_seller").hide()
+                            $("#ok_seller").show()
+                        }
 
-
-                    } else {
-                        $("#No_ok_user").show()
-                        $("#ok_user").hide()
-                        localStorage.clear();
                     }
-                }).catch(function (error) {
-                $("#No_ok_user").show()
-                $("#ok_user").hide()
-                localStorage.clear();
-            });
+                })
         } else {
             $("#No_ok_user").show()
             $("#ok_user").hide()
-            localStorage.clear();
+
         }
 
         //判断TOken与UserData是否对应
@@ -328,7 +308,6 @@
             return
         }
         window.location.href = 'serchProduct.html?key=' + searchStr
-
     }
 </script>
 
@@ -446,7 +425,5 @@
             window.removeEventListener("scroll", this.windowScroll);//销毁滚动事件
         }
     })
-
-
 </script>
 </html>

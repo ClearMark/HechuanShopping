@@ -11,6 +11,7 @@
         <result property="permitBack" column="permit_back" jdbcType="VARCHAR"/>
         <result property="userId" column="user_id" jdbcType="INTEGER"/>
         <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="cause" column="cause" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--查询单个-->
@@ -97,6 +98,10 @@
         from ums_shop_not_check
         where status = 0
     </select>
+    <select id="userShop" resultType="com.kedom.memberService.entity.UmsShopNotCheck">
+        select *
+        from ums_shop_not_check where user_id=#{id} order by create_time Desc limit 1;
+    </select>
 
     <!--新增所有列-->
     <insert id="insert">
@@ -162,12 +167,25 @@
         </set>
         where id = #{id}
     </update>
+    <update id="checkShop">
+        update ums_shop_not_check
+        set status = #{status}
+        <if test="status == 2">
+            ,cause = #{cause}
+        </if>
+        where id = #{id}
+    </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
         delete
         from ums_shop_not_check
         where id = #{id}
+    </delete>
+    <delete id="deleteShopCheck">
+        delete
+        from ums_shop_not_check
+        where user_id = #{id}
     </delete>
 
 </mapper>

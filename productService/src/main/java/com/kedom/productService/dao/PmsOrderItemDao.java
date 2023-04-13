@@ -1,5 +1,6 @@
 package com.kedom.productService.dao;
 
+import com.kedom.productService.entity.OrderItemVO;
 import com.kedom.productService.entity.PmsOrderItem;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -86,5 +87,7 @@ public interface PmsOrderItemDao {
     void batchAdd(List<PmsOrderItem> orderItem);
 
     List<PmsOrderItem> queryByOrderId(@Param("order_sn") String order_sn);
+
+    List<OrderItemVO> queryOrderItemByUserId(@Param("userId") String userId, @Param("offset") Integer offset, @Param("limit") Integer limit);
 }
 

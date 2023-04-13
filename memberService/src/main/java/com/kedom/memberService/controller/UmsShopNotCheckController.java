@@ -42,6 +42,20 @@ public class UmsShopNotCheckController {
         return KedomResponse.ok();
     }
 
+    //首页查询店铺信息
+    @GetMapping("/user/{id}")
+    public KedomResponse userShop(@PathVariable("id") Long id) {
+        UmsShopNotCheck umsShopNotCheck = umsShopNotCheckService.userShop(id);
+        return KedomResponse.okAddData(umsShopNotCheck);
+    }
+
+    @GetMapping("/delete/{id}")
+    public KedomResponse deleteShopCheck(@PathVariable("id") Long id) {
+        UmsShopNotCheck umsShopNotCheck = umsShopNotCheckService.deleteShopCheck(id);
+        return KedomResponse.ok();
+    }
+
+
     /**
      * 新增数据
      *

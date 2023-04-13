@@ -15,6 +15,49 @@
         <result property="status" column="status" jdbcType="VARCHAR"/>
     </resultMap>
 
+
+    <resultMap type="com.kedom.productService.entity.OrderItemVO" id="OrderItemVOMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="orderSn" column="order_sn" jdbcType="VARCHAR"/>
+        <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+        <result property="skuId" column="sku_id" jdbcType="INTEGER"/>
+        <result property="skuName" column="sku_name" jdbcType="VARCHAR"/>
+        <result property="skuImage" column="sku_image" jdbcType="VARCHAR"/>
+        <result property="skuPrice" column="sku_price" jdbcType="NUMERIC"/>
+        <result property="skuCount" column="sku_count" jdbcType="INTEGER"/>
+        <result property="skuAttrsVals" column="sku_attrs_vals" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="receiverName" column="receiver_name" jdbcType="VARCHAR"/>
+        <result property="receiverPhone" column="receiver_phone" jdbcType="VARCHAR"/>
+        <result property="receiverProvince" column="receiver_province" jdbcType="VARCHAR"/>
+        <result property="receiverCity" column="receiver_city" jdbcType="VARCHAR"/>
+        <result property="receiverRegion" column="receiver_region" jdbcType="VARCHAR"/>
+        <result property="receiverDetailAddress" column="receiver_detail_address" jdbcType="VARCHAR"/>
+        <result property="total" column="total" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    <select id="queryOrderItemByUserId" resultMap="OrderItemVOMap">
+        SELECT b.*,
+               c.create_time,
+               c.receiver_name,
+               c.receiver_phone,
+               c.receiver_province,
+               c.receiver_city,
+               c.receiver_region,
+               c.receiver_detail_address
+                ,
+               count(*) AS total
+        FROM pms_sku_info a
+                 INNER JOIN pms_order_item b ON a.sku_id = b.sku_id
+                 INNER JOIN pms_order c ON b.order_sn = c.order_sn
+        WHERE a.user_id = #{userId}
+        limit #{offset}, #{limit}
+
+    </select>
+
+
     <!--查询单个-->
     <select id="queryById" resultMap="PmsOrderItemMap">
         select id,
@@ -113,6 +156,7 @@
         from pms_order_item
         where order_sn = #{order_sn}
     </select>
+
 
     <!--新增所有列-->
     <insert id="insert">

@@ -4,6 +4,21 @@
     <meta http-equiv="Pragma" content="no-cache">
 </head>
 <style>
+    .demo-table-expand {
+        font-size: 0;
+    }
+
+    .demo-table-expand label {
+        width: 90px;
+        color: #99a9bf;
+    }
+
+    .demo-table-expand .el-form-item {
+        margin-right: 0;
+        margin-bottom: 0;
+        width: 50%;
+    }
+
     .el-tag + .el-tag {
         margin-left: 10px;
     }
@@ -25,7 +40,7 @@
 <body>
 <div id="app">
 
-    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+    <el-menu class="el-menu-demo" mode="horizontal">
         <el-menu-item index="1" @click="changeShowType('店铺信息管理')">店铺信息管理</el-menu-item>
         <el-menu-item index="2" @click="changeShowType('商品管理')">商品管理</el-menu-item>
         <el-menu-item index="3" disabled>消息中心</el-menu-item>
@@ -33,7 +48,19 @@
     </el-menu>
     <el-main v-if="showType=='店铺信息管理'">
         <template>
-            店铺信息管理
+            <el-descriptions title="店铺信息">
+                <el-descriptions-item label="店铺名">{{shopInfo.shopName}}</el-descriptions-item>
+                <el-descriptions-item label="商品数">{{productList.lenght}}</el-descriptions-item>
+                <el-descriptions-item label="开店时间">{{shopInfo.createTime}}</el-descriptions-item>
+                <el-descriptions-item label="证件">
+                    <el-image style="width: 100px; height: 100px" :src="shopInfo.idCardFront"></el-image>
+                    <el-image style="width: 100px; height: 100px" :src="shopInfo.idCardBack"></el-image>
+                    <el-image style="width: 100px; height: 100px" :src="shopInfo.permitFront"></el-image>
+                    <el-image style="width: 100px; height: 100px" :src="shopInfo.permitBack"></el-image>
+
+                </el-descriptions-item>
+
+            </el-descriptions>
 
 
         </template>
@@ -137,11 +164,72 @@
         </template>
     </el-main>
     <el-main v-if="showType=='订单管理'">
-
         <template>
-            订单管理
+            <template>
+                <el-table
+                        :data="orderProductList"
+                        style="width: 100%">
+                    <el-table-column type="expand">
+                        <template slot-scope="props">
+                            <el-form label-position="left" inline class="demo-table-expand">
+                                <el-form-item label="订单号">
+                                    <span>{{ props.row.orderSn }}</span>
+                                </el-form-item>
+                                <el-form-item label="下单时间">
+                                    <span>{{ props.row.createTime }}</span>
+                                </el-form-item>
+                                <el-form-item label="收货人姓名">
+                                    <span>{{ props.row.receiverName }}</span>
+                                </el-form-item>
+                                <el-form-item label="收入人电话">
+                                    <span>{{ props.row.receiverPhone }}</span>
+                                </el-form-item>
+                                <el-form-item label="省/直辖市">
+                                    <span>{{ props.row.receiverProvince }}</span>
+                                </el-form-item>
+                                <el-form-item label="城市">
+                                    <span>{{ props.row.receiverCity }}</span>
+                                </el-form-item>
+                                <el-form-item label="区">
+                                    <span>{{ props.row.receiverRegion }}</span>
+                                </el-form-item>
+                                <el-form-item label="详细地址">
+                                    <span>{{ props.row.receiverDetailAddress }}</span>
+                                </el-form-item>
+                                <el-form-item label="单价">
+                                    <span>{{ props.row.skuPrice }}</span>
+                                </el-form-item>
+                            </el-form>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="商品名"
+                            prop="skuName">
+                    </el-table-column>
+                    <el-table-column
+                            label="数量"
+                            prop="skuCount">
+                    </el-table-column>
+                    <el-table-column
+                            label="总计"
+                            prop="skuCount">
+                        <template slot-scope="props">
+                            <span>{{ props.row.skuPrice*props.row.skuCount }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="状态"
+                            prop="status">
+                    </el-table-column>
+                </el-table>
+                <template>
+                    <el-pagination
+                            layout="prev, pager, next"
+                            :total="orderTotal">
+                    </el-pagination>
+                </template>
+            </template>
         </template>
-
     </el-main>
 
 
@@ -177,6 +265,7 @@
     new Vue({
         el: '#app',
         data: {
+            shopInfo: {},
             showType: "商品管理",
             productAddDialog: false,
             active: 0,
@@ -192,9 +281,11 @@
             sku: {},
             categoryAttr: [],
             productList: [],
+            orderProductList: [],
+            orderOffset: 0,
+            orderLimit: 10,
         },
         methods: {
-
             async getProduct() {
                 const userID = localStorage.getItem("userID");
                 let _this = this;
@@ -213,10 +304,31 @@
                     });
             },
 
+            getShopInfo() {
+                const userID = localStorage.getItem("userID");
+                let _this = this;
+                axios.get('http://127.0.0.1:8888/umsMember/umsShop/shopIndo/' + userID)
+                    .then(function (response) {
+                        var data = response.data;
+                        if (data.code == 8888) {
+                            _this.shopInfo = data.data
+                        } else {
+                        }
+                    }).catch(function (error) {
+                });
+            },
 
             changeShowType(type) {
                 this.showType = type;
-                console.log(type)
+                switch (type) {
+                    case "订单管理":
+                        this.orderProductList = [];
+                        this.queryOrderProduct();
+                        break;
+                    case "店铺信息管理":
+                        this.getShopInfo();
+                        break;
+                }
             },
             skuAddButton() {
                 if (this.active++ > 2) this.active = 0;
@@ -308,10 +420,37 @@
                 this.sku = {};
             },
 
+            queryOrderProduct() {
+                axios.get('http://127.0.0.1:8888/productService/pmsOrderItem/orderItem/' + localStorage.getItem("userID") + "/" + this.orderOffset + "/" + this.orderLimit).then((res) => {
+                    console.log(res)
+                    res.data.data.forEach((item) => {
+                        this.orderProductList.push(item)
+                    })
+                })
+            },
+            isCheckOk() {
+                let userID = localStorage.getItem("userID")
+                axios.get('http://127.0.0.1:8888/umsMember/umsShopNotCheck/user/' + userID)
+                    .then(function (response) {
+                        console.log('解析请求')
+                        var data = response.data;
+                        if (data.code == 8888) {
+                            if (data.data.status == 1) {
+                            } else {
+                                window.location.href = "addSeller.html"
+                            }
+
+                        }
+                    }).catch(function (error) {
+                });
+
+            }
+
+
         },
         created() {
+            this.isCheckOk()
             this.productList = this.getProduct();
-
         }
     })
 

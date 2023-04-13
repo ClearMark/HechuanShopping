@@ -6,19 +6,17 @@
 <div id="app">
     <h1>我的购物车</h1>
     <el-card style="width: 1200px;" v-if="showCar">
-
         <el-descriptions title="收货信息">
             <template slot="extra">
                 <el-button type="primary" size="small" @click="showShippingAddressDialog">切换收货地址</el-button>
             </template>
-            <el-descriptions-item label="姓名">{{newAddress.name}}</el-descriptions-item>
-            <el-descriptions-item label="手机号">{{newAddress.phone}}</el-descriptions-item>
-            <el-descriptions-item label="省/直辖市">{{newAddress.province}}</el-descriptions-item>
-            <el-descriptions-item label="市">{{newAddress.city}}</el-descriptions-item>
-            <el-descriptions-item label="区">{{newAddress.region}}</el-descriptions-item>
-            <el-descriptions-item label="详细地址">{{newAddress.detailAddress}}</el-descriptions-item>
+            <el-descriptions-item label="姓名">{{defaultAddress.name}}</el-descriptions-item>
+            <el-descriptions-item label="手机号">{{defaultAddress.phone}}</el-descriptions-item>
+            <el-descriptions-item label="省/直辖市">{{defaultAddress.province}}</el-descriptions-item>
+            <el-descriptions-item label="市">{{defaultAddress.city}}</el-descriptions-item>
+            <el-descriptions-item label="区">{{defaultAddress.region}}</el-descriptions-item>
+            <el-descriptions-item label="详细地址">{{defaultAddress.detailAddress}}</el-descriptions-item>
         </el-descriptions>
-
         <el-dialog title="收货地址" :visible.sync="ShippingAddressDialogVisible">
             <el-dialog
                     width="30%"
@@ -110,7 +108,6 @@
                 <el-button type="primary" @click="innerVisible = true">新增收获地址</el-button>
             </div>
         </el-dialog>
-
         <template>
             <el-table :data="car" @select="handleSum" @select-all="handleSum" ref="multipleTable">
                 <!-- 复选框 -->
@@ -166,12 +163,10 @@
 <link rel="stylesheet" href="../js/elment/http_unpkg.com_element-ui_lib_theme-chalk_index.css">
 <script src="../js/vue2.js"></script>
 <script src="../js/elment/http_unpkg.com_element-ui_lib_index.js"></script>
-<script src="https://unpkg.com/vue-infinite-loading@^2/dist/vue-infinite-loading.js"></script>
 <script>
     new Vue({
         el: '#app',
         data: {
-            AddressList: [],
             order: {},
             orderItem: [],
             selectCar: [],
@@ -179,10 +174,23 @@
             activeName: 'first',
             showCar: false,
             selectSku: [],
+            defaultAddress: {},
             newAddress: {},//新地址消息
             ShippingAddressDialogVisible: false,//展示收货地址对话框
             innerVisible: false,//展示新增收货地址对话框
-            AddressList: [],//收货地址列表
+            AddressList: [
+                {
+                    name: 'y',
+                    phone: '',
+                    postCode: '',
+                    province: '',
+                    city: '',
+                    region: '',
+                    detailAddress: '',
+                    areacode: '',
+                    default_status: 0
+                },
+            ],//收货地址列表
             regionOptions: [],//区
             provinceOptions: [],//省
             cityOptions: [],//市
@@ -190,6 +198,7 @@
             car: [],
             offset: 0,
             limit: 8,
+            isLoadCar: true,
         },
 
 
@@ -264,19 +273,19 @@
 
                     totalAmount: this.sum,
 
-                    receiverName: this.newAddress.name,
+                    receiverName: this.defaultAddress.name,
 
-                    receiverPhone: this.newAddress.phone,
+                    receiverPhone: this.defaultAddress.phone,
 
-                    receiverPostCode: this.newAddress.postCode,
+                    receiverPostCode: this.defaultAddress.postCode,
 
-                    receiverProvince: this.newAddress.province,
+                    receiverProvince: this.defaultAddress.province,
 
-                    receiverCity: this.newAddress.city,
+                    receiverCity: this.defaultAddress.city,
 
-                    receiverRegion: this.newAddress.region,
+                    receiverRegion: this.defaultAddress.region,
 
-                    receiverDetailAddress: this.newAddress.detailAddress,
+                    receiverDetailAddress: this.defaultAddress.detailAddress,
                 }
                 for (let i = 0; i < _this.selectSku.length; i++) {
                     let temp = {
@@ -331,11 +340,19 @@
                 let _this = this;
                 await axios.get('http://127.0.0.1:8888/umsMember/umsCar/' + userId + "/" + _this.offset + "/" + _this.limit).then(res => {
                     console.log(res);
+                    if (res.data.data.length == 0) {
+                        _this.isLoadCar = false;
+                    } else {
+                        _this.isLoadCar = true;
+                    }
+
                     for (let i = 0; i < res.data.data.length; i++) {
                         _this.car.push(res.data.data[i]);
                     }
                     _this.offset += _this.limit;
-                    this.showCar = true;
+                    _this.showCar = true;
+
+
                 }).catch(err => {
                     console.log(err);
                 })
@@ -363,21 +380,19 @@
                 }
                 return scrollTop
             },
-            windowScroll() {
-
+            async windowScroll() {
                 let _this = this;
                 //获取三个值
                 var scrollTop = this.getScrollTop()
                 var clientHeight = this.getClientHeight()
                 var scrollHeight = this.getScrollHeight()
-                // console.log(scrollTop)
-                // console.log(clientHeight)
-                // console.log(scrollHeight)
-                // console.log("结果="+(scrollTop+clientHeight-scrollHeight))
-
-                //如果满足公式则，确实到底了
-                if (scrollTop + clientHeight - scrollHeight >= -10) {
-                    this.getCar();
+                console.log("st" + scrollTop)
+                console.log("ch" + clientHeight)
+                console.log("sh" + scrollHeight)
+                console.log(scrollTop + clientHeight - scrollHeight)
+                if (scrollTop + clientHeight - scrollHeight >= -1 && this.isLoadCar) {
+                    this.isLoadCar = false;
+                    await this.getCar();
                 }
 
             },
@@ -395,7 +410,7 @@
                         _this.AddressList.push(item);
 
                     });
-                    _this.newAddress = _this.AddressList[0];
+                    _this.defaultAddress = _this.AddressList[0];
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -430,7 +445,7 @@
             },
             selectAddress(item) {
                 console.log(item)
-                this.newAddress = item;
+                this.defaultAddress = item;
                 this.ShippingAddressDialogVisible = false;
             },
 

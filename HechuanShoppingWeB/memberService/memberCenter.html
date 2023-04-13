@@ -5,7 +5,6 @@
 <body>
 <div id="app">
     <label>个人中心</label>
-    <el-button type="text" @click="showShippingAddressDialog">管理收货地址</el-button>
 
     <el-dialog title="收货地址" :visible.sync="ShippingAddressDialogVisible">
         <el-dialog
@@ -98,51 +97,50 @@
         </div>
     </el-dialog>
 
+    <el-descriptions title="个人信息">
+        <template slot="extra">
+            <el-button type="primary" size="small" @click="showShippingAddressDialog">收货地址管理</el-button>
+        </template>
+        <el-descriptions-item label="账号">
+            <el-input v-model="memberForm.username" disabled="disabled"></el-input>
+        </el-descriptions-item>
+        <el-descriptions-item label="昵称">
+            <el-input v-model="memberForm.nickname"></el-input>
+        </el-descriptions-item>
+        <el-descriptions-item label="手机号">
+            <el-input v-model="memberForm.mobile"></el-input>
+        </el-descriptions-item>
+        <el-descriptions-item label="邮箱">
+            <el-input v-model="memberForm.email"></el-input>
+        </el-descriptions-item>
+        <el-descriptions-item label="个性签名">
+            <el-input v-model="memberForm.sign"></el-input>
+        </el-descriptions-item>
+        <el-descriptions-item label="所在城市">
+            <el-input v-model="memberForm.city"></el-input>
+        </el-descriptions-item>
+        <el-descriptions-item label="职业">
+            <el-input v-model="memberForm.job"></el-input>
+        </el-descriptions-item>
+        <el-descriptions-item label="性别">
+            <el-radio-group v-model="memberForm.gender" size="medium">
+                <el-radio border label="男"></el-radio>
+                <el-radio border label="女"></el-radio>
+            </el-radio-group>
+        </el-descriptions-item>
+        <el-descriptions-item label="生日">
+            <el-date-picker type="date" placeholder="选择日期" v-model="memberForm.birth" value-format="yyyy-MM-dd"
+                            style="width: 100%;"></el-date-picker>
+        </el-descriptions-item>
+        <el-descriptions-item label="注册时间">
+            <el-date-picker type="date" placeholder="选择日期" v-model="memberForm.createTime" value-format="yyyy-MM-dd"
+                            style="width: 30%;" disabled="disabled"></el-date-picker>
+        </el-descriptions-item>
+    </el-descriptions>
+    <el-button :plain="true" type="primary" @click="onSubmit()">保存</el-button>
+    <el-button type="primary" @click="back()">返回</el-button>
 
-    <div style="width: 30%">
-        <el-form ref="form" :model="memberForm" label-width="80px">
-            <el-form-item label="账号">
-                <el-input v-model="memberForm.username" disabled="disabled"></el-input>
-            </el-form-item>
-            <el-form-item label="昵称">
-                <el-input v-model="memberForm.nickname"></el-input>
-            </el-form-item>
-            <el-form-item label="手机号">
-                <el-input v-model="memberForm.mobile"></el-input>
-            </el-form-item>
-            <el-form-item label="邮箱">
-                <el-input v-model="memberForm.email"></el-input>
-            </el-form-item>
-            <el-form-item label="个性签名">
-                <el-input v-model="memberForm.sign"></el-input>
-            </el-form-item>
-            <el-form-item label="所在城市">
-                <el-input v-model="memberForm.city"></el-input>
-            </el-form-item>
-            <el-form-item label="职业">
-                <el-input v-model="memberForm.job"></el-input>
-            </el-form-item>
-            <el-form-item label="性别">
-                <el-radio-group v-model="memberForm.gender" size="medium">
-                    <el-radio border label="男"></el-radio>
-                    <el-radio border label="女"></el-radio>
-                </el-radio-group>
-            </el-form-item>
-            <el-form-item prop="date1" label="生日">
-                <el-date-picker type="date" placeholder="选择日期" v-model="memberForm.birth" value-format="yyyy-MM-dd"
-                                style="width: 100%;"></el-date-picker>
-            </el-form-item>
-            <el-form-item prop="date1" label="注册时间">
-                <el-date-picker type="date" placeholder="选择日期" v-model="memberForm.createTime" value-format="yyyy-MM-dd"
-                                style="width: 100%;" disabled="disabled"></el-date-picker>
-            </el-form-item>
-            <el-form-item>
-                <el-button :plain="true" type="primary" @click="onSubmit()">保存</el-button>
-                <el-button type="primary" @click="back()">返回</el-button>
-            </el-form-item>
-        </el-form>
-
-    </div>
+</div>
 
 </div>
 
@@ -179,9 +177,7 @@
                 let _this = this;
                 this.memberForm.gender = this.memberForm.gender == "男" ? 1 : 0;
                 await axios.post('http://127.0.0.1:8888/umsMember/updateMemberInfo', this.memberForm, {
-                    headers: {
-                        accessToken: localStorage.getItem("Token"),
-                    },
+
                 }).then(function (response) {
                     _this.$message({
                         message: '修改成功',
@@ -241,10 +237,10 @@
             },
         },
         created() {
-
-            this.provinceOptions = province;
-            this.cityOptions = city;
-            this.areaOptions = area;
+            //
+            // this.provinceOptions = province;
+            // this.cityOptions = city;
+            // this.areaOptions = area;
 
             console.log(this.provinceOptions)
             console.log(this.cityOptions)

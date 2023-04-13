@@ -1,5 +1,6 @@
 package com.kedom.memberService.dao;
 
+import com.kedom.memberService.entity.ShopInfoVO;
 import com.kedom.memberService.entity.UmsShop;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -84,5 +85,7 @@ public interface UmsShopDao {
     int deleteById(Long id);
 
     UmsShop queryByUserId(Long id);
+
+    ShopInfoVO getShopIndo(Long id);
 }
 

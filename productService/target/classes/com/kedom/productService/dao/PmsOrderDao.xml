@@ -21,8 +21,20 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="PmsOrderMap">
-        select
-          id, member_id, order_sn, create_time, total_amount, freight_amount, status, receiver_name, receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address
+        select id,
+               member_id,
+               order_sn,
+               create_time,
+               total_amount,
+               freight_amount,
+               status,
+               receiver_name,
+               receiver_phone,
+               receiver_post_code,
+               receiver_province,
+               receiver_city,
+               receiver_region,
+               receiver_detail_address
         from pms_order
         where id = #{id}
     </select>
@@ -30,7 +42,8 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="PmsOrderMap">
         select
-          id, member_id, order_sn, create_time, total_amount, freight_amount, status, receiver_name, receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address
+        id, member_id, order_sn, create_time, total_amount, freight_amount, status, receiver_name, receiver_phone,
+        receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address
         from pms_order
         <where>
             <if test="id != null">
@@ -129,28 +142,42 @@
         </where>
     </select>
     <select id="queryByUserId" resultMap="PmsOrderMap">
-        select * from pms_order where member_id = #{userId} limit #{offset}, #{limit}
+        select *
+        from pms_order
+        where member_id = #{userId}
+        limit #{offset}, #{limit}
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" >
-        insert into pms_order(id, member_id, order_sn,  total_amount, freight_amount,  receiver_name, receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address)
-        values (#{id}, #{memberId}, #{orderSn}, #{totalAmount}, #{freightAmount},  #{receiverName}, #{receiverPhone}, #{receiverPostCode}, #{receiverProvince}, #{receiverCity}, #{receiverRegion}, #{receiverDetailAddress})
+    <insert id="insert">
+        insert into pms_order(id, member_id, order_sn, total_amount, freight_amount, receiver_name, receiver_phone,
+                              receiver_post_code, receiver_province, receiver_city, receiver_region,
+                              receiver_detail_address)
+        values (#{id}, #{memberId}, #{orderSn}, #{totalAmount}, #{freightAmount}, #{receiverName}, #{receiverPhone},
+                #{receiverPostCode}, #{receiverProvince}, #{receiverCity}, #{receiverRegion}, #{receiverDetailAddress})
     </insert>
 
     <insert id="insertBatch">
-        insert into pms_order(id, member_id, order_sn, create_time, total_amount, freight_amount, status, receiver_name, receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address)
+        insert into pms_order(id, member_id, order_sn, create_time, total_amount, freight_amount, status, receiver_name,
+        receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.id}, #{entity.memberId}, #{entity.orderSn}, #{entity.createTime}, #{entity.totalAmount}, #{entity.freightAmount}, #{entity.status}, #{entity.receiverName}, #{entity.receiverPhone}, #{entity.receiverPostCode}, #{entity.receiverProvince}, #{entity.receiverCity}, #{entity.receiverRegion}, #{entity.receiverDetailAddress})
+            (#{entity.id}, #{entity.memberId}, #{entity.orderSn}, #{entity.createTime}, #{entity.totalAmount},
+            #{entity.freightAmount}, #{entity.status}, #{entity.receiverName}, #{entity.receiverPhone},
+            #{entity.receiverPostCode}, #{entity.receiverProvince}, #{entity.receiverCity}, #{entity.receiverRegion},
+            #{entity.receiverDetailAddress})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch">
-        insert into pms_order(member_id, order_sn, create_time, total_amount, freight_amount, status, receiver_name, receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address)
+        insert into pms_order(member_id, order_sn, create_time, total_amount, freight_amount, status, receiver_name,
+        receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.id}, #{entity.memberId}, #{entity.orderSn}, #{entity.createTime}, #{entity.totalAmount}, #{entity.freightAmount}, #{entity.status}, #{entity.receiverName}, #{entity.receiverPhone}, #{entity.receiverPostCode}, #{entity.receiverProvince}, #{entity.receiverCity}, #{entity.receiverRegion}, #{entity.receiverDetailAddress})
+            (#{entity.id}, #{entity.memberId}, #{entity.orderSn}, #{entity.createTime}, #{entity.totalAmount},
+            #{entity.freightAmount}, #{entity.status}, #{entity.receiverName}, #{entity.receiverPhone},
+            #{entity.receiverPostCode}, #{entity.receiverProvince}, #{entity.receiverCity}, #{entity.receiverRegion},
+            #{entity.receiverDetailAddress})
         </foreach>
         on duplicate key update
         id = values(id),
@@ -218,7 +245,9 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from pms_order where id = #{id}
+        delete
+        from pms_order
+        where id = #{id}
     </delete>
 
 </mapper>

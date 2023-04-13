@@ -197,7 +197,7 @@
                 and sku_name =concat('%',#{skuName},'%')
             </if>
         </where>
-                 limit #{offset},#{limit}
+        limit #{offset},#{limit}
     </select>
 
 

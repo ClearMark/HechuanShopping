@@ -3,6 +3,7 @@ package com.kedom.memberService.service.impl;
 import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.memberService.dao.UmsShopDao;
+import com.kedom.memberService.entity.ShopInfoVO;
 import com.kedom.memberService.entity.UmsShop;
 import com.kedom.memberService.service.UmsShopService;
 import org.springframework.stereotype.Service;
@@ -64,6 +65,12 @@ public class UmsShopServiceImpl implements UmsShopService {
     public UmsShop queryByUserId(Long id) {
 
         return umsShopDao.queryByUserId(id);
+    }
+
+    @Override
+    public ShopInfoVO getShopIndo(Long id) {
+
+        return umsShopDao.getShopIndo(id);
     }
 
 }

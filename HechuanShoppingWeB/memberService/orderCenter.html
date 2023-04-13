@@ -125,11 +125,12 @@
         methods: {
             async infiniteHandler($state) {
                 if (this.isLoad) {
-                    this.isLoad = false
                     await this.getOrder();
-                    console.log("jia")
+                    console.log(111)
                     $state.loaded();
                 }
+
+
             },
             selectRow(item) {
                 this.nowOrder = item

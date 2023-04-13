@@ -68,34 +68,36 @@
 			  console.log('解析请求')
 			var data=response.data;
 		    if(data.code==8888){
-				console.log('登录成功')
-				console.log(data.data)
-				console.log(data.data.Token)
-				console.log(data.data.userData)
+              console.log('登录成功')
+              console.log(data.data)
+              console.log(data.data.Token)
+              console.log()
 
               localStorage.setItem("Token", data.data.Token)
-                localStorage.setItem("userData", JSON.stringify(data.data.userData))
-              localStorage.setItem("userID",data.data.userData.id)
-				window.location.href="../productService/index.html"
-			}
-			else{
-				alert(data.message)
-			}
-		  })
-		  .catch(function (error) {
-		    alert("网络异常 请稍后在试")
-		  });
-	}
+              localStorage.setItem("userData", data.data.userData)
+              localStorage.setItem("userID", JSON.parse(data.data.userData).id)
+              window.location.href = "../productService/index.html"
+            } else {
+              alert(data.message)
+            }
+          })
+                .catch(function (error) {
+                  alert("网络异常 请稍后在试")
+                });
+    }
 </script>
 <script>
-	window.onload = function() {
-		loginload();
-	}
-	function loginload(){
-		console.log(localStorage.getItem("username"))
-		if(localStorage.getItem("username")!=null)
-		{
-			$("#username").val(localStorage.getItem("username"))
+  localStorage.clear();
+</script>
+<script>
+  window.onload = function () {
+    loginload();
+  }
+
+  function loginload() {
+    console.log(localStorage.getItem("username"))
+    if (localStorage.getItem("username") != null) {
+      $("#username").val(localStorage.getItem("username"))
 		}
 	}
 	

@@ -78,11 +78,22 @@ public class UmsShopNotCheckServiceImpl implements UmsShopNotCheckService {
         if (umsShopNotCheck.getStatus() == 1) {
             UmsShop umsShop = new UmsShop();
             umsShop.setShopName(umsShopNotCheck.getShopName());
-            umsShop.setNot_check_id(umsShopNotCheck.getId());
+            umsShop.setNotCheckId(umsShopNotCheck.getId());
             umsShopService.insert(umsShop);
         }
 
         umsShopNotCheckDao.checkShop(umsShopNotCheck);
+    }
+
+    @Override
+    public UmsShopNotCheck userShop(Long id) {
+
+        return umsShopNotCheckDao.userShop(id);
+    }
+
+    @Override
+    public UmsShopNotCheck deleteShopCheck(Long id) {
+        return umsShopNotCheckDao.deleteShopCheck(id);
     }
 
 }

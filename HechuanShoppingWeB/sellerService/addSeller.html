@@ -84,7 +84,28 @@
         <el-button type="primary" @click="submitForm" :plain="true">提交审核</el-button>
     </el-form>
 
+    <el-dialog
+            title="提示"
+            :visible.sync="checkingDialogVisible"
+            width="30%">
+        <span>{{checkStatus}}</span>
+        <span>{{checkMsg}}</span>
+        <span slot="footer" class="dialog-footer">
+    <el-button type="primary" @click="gotoIndex">确 定</el-button>
+  </span>
+    </el-dialog>
 
+    <el-dialog
+            title="提示"
+            :visible.sync="checkFailDialogVisible"
+            width="30%">
+        <span>{{checkStatus}}</span>
+        <span>{{checkMsg}}</span>
+        <span slot="footer" class="dialog-footer">
+    <el-button type="primary" @click="newCheck">重新申请</el-button>
+    <el-button type="primary" @click="gotoIndex">确 定</el-button>
+  </span>
+    </el-dialog>
 
 
 </div>
@@ -104,6 +125,10 @@
             idCardBack: false,
             permitFront: false,
             permitBack: false,
+            checkingDialogVisible: false,
+            checkStatus: '',
+            checkMsg: '',
+            checkFailDialogVisible: false,
         },
 
         methods: {
@@ -138,6 +163,40 @@
                         console.log(error);
                     });
             },
+            loadShop() {
+                let _this = this;
+                let userID = localStorage.getItem("userID");
+                axios.get('http://127.0.0.1:8888/umsMember/umsShopNotCheck/user/' + userID)
+                    .then(function (response) {
+                        console.log('解析请求')
+                        var data = response.data;
+                        if (data.code == 8888) {
+                            _this.checkVisible = true;
+                            if (data.data.status == 0) {
+                                _this.checkStatus = "审核中";
+                            } else {
+                                _this.checkStatus = "审核失败";
+                                _this.checkMsg = data.data.cause
+                            }
+
+                        }
+                    })
+            },
+            gotoIndex() {
+                window.location.href = "../productService/index.html";
+            },
+            newCheck() {
+                this.shop = {};
+                this.checkFailDialogVisible = false;
+                this.checkingDialogVisible = false;
+                let _this = this;
+                let userID = localStorage.getItem("userID");
+                axios.get('http://127.0.0.1:8888/umsMember/umsShopNotCheck/delete/' + userID).then(function (response) {
+                })
+            }
+        },
+        created() {
+            let _this = this;
         }
 
     })

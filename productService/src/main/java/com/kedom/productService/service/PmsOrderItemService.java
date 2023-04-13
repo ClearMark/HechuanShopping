@@ -1,5 +1,6 @@
 package com.kedom.productService.service;
 
+import com.kedom.productService.entity.OrderItemVO;
 import com.kedom.productService.entity.PmsOrderItem;
 
 import java.util.List;
@@ -40,4 +41,6 @@ public interface PmsOrderItemService {
     void batchAdd(List<PmsOrderItem> orderItem);
 
     List<PmsOrderItem> queryByOrderId(String id);
+
+    List<OrderItemVO> queryOrderItemByUserId(String userId, Integer offset, Integer limit);
 }

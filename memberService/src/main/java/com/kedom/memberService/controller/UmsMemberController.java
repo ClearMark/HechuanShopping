@@ -1,5 +1,6 @@
 package com.kedom.memberService.controller;
 
+import com.google.gson.Gson;
 import com.kedom.common.entity.KedomResponse;
 import com.kedom.common.entity.memberServiceEntity.UmsMember;
 import com.kedom.memberService.service.UmsMemberService;
@@ -18,6 +19,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/umsMember")
 public class UmsMemberController {
+    @Resource
+    Gson gson;
     /**
      * 服务对象
      */
@@ -36,17 +39,17 @@ public class UmsMemberController {
     public KedomResponse login(@RequestBody UserVO userLoginVo) {
         UmsMember umsMember = umsMemberService.login(userLoginVo);
         umsMember.setPassword(null);
-        return KedomResponse.okAddData(umsMember);
+        return KedomResponse.okAddData(gson.toJson(umsMember));
     }
 
     @PostMapping("/updateMemberInfo")
     public KedomResponse updateUserInfo(@RequestBody UmsMember umsMember,@RequestHeader("accessToken") String accessToken) {
         //校验参数
-        UmsMember redisMember = umsMemberService.getMemberByAccessToken(accessToken);
-        umsMember.setId(redisMember.getId());
-        umsMember.setUsername(redisMember.getUsername());
+//        UmsMember redisMember = umsMemberService.getMemberByAccessToken(accessToken);
+//        umsMember.setId(redisMember.getId());
+//        umsMember.setUsername(redisMember.getUsername());
         umsMemberService.updateDB(umsMember);
-        umsMemberService.updateCache(umsMember, accessToken);
+//        umsMemberService.updateCache(umsMember, accessToken);
         return KedomResponse.ok();
     }
 

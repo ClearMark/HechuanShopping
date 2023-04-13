@@ -51,7 +51,7 @@ color: red;
     <input type="password" id="password" class="form-control" placeholder="请输入密码"><br>
     <label for="email">邮箱:</label><br>
     <input type="email" id="email" class="form-control" placeholder="请输入邮箱"><br>
-    <input type="button" class="button" value="获取邮箱验证码" onclick="getCode(this)  id=" getCodeButten"/><br>
+    <input type="button" class="button" value="获取邮箱验证码" onclick="getCode()" id="getCodeButten"/><br>
     <label for="code">邮箱验证码:</label><br>
     <input type="text" id="code" class="form-control" placeholder="请输入邮箱验证码"><br>
     <input type="button" class="button" value="注册" onclick="register()"/>
@@ -62,40 +62,25 @@ color: red;
   <script src="../js/axios.min.js"></script>
   <script src="../js/jquery-3.5.1.min.js"></script>
   <script>
-      var myButton = document.getElementById("getCodeButten");
-      var clickEnabled = true;
-      var countdownTimer;
-      var time = 60;
-      myButton.addEventListener("click", function () {
-          if (clickEnabled) {
-              // 禁用点击
-              clickEnabled = false;
-              // 60秒后启用点击
-              countdownTimer = setInterval(countdown, 1000);
-              const email = $("#email").val();
-              console.log(email)
+      function getCode() {
+          const email = $("#email").val();
+          console.log(email)
+          axios.get('http://127.0.0.1:8888/auth/MailCode/' + email + '/register')
+              .then(function (response) {
+                  console.log('解析请求')
+                  var data = response.data;
+                  if (data.code == 8888) {
+                      console.log('登录成功')
+                      $("#getCodeButten").val('获取成功')
+                  } else {
+                      console.log(data.message)
+                  }
+              })
+              .catch(function (error) {
+                  console.log(error);
+              });
 
-              clickEnabled = false;
-              countdownTimer = setInterval(countdown, 1000);
-          }
-      });
-
-
-      function countdown(e) {
-          if (time == 0) {
-              //这里时设置当时间到0的时候重新设置点击事件，并且默认time修改为60
-              e.setAttribute("onclick", "getCode(this)");
-              document.getElementById("getCodeButten").innerText = "获取验证码";
-              time = 60;
-              clearInterval(t);
-          } else {
-              //这里是显示时间倒计时的时候点击不生效
-              e.setAttribute("onclick", '');
-              document.getElementById("getCodeButten").innerHTML = "重新发送" + time;
-              time--;
-          }
       }
-
 
       function backlogin() {
           window.location.href = "login.html"
@@ -105,16 +90,14 @@ color: red;
           const par = {
               username: $("#username").val(),
               password: $("#password").val(),
-		email:$("#email").val(),
-		code:$("#code").val()
-	}
-	
-	
-	
-	
-	axios.post('http://127.0.0.1:8888/auth/register',par)
-	  .then(function (response) {
-		  console.log('解析请求')
+              email: $("#email").val(),
+              code: $("#code").val()
+          }
+
+
+          axios.post('http://127.0.0.1:8888/auth/register', par)
+              .then(function (response) {
+                  console.log('解析请求')
 		var data=response.data;
 	    if(data.code==8888){
 			alert('注册成功 点击跳回登录')
