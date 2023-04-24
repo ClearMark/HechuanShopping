@@ -1,6 +1,7 @@
 package com.kedom.memberService.dao;
 
 import com.kedom.common.entity.memberServiceEntity.UmsMember;
+import com.kedom.productService.entity.UserSearchVO;
 import feign.Param;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -89,6 +90,12 @@ public interface UmsMemberDao {
 
     int queryEmailIsUnique(String email);
 
-    List<UmsMember> queryAll(int offset);
+    List<UmsMember> queryAll(UserSearchVO userSearchVO);
+
+    Integer queryAllTotal(UserSearchVO userSearchVO);
+
+    void resetPassword(@Param("id") Integer id, @Param("encodeAfterPassword") String encodeAfterPassword);
+
+    void updatePassword(Integer id, String encodeAfterPassword);
 }
 

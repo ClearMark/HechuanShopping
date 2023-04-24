@@ -22,10 +22,14 @@ public class PmsOrderItem implements Serializable {
      * order_sn
      */
     private String orderSn;
+
+
+    private String cancelString;
     /**
      * 商品分类id
      */
     private Long categoryId;
+
     /**
      * 商品sku编号
      */

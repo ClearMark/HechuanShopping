@@ -11,6 +11,7 @@
         <result property="permitBack" column="permit_back" jdbcType="VARCHAR"/>
         <result property="userId" column="user_id" jdbcType="INTEGER"/>
         <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="cause" column="cause" jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -98,7 +99,7 @@
         from ums_shop_not_check
         where status = 0
     </select>
-    <select id="userShop" resultType="com.kedom.memberService.entity.UmsShopNotCheck">
+    <select id="userShop" resultMap="UmsShopNotCheckMap">
         select *
         from ums_shop_not_check
         where user_id = #{id}

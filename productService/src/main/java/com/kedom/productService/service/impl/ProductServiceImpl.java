@@ -238,6 +238,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Sku> getProductByCategory(GetProductByCategoryVO pamrs) {
+
+        pamrs.getAttrs().forEach(attr -> {
+            String attrValue = attr.getAttrValue();
+            if (attrValue != null && !(("").equals(attrValue))) {
+                pamrs.setAttrSize(pamrs.getAttrSize() + 1);
+            }
+        });
+
+
         List<PmsSkuInfo> pmsSkuInfos = pmsSkuInfoService.queryByCategory(pamrs);
         List<Sku> skus = pmsSkuInfos.stream().map(pmsSkuInfo -> {
             Sku sku = new Sku();
@@ -256,7 +265,14 @@ public class ProductServiceImpl implements ProductService {
                 skus.get(i).getAttr().add(attr);
             }
         }
+
+
         return skus;
+    }
+
+    @Override
+    public void takeDownProduct(Long id) {
+        pmsSkuInfoService.takeDownProduct(id);
     }
 
     @Cacheable(value = "product", key = "'aaa'")

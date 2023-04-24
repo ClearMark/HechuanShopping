@@ -13,6 +13,8 @@
         <result property="skuCount" column="sku_count" jdbcType="INTEGER"/>
         <result property="skuAttrsVals" column="sku_attrs_vals" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="cancelString" column="cancelString" jdbcType="VARCHAR"/>
+
     </resultMap>
 
 
@@ -35,24 +37,24 @@
         <result property="receiverRegion" column="receiver_region" jdbcType="VARCHAR"/>
         <result property="receiverDetailAddress" column="receiver_detail_address" jdbcType="VARCHAR"/>
         <result property="total" column="total" jdbcType="INTEGER"/>
+        <result property="cancelString" column="cancelString" jdbcType="VARCHAR"/>
     </resultMap>
 
 
-
-
-
-
-
     <select id="queryOrderItemByUserId" resultMap="OrderItemVOMap">
-        SELECT b.*,c.create_time,
-               c.receiver_name,c.receiver_phone,c.receiver_province,
-                c.receiver_city,c.receiver_region,c.receiver_detail_address
-        ,count(*)  AS total
+        SELECT b.*,
+               c.create_time,
+               c.receiver_name,
+               c.receiver_phone,
+               c.receiver_province,
+               c.receiver_city,
+               c.receiver_region,
+               c.receiver_detail_address
         FROM pms_sku_info a
-                             INNER JOIN pms_order_item b ON a.sku_id = b.sku_id
-                                INNER JOIN pms_order c ON b.order_sn = c.order_sn
-          WHERE a.user_id = #{userId}
-         limit #{offset}, #{limit}
+                 INNER JOIN pms_order_item b ON a.sku_id = b.sku_id
+                 INNER JOIN pms_order c ON b.order_sn = c.order_sn
+        WHERE a.user_id = #{userId}
+        limit #{offset}, #{limit}
 
     </select>
 
@@ -155,6 +157,23 @@
         from pms_order_item
         where order_sn = #{order_sn}
     </select>
+    <select id="queryByOrderSn" resultMap="PmsOrderItemMap">
+        select *
+        from pms_order_item
+        where order_sn = #{order_sn}
+    </select>
+    <select id="queryOrderItemByUserIdTotal" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM pms_sku_info a
+                 INNER JOIN pms_order_item b ON a.sku_id = b.sku_id
+                 INNER JOIN pms_order c ON b.order_sn = c.order_sn
+        WHERE a.user_id = #{userId}
+    </select>
+    <select id="queryOrderItemStatusByOrderSn" resultType="java.lang.String">
+        select status
+        from pms_order_item
+        where order_sn = #{orderSn} group by status
+    </select>
 
 
     <!--新增所有列-->
@@ -244,6 +263,23 @@
         from pms_order_item
         where id = #{id}
     </delete>
+    <update id="cancelBigOrder">
+        update pms_order set status = #{status},cancel_time = now() where order_sn = #{orderSn}
+    </update>
+    <update id="cancelOrder">
+update pms_order_item
+set status = #{status},
+    cancel_time = now(),
+    cancelString = #{cancelString}
+where order_sn = #{orderSn}
+
+
+    </update>
+    <update id="ok">
+        update pms_order_item
+        set status = #{status},
+        where order_sn = #{orderSn}
+    </update>
 
 </mapper>
 

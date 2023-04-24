@@ -2,6 +2,7 @@ package com.kedom.memberService.dao;
 
 import com.kedom.memberService.entity.ShopInfoVO;
 import com.kedom.memberService.entity.UmsShop;
+import com.kedom.productService.entity.ShopSearchVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
@@ -87,5 +88,9 @@ public interface UmsShopDao {
     UmsShop queryByUserId(Long id);
 
     ShopInfoVO getShopIndo(Long id);
+
+    List<ShopInfoVO> queryAll(ShopSearchVO umsShop);
+
+    Integer queryAllTotal(ShopSearchVO umsShop);
 }
 

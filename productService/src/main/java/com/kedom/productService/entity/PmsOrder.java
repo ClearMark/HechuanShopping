@@ -22,6 +22,9 @@ public class PmsOrder implements Serializable {
     /**
      * member_id
      */
+
+    private String cancelString;
+
     private Long memberId;
     /**
      * 订单号

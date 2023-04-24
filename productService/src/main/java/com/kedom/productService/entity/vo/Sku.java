@@ -25,4 +25,6 @@ public class Sku {
     private Long catalogId;
     private Long userId;
     private Long stock;
+    private Long saleCount;
+    private String imgList;
 }

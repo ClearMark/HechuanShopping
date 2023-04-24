@@ -3,10 +3,7 @@ package com.kedom.productService.service.impl;
 import com.kedom.common.entity.KedomUserException.KedomException;
 import com.kedom.common.entity.exceptionEnum.KedomExceptionEnum;
 import com.kedom.productService.dao.PmsSkuInfoDao;
-import com.kedom.productService.entity.GetProductByCategoryVO;
-import com.kedom.productService.entity.PmsSkuInfo;
-import com.kedom.productService.entity.PmsSkuWare;
-import com.kedom.productService.entity.SkuHotVO;
+import com.kedom.productService.entity.*;
 import com.kedom.productService.entity.vo.Sku;
 import com.kedom.productService.service.PmsSkuInfoService;
 import com.kedom.productService.service.PmsSkuSaleAttrValueService;
@@ -142,7 +139,50 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
 
     @Override
     public List<PmsSkuInfo> getSkuHot(SkuHotVO skuHotVO) {
+        skuHotVO.setPageNum((skuHotVO.getPageNum() - 1) * skuHotVO.getPageSize());
         return pmsSkuInfoDao.getSkuHot(skuHotVO);
+    }
+
+    @Override
+    public void deleteProductById(Long id) {
+        pmsSkuInfoDao.deleteProductById(id);
+    }
+
+    @Override
+    public void createOrderAddSaleCountAndDeletWara(List<PmsOrderItem> orderItem) {
+        orderItem.forEach(item -> {
+            pmsSkuInfoDao.createOrderAddSaleCountAndDeletWara(item.getSkuId(), item.getSkuCount());
+        });
+    }
+
+    @Override
+    public Integer getSkuHotTotal(SkuHotVO skuHotVO) {
+        return pmsSkuInfoDao.getSkuHotTotal(skuHotVO);
+    }
+
+    @Override
+    public void setHot(PmsSkuInfo pmsSkuInfo) {
+        pmsSkuInfoDao.setHot(pmsSkuInfo);
+    }
+
+    @Override
+    public void addImage(SkuImage skuImage) {
+        pmsSkuInfoDao.addImage(skuImage);
+    }
+
+    @Override
+    public void deleteImage(String id) {
+        pmsSkuInfoDao.deleteImage(id);
+    }
+
+    @Override
+    public List<SkuImage> productImage(String id) {
+        return pmsSkuInfoDao.productImage(id);
+    }
+
+    @Override
+    public void takeDownProduct(Long id) {
+        pmsSkuInfoDao.takeDownProduct(id);
     }
 
 }

@@ -53,7 +53,7 @@
             </el-form-item>
 
             <el-form-item>
-                <el-button type="primary" @click="getProduct">查询</el-button>
+                <el-button type="primary" @click="searchProduct">查询</el-button>
             </el-form-item>
         </el-form>
         <div class="demo-image__placeholder" v-if="showProduct">
@@ -65,6 +65,7 @@
                 <br/>
                 <span class="demonstration">￥{{product.price}}</span>
             </div>
+            <el-backtop></el-backtop>
         </div>
     </div>
 
@@ -98,11 +99,25 @@
             },
 
             methods: {
+                searchProduct() {
+                    this.productList = []
+                    this.offset = 0
+                    this.getProduct()
+                },
+
+
                 showThree(index) {
                     console.log(index)
                     this.nowTwoCategory = index
                     this.nowThreeCategory = 0
                     this.threeCategory = this.allTwoCategory[index].children
+                    this.offset = 0;
+                    this.priceLow = null
+                    this.priceHigh = null
+                    this.attrs = [];
+                    this.productList = []
+                    this.getProduct();
+
                 },
                 showAttr(three, index) {
                     this.nowThreeCategory = index;
@@ -116,10 +131,14 @@
                                 attrId: res.data.data[i].attrId
                             }
                             _this.attrs.push(attr)
-
                         }
-                        console.log("获取到视频" + _this.attrs)
                     })
+                    this.productList = []
+                    this.offset = 0;
+                    this.priceLow = null
+                    this.priceHigh = null
+                    this.attrs = [];
+                    this.getProduct();
                 },
                 intoUserProduct(id) {
                     window.location.href = "../memberService/userProduct.html?productId=" + id;

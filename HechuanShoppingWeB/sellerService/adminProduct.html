@@ -48,6 +48,24 @@
             <el-button style="margin-left: 160px" v-if="showImage" @click="showImage=false" type="danger"
                        icon="el-icon-delete" circle></el-button>
         </el-form-item>
+
+        <el-form-item label="商品图片" v-if="showImageList">
+            <el-upload
+                    class="upload-demo"
+                    action="http://127.0.0.1:8888/productService/product/saveFile"
+
+                    :on-success="imgUploadSuccess"
+                    :file-list="imgUrlList"
+                    limit="3"
+                    list-type="picture">
+                <el-button size="small" type="primary">点击上传</el-button>
+                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
+
+
+        </el-form-item>
+
+
         <el-button :plain="true" style="margin-top: 12px;" @click="updateProduct">保存</el-button>
     </el-form>
 
@@ -70,6 +88,8 @@
         data: {
             sku: JSON.parse(localStorage.getItem("adminProduct")),
             showImage: true,
+            showImageList: false,
+            fileList: [],
         },
 
         methods: {
@@ -104,15 +124,43 @@
                             }
                         }).catch(function (error) {
                         });
+                })
+            },
+            getImgList() {
+                const thisNew = this;
+                axios.get('http://127.0.0.1:8888/productService/pmsSkuInfo/product/image/' + this.sku.skuId).then((res) => {
+                    console.log(res)
+                    res.data.data.forEach((item) => {
+                        let file = {
+                            name: item.imgName,
+                            url: item.imgUrl,
+                            id: item.id
+                        }
 
-
+                    })
+                })
+            },
+            deleteImg(attr) {
+                const thisNew = this;
+                axios.get('http://127.0.0.1:8888/productService/pmsSkuInfo/delete/image/' + attr.id).then((res) => {
+                    console.log(res)
+                    thisNew.$message({
+                        message: '删除成功',
+                        type: 'success'
+                    });
                 })
             },
 
+            imgUploadSuccess() {
+                this.imgUrlList.push(response.data[0])
+            }
+
         },
-        beforeCreate() {
-            let product = JSON.parse(localStorage.getItem("adminProduct"));
+        created() {
+            this.getImgList();
         }
+
+
     })
 
 

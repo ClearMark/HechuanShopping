@@ -13,4 +13,5 @@ public class GetProductByCategoryVO {
     private Long priceLow;
     private Long priceHigh;
     private List<Attr> attrs;
+    private Integer attrSize = 0;
 }

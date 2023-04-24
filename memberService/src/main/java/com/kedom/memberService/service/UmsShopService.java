@@ -2,6 +2,9 @@ package com.kedom.memberService.service;
 
 import com.kedom.memberService.entity.ShopInfoVO;
 import com.kedom.memberService.entity.UmsShop;
+import com.kedom.productService.entity.ShopSearchVO;
+
+import java.util.List;
 
 /**
  * 会员(UmsShop)表服务接口
@@ -39,4 +42,8 @@ public interface UmsShopService {
     UmsShop queryByUserId(Long id);
 
     ShopInfoVO getShopIndo(Long id);
+
+    List<ShopInfoVO> queryAll(ShopSearchVO umsShop);
+
+    Integer queryAllTotal(ShopSearchVO umsShop);
 }

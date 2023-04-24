@@ -13,6 +13,7 @@
             <el-upload v-if="!idCardFront"
                        class="upload-demo"
                        drag
+                       :before-upload="beforeUpload"
                        :show-file-list="false"
                        name="files"
                        :on-success="idCardFrontSuccess"
@@ -32,6 +33,7 @@
                        class="upload-demo"
                        drag
                        :show-file-list="false"
+                       :before-upload="beforeUpload"
                        name="files"
                        :on-success="idCardBackSuccess"
                        action="http://127.0.0.1:8888/productService/product/saveFile"
@@ -50,6 +52,7 @@
                        class="upload-demo"
                        drag
                        :show-file-list="false"
+                       :before-upload="beforeUpload"
                        name="files"
                        :on-success="permitFrontSuccess"
                        action="http://127.0.0.1:8888/productService/product/saveFile"
@@ -68,6 +71,7 @@
                        class="upload-demo"
                        drag
                        :show-file-list="false"
+                       :before-upload="beforeUpload"
                        name="files"
                        :on-success="permitBackSuccess"
                        action="http://127.0.0.1:8888/productService/product/saveFile"
@@ -81,7 +85,10 @@
             <el-button style="margin-left: 160px" v-if="permitBack" @click="permitBack=false" type="danger"
                        icon="el-icon-delete" circle></el-button>
         </el-form-item>
-        <el-button type="primary" @click="submitForm" :plain="true">提交审核</el-button>
+        <div style="position: fixed;bottom: 5px;margin-left: 85%">
+            <el-button type="primary" @click="submitForm" :plain="true">提交审核</el-button>
+            <el-button type="primary" @click="gotoIndex" :plain="true">返回首页</el-button>
+        </div>
     </el-form>
 
     <el-dialog
@@ -132,6 +139,9 @@
         },
 
         methods: {
+            gotoIndex() {
+                window.location.href = "../productService/index.html";
+            },
             idCardFrontSuccess(res, file) {
                 this.shop.idCardFront = res.data[0];
                 this.idCardFront = true;
@@ -158,10 +168,26 @@
                             message: '申请成功',
                             type: 'success'
                         });
-                        window.location.href = "../productService/index.html";
+                        setTimeout("location.href='../productService/index.html'", 500);
                     }).catch(function (error) {
                         console.log(error);
                     });
+            },
+            beforeUpload(file) {
+                const fileSuffix = file.name.substring(file.name.lastIndexOf(".") + 1);
+
+                const whiteList = ["png", "jpg"];
+
+                if (whiteList.indexOf(fileSuffix) === -1) {
+                    this.$alert("上传文件只能是 png、jpg格式");
+                    return false;
+                }
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isLt2M) {
+                    this.$alert("上传文件大小不能超过 2MB");
+                    return false;
+                }
             },
             loadShop() {
                 let _this = this;
@@ -173,8 +199,10 @@
                         if (data.code == 8888) {
                             _this.checkVisible = true;
                             if (data.data.status == 0) {
+                                _this.checkingDialogVisible = true;
                                 _this.checkStatus = "审核中";
                             } else {
+                                _this.checkFailDialogVisible = true;
                                 _this.checkStatus = "审核失败";
                                 _this.checkMsg = data.data.cause
                             }
@@ -185,6 +213,7 @@
             gotoIndex() {
                 window.location.href = "../productService/index.html";
             },
+
             newCheck() {
                 this.shop = {};
                 this.checkFailDialogVisible = false;
@@ -196,7 +225,7 @@
             }
         },
         created() {
-            let _this = this;
+            this.loadShop();
         }
 
     })

@@ -40,6 +40,13 @@ public class KedomResponse {
         return ok;
     }
 
+    public static KedomResponse dataAndTotal(Object data, Integer total) {
+        KedomResponse ok = KedomResponse.ok();
+        ok.setData(data);
+        ok.setTotal(total);
+        return ok;
+    }
+
     //只有失败
     public static KedomResponse error() {
         KedomResponse kedomResponse = new KedomResponse();

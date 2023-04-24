@@ -1,5 +1,6 @@
 package com.kedom.productService.dao;
 
+import com.kedom.productService.entity.CancelOrderVO;
 import com.kedom.productService.entity.OrderItemVO;
 import com.kedom.productService.entity.PmsOrderItem;
 import org.apache.ibatis.annotations.Mapper;
@@ -89,5 +90,17 @@ public interface PmsOrderItemDao {
     List<PmsOrderItem> queryByOrderId(@Param("order_sn") String order_sn);
 
     List<OrderItemVO> queryOrderItemByUserId(@Param("userId") String userId, @Param("offset") Integer offset, @Param("limit") Integer limit);
+
+    List<PmsOrderItem> queryByOrderSn(String orderSn);
+
+    void cancelOrder(CancelOrderVO cancelOrderVO);
+
+    Integer queryOrderItemByUserIdTotal(@Param("userId") String userId);
+
+    void ok(CancelOrderVO cancelOrderVO);
+
+    List<String> queryOrderItemStatusByOrderSn(String orderSn);
+
+    void cancelBigOrder(CancelOrderVO cancelOrderVO);
 }
 

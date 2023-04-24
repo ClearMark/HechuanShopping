@@ -108,8 +108,29 @@
     <select id="getShopIndo" resultMap="ShopMap">
         select a.*, id_card_front, id_card_back, permit_front, permit_back
         from ums_shop a
-                 INNER JOIN ums_shop_not_check b on a.not_check_id = b.id
+        INNER JOIN ums_shop_not_check b on a.not_check_id = b.id
         where a.user_id = #{userId}
+    </select>
+    <select id="queryAll" resultMap="ShopMap">
+        select a.*, id_card_front, id_card_back, permit_front, permit_back
+        from ums_shop a
+        INNER JOIN ums_shop_not_check b on a.not_check_id = b.id
+        <where>
+            <if test="shopName!=null and shopName!=''">
+                a.shop_name like concat('%', #{shopName}, '%')
+            </if>
+        </where>
+        limit #{pageNum}, #{pageSize}
+    </select>
+    <select id="queryAllTotal" resultType="java.lang.Integer">
+        select count(*)
+        from ums_shop a
+        INNER JOIN ums_shop_not_check b on a.not_check_id = b.id
+        <where>
+            <if test="shopName!=null and shopName!=''">
+                a.shop_name like concat('%', #{shopName}, '%')
+            </if>
+        </where>
     </select>
 
     <!--新增所有列-->

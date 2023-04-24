@@ -1,8 +1,11 @@
 package com.kedom.common.entity.memberServiceEntity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -54,7 +57,10 @@ public class UmsMember implements Serializable {
     /**
      * 生日
      */
-    private LocalDateTime birth;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Shanghai")
+
+    private LocalDate birth;
     /**
      * 所在城市
      */
@@ -86,6 +92,8 @@ public class UmsMember implements Serializable {
     /**
      * 注册时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
 

@@ -1,9 +1,11 @@
 package com.kedom.productService.controller;
 
 import com.kedom.common.entity.KedomResponse;
+import com.kedom.productService.entity.CancelOrderVO;
 import com.kedom.productService.entity.OrderVO;
 import com.kedom.productService.entity.PmsOrder;
 import com.kedom.productService.service.PmsOrderService;
+import com.kedom.productService.vo.OrderSearchVO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +49,20 @@ public class PmsOrderController {
     public KedomResponse add(@RequestBody OrderVO pmsOrder) {
         this.pmsOrderService.createOrder(pmsOrder);
         return KedomResponse.ok();
+    }
+
+    @PostMapping("/cancel")
+    public KedomResponse cancel(@RequestBody CancelOrderVO cancelOrderVO) {
+        this.pmsOrderService.cancelOrder(cancelOrderVO);
+        return KedomResponse.ok();
+    }
+
+
+    @PostMapping("/queryAdmin")
+    public KedomResponse queryAdmin(@RequestBody OrderSearchVO orderSearchVO) {
+        List<OrderVO> ls = this.pmsOrderService.queryAdmin(orderSearchVO);
+        Integer total = pmsOrderService.queryAdminTotal(orderSearchVO);
+        return KedomResponse.dataAndTotal(ls, total);
     }
 
     @GetMapping("/user/{id}/{offset}/{limit}")

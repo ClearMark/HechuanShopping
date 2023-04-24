@@ -19,4 +19,6 @@ public interface ProductService {
     List<Sku> getProductByKey(String spuKey, Integer offset);
 
     List<Sku> getProductByCategory(GetProductByCategoryVO pamrs);
+
+    void takeDownProduct(Long id);
 }

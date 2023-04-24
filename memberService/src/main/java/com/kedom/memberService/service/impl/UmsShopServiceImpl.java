@@ -6,9 +6,11 @@ import com.kedom.memberService.dao.UmsShopDao;
 import com.kedom.memberService.entity.ShopInfoVO;
 import com.kedom.memberService.entity.UmsShop;
 import com.kedom.memberService.service.UmsShopService;
+import com.kedom.productService.entity.ShopSearchVO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 会员(UmsShop)表服务实现类
@@ -71,6 +73,17 @@ public class UmsShopServiceImpl implements UmsShopService {
     public ShopInfoVO getShopIndo(Long id) {
 
         return umsShopDao.getShopIndo(id);
+    }
+
+    @Override
+    public List<ShopInfoVO> queryAll(ShopSearchVO umsShop) {
+        umsShop.setPageNum((umsShop.getPageNum() - 1) * umsShop.getPageSize());
+        return umsShopDao.queryAll(umsShop);
+    }
+
+    @Override
+    public Integer queryAllTotal(ShopSearchVO umsShop) {
+        return umsShopDao.queryAllTotal(umsShop);
     }
 
 }

@@ -24,18 +24,8 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="PmsSkuInfoMap">
-        select sku_id,
-               spu_id,
-               sku_name,
-               sku_desc,
-               catalog_id,
-               brand_id,
-               sku_default_img,
-               sku_title,
-               sku_subtitle,
-               price,
-               sale_count,
-               user_id
+        select *
+
         from pms_sku_info
         where sku_id = #{skuId}
     </select>
@@ -162,19 +152,22 @@
         limit #{offset},20
     </select>
     <select id="queryByCategory" resultMap="PmsSkuInfoMap">
-        select pms_sku_info.* from pms_sku_info
-        left join pms_sku_sale_attr_value on pms_sku_info.sku_id = pms_sku_sale_attr_value.sku_id
+        SELECT a.* FROM pms_sku_info a WHERE sku_id IN
+        (
+        SELECT sku_id FROM pms_sku_sale_attr_value
         <where>
-            <foreach collection="attrs" item="attr" separator="and">
+            <foreach collection="attrs" item="attr" separator="OR">
                 <if test="attr.attrValue != null and attr.attrValue !=''">
                     pms_sku_sale_attr_value.attr_id = #{attr.attrId}
                     and
                     pms_sku_sale_attr_value.attr_value = #{attr.attrValue}
                 </if>
             </foreach>
-            and catalog_id = #{pamrs.catId} and price between #{pamrs.priceLow} and #{pamrs.priceHigh}
         </where>
-
+        GROUP BY sku_id HAVING count(*)>=#{pamrs.attrSize}
+        )
+        and catalog_id = #{pamrs.catId} and price between #{pamrs.priceLow} and #{pamrs.priceHigh}
+        and a.stock > 0
         limit #{pamrs.offset},#{pamrs.limit}
     </select>
     <select id="getRecommendProductByUser" resultMap="PmsSkuInfoMap">
@@ -185,6 +178,7 @@
                                    from pms_recommend_product
                                    WHERE user_id = #{userId}
                                    GROUP BY cat_ID
+                                   ORDER BY count(*) DESC
                                    LIMIT 5) a)
           and stock > 0
         limit #{offset},#{limit}
@@ -194,10 +188,24 @@
         select * from pms_sku_info
         <where>
             <if test="skuName != null and skuName != ''">
-                and sku_name =concat('%',#{skuName},'%')
+                and sku_name like concat('%',#{skuName},'%')
             </if>
         </where>
-        limit #{offset},#{limit}
+        limit #{pageNum},#{pageSize}
+    </select>
+    <select id="getSkuHotTotal" resultType="java.lang.Integer">
+        select count(*)
+        from pms_sku_info
+        <where>
+            <if test="skuName != null and skuName != ''">
+                and sku_name like concat('%',#{skuName},'%')
+            </if>
+        </where>
+    </select>
+    <select id="productImage" resultType="com.kedom.productService.entity.SkuImage">
+        select *
+        from pms_sku_images
+        where skuId = #{id}
     </select>
 
 
@@ -243,6 +251,10 @@
         values (#{spuId}, #{skuName}, #{skuDesc}, #{catalogId}, #{brandId}, #{skuDefaultImg}, #{skuTitle},
                 #{skuSubtitle}, #{price}, #{saleCount}, #{skuBelong})
 
+    </insert>
+    <insert id="addImage">
+        insert into pms_sku_images(skuId, imgUrl)
+        values (#{skuId}, #{imgUrl})
     </insert>
 
     <!--通过主键修改数据-->
@@ -294,12 +306,38 @@
             stock           = #{stock}
         where sku_id = #{skuId}
     </update>
+    <update id="createOrderAddSaleCountAndDeletWara">
+        update pms_sku_info
+        set sale_count = sale_count + #{count},
+            stock      = stock - #{count}
+        where sku_id = #{id}
+    </update>
+    <update id="setHot">
+        update pms_sku_info
+        set hot = #{hot}
+        where sku_id = #{skuId}
+    </update>
+    <update id="takeDownProduct">
+        update pms_sku_info
+        set stock = 0
+        where sku_id = #{skuId}
+    </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
         delete
         from pms_sku_info
         where sku_id = #{skuId}
+    </delete>
+    <delete id="deleteProductById">
+        delete
+        from pms_sku_info
+        where sku_id = #{skuId}
+    </delete>
+    <delete id="deleteImage">
+        delete
+        from pms_sku_images
+        where id = #{id}
     </delete>
 
 </mapper>

@@ -5,14 +5,18 @@
     <file url="file://$PROJECT_DIR$/AuthService/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/auth-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/carService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/carService/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/gateway/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/memberService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/memberService/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/openFeignService/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/openFeignService/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/productService/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/productService/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sellService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/sellService/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/user-service/src/main/java" charset="UTF-8" />

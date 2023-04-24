@@ -24,6 +24,12 @@ public class ProductController {
         return KedomResponse.okAddData(sku);
     }
 
+    @GetMapping("takeDownProduct/{id}")
+    public KedomResponse takeDownProduct(@PathVariable("id") Long id) {
+        productService.takeDownProduct(id);
+        return KedomResponse.ok();
+    }
+
     //通过关键词获取商品
     @RequestMapping("/key/{spuKey}/{offset}")
     public KedomResponse getProduct(@PathVariable("spuKey") String spuKey, @PathVariable("offset") Integer offset) {

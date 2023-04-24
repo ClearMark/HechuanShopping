@@ -1,7 +1,9 @@
 package com.kedom.memberService.service;
 
 import com.kedom.common.entity.memberServiceEntity.UmsMember;
+import com.kedom.memberService.entity.AdminEditPasswordDTO;
 import com.kedom.openFeignService.entity.vo.UserVO;
+import com.kedom.productService.entity.UserSearchVO;
 
 import java.util.List;
 
@@ -50,11 +52,18 @@ public interface UmsMemberService {
     void register(UserVO userRegisterVO) throws RuntimeException;
 
     void checkUsernameIsUnique(String username) throws RuntimeException;
+
     void checkMobileIsUnique(String username) throws RuntimeException;
 
     UmsMember login(UserVO userLoginVo);
 
     public UmsMember getMemberByAccessToken(String accessToken);
 
-    List<UmsMember> queryAll(Integer pageNum);
+    List<UmsMember> queryAll(UserSearchVO pageNum);
+
+    Integer queryAllTotal(UserSearchVO userSearchVO);
+
+    String resetPassword(Integer id);
+
+    String editPassword(AdminEditPasswordDTO umsAdmin);
 }

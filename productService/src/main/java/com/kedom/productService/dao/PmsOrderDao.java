@@ -1,6 +1,8 @@
 package com.kedom.productService.dao;
 
+import com.kedom.productService.entity.CancelOrderVO;
 import com.kedom.productService.entity.PmsOrder;
+import com.kedom.productService.vo.OrderSearchVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
@@ -84,5 +86,11 @@ public interface PmsOrderDao {
     int deleteById(Long id);
 
     List<PmsOrder> queryByUserId(@Param("userId") Long userId, @Param("offset") Integer offset, @Param("limit") Integer limit);
+
+    List<PmsOrder> queryAdmin(OrderSearchVO orderSearchVO);
+
+    Integer queryAdminTotal(OrderSearchVO orderSearchVO);
+
+    void cancelOrder(CancelOrderVO cancelOrderVO);
 }
 

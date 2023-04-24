@@ -1,6 +1,7 @@
 package com.kedom.productService.controller;
 
 import com.kedom.common.entity.KedomResponse;
+import com.kedom.productService.entity.CancelOrderVO;
 import com.kedom.productService.entity.OrderItemVO;
 import com.kedom.productService.entity.PmsOrderItem;
 import com.kedom.productService.service.PmsOrderItemService;
@@ -37,6 +38,13 @@ public class PmsOrderItemController {
         return null;
     }
 
+    @PostMapping("/cancel")
+    public KedomResponse cancel(@RequestBody CancelOrderVO cancelOrderVO) {
+        pmsOrderItemService.cancel(cancelOrderVO);
+        return KedomResponse.ok();
+    }
+
+
     @GetMapping("/OrderId/{id}")
     public KedomResponse queryByOrderId(@PathVariable("id") String id) {
         return KedomResponse.okAddData(this.pmsOrderItemService.queryByOrderId(id));
@@ -45,7 +53,14 @@ public class PmsOrderItemController {
     @GetMapping("/orderItem/{userId}/{offset}/{limit}")
     public KedomResponse queryOrderItemByUserId(@PathVariable("userId") String userId, @PathVariable("offset") Integer offset, @PathVariable("limit") Integer limit) {
         List<OrderItemVO> data = this.pmsOrderItemService.queryOrderItemByUserId(userId, offset, limit);
-        return KedomResponse.okAddData(data);
+        Integer total = this.pmsOrderItemService.queryOrderItemByUserIdTotal(userId);
+        return KedomResponse.dataAndTotal(data, total);
+    }
+
+    @PostMapping("/ok")
+    public KedomResponse ok(@RequestBody CancelOrderVO cancelOrderVO) {
+        this.pmsOrderItemService.ok(cancelOrderVO);
+        return KedomResponse.ok();
     }
 
     /**

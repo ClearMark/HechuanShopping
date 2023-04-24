@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedom.memberService.dao.UmsAdminDao">
+
+    <resultMap type="com.kedom.memberService.entity.UmsAdmin" id="UmsAdminMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="parentId" column="parent_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UmsAdminMap">
+        select id,
+               username,
+               password,
+               parent_id
+        from ums_admin
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UmsAdminMap">
+        select
+        id, username, password, parent_id
+        from ums_admin
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="parentId != null and parentId != ''">
+                and parent_id = #{parentId}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from ums_admin
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="parentId != null and parentId != ''">
+                and parent_id = #{parentId}
+            </if>
+        </where>
+    </select>
+    <select id="login" resultType="java.lang.Integer">
+        select id
+        from ums_admin
+        where username = #{username}
+          and password = #{password}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert">
+        insert into ums_admin(id, username, password, parent_id)
+        values (#{id}, #{username}, #{password}, #{parentId})
+    </insert>
+
+    <insert id="insertBatch">
+        insert into ums_admin(id, username, password, parent_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.username}, #{entity.password}, #{entity.parentId})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch">
+        insert into ums_admin(username, password, parent_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.username}, #{entity.password}, #{entity.parentId})
+        </foreach>
+        on duplicate key update
+        id = values(id),
+        username = values(username),
+        password = values(password),
+        parent_id = values(parent_id)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update ums_admin
+        <set>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="parentId != null and parentId != ''">
+                parent_id = #{parentId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="editPassword">
+        update ums_admin
+        set password=#{newPassword}
+        where id = #{id}
+          and password = #{oldPassword}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from ums_admin
+        where id = #{id}
+    </delete>
+
+</mapper>
+

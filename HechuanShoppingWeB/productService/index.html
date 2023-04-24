@@ -142,6 +142,11 @@
         <a id="no_ok_seller" href="../sellerService/addSeller.html">商家入驻</a>
         <a id="ok_seller" href="../sellerService/sellerIndex.html">我的店铺</a>
         <a href="../memberService/memberCenter.html">个人中心</a>
+        <a onclick="function quitLogin() {
+        localStorage.removeItem('userID')
+        window.location.href = '../memberService/login.html'
+        }
+        quitLogin()">退出登录</a>
     </div>
 </div>
 <div class="main">
@@ -167,6 +172,7 @@
                 <br/>
                 <span class="demonstration">￥{{product.price}}</span>
             </div>
+            <el-backtop></el-backtop>
         </div>
         <div class="demo-image__placeholder" v-if="activeIndex=='2'">
             <div class="block" v-for="product in recommendProducts"
@@ -176,6 +182,7 @@
                 <br/>
                 <span class="demonstration">￥{{product.price}}</span>
             </div>
+            <el-backtop></el-backtop>
         </div>
     </div>
 </div>
@@ -336,9 +343,13 @@
             handleSelect(key, keyPath) {
                 this.activeIndex = key;
                 if (key == 1) {
+                    this.hotProducts = [];
+                    this.hotOffset = 0;
                     console.log('热销商品')
                     this.getHotProduct();
                 } else if (key == 2) {
+                    this.recommendProducts = [];
+                    this.recommendOffset = 0;
                     console.log('推荐商品')
                     this.getRecommendProduct();
                 }
@@ -361,7 +372,7 @@
                 console.log('请求推荐商品')
                 let _this = this;
                 let userId = localStorage.getItem('userID')
-                axios.get('http://127.0.0.1:8888/productService/pmsSkuInfo/getRecommendProductByUser/' + userId + "/" + _this.hotOffset + "/" + _this.limit).then(function (response) {
+                axios.get('http://127.0.0.1:8888/productService/pmsSkuInfo/getRecommendProductByUser/' + userId + "/" + _this.recommendOffset + "/" + _this.limit).then(function (response) {
                     for (let i = 0; i < response.data.data.length; i++) {
                         _this.recommendProducts.push(response.data.data[i]);
                     }

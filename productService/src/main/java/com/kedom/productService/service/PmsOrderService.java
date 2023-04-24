@@ -1,7 +1,9 @@
 package com.kedom.productService.service;
 
+import com.kedom.productService.entity.CancelOrderVO;
 import com.kedom.productService.entity.OrderVO;
 import com.kedom.productService.entity.PmsOrder;
+import com.kedom.productService.vo.OrderSearchVO;
 
 import java.util.List;
 
@@ -41,4 +43,10 @@ public interface PmsOrderService {
     void createOrder(OrderVO pmsOrder);
 
     List<PmsOrder> queryByUserId(Long id, Integer offset, Integer limit);
+
+    List<OrderVO> queryAdmin(OrderSearchVO orderSearchVO);
+
+    Integer queryAdminTotal(OrderSearchVO orderSearchVO);
+
+    void cancelOrder(CancelOrderVO cancelOrderVO);
 }

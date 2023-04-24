@@ -78,7 +78,7 @@
                             </a>
                             <div>
                                 <el-tag>当前库存:{{product.stock}}</el-tag>
-                                <el-button type="danger" round>删除商品</el-button>
+                                <el-button type="danger" round @click="deleteProduct(product.skuId)">删除商品</el-button>
                             </div>
                         </div>
 
@@ -129,20 +129,24 @@
                             >
                                 <el-input v-model.number="sku.price" autocomplete="off"></el-input>
                             </el-form-item>
+                            <el-form-item label="库存">
+                                <el-input v-model="sku.stock"></el-input>
+                            </el-form-item>
                             <div v-for="attr in categoryAttr" :key="attr.id">
                                 <el-form-item :label="attr.attrName">
                                     <el-input v-model="attr.attrValue"></el-input>
                                 </el-form-item>
                             </div>
-                            <el-form-item label="商品封面" >
-                            <el-upload v-if="!showImage"
-                                    class="upload-demo"
-                                    drag
-                                    :show-file-list="false"
-                                    name="files"
-                                    :on-success="uploadSuccess"
-                                    action="http://127.0.0.1:8888/productService/product/saveFile"
-                                    multiple>
+                            <el-form-item label="商品封面">
+                                <el-upload v-if="!showImage"
+                                           class="upload-demo"
+                                           drag
+                                           :show-file-list="false"
+                                           :before-upload="beforeUpload"
+                                           name="files"
+                                           :on-success="uploadSuccess"
+                                           action="http://127.0.0.1:8888/productService/product/saveFile"
+                                           multiple>
                                 <i class="el-icon-upload"></i>
                                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 <!--                                <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
@@ -164,7 +168,6 @@
         </template>
     </el-main>
     <el-main v-if="showType=='订单管理'">
-        <template>
             <template>
                 <el-table
                         :data="orderProductList"
@@ -218,10 +221,32 @@
                         </template>
                     </el-table-column>
                     <el-table-column
+                            fixed="right"
+                            label="操作"
+                            width="100">
+                        <template slot-scope="scope">
+                            <el-button type="text" size="small" @click="orderItemOk(scope.row)">已发货</el-button>
+                            <el-button type="text" size="small" @click="showCancelOrder(scope.row)">取消订单</el-button>
+                        </template>
+
+                    </el-table-column>
+                    <el-table-column
                             label="状态"
                             prop="status">
                     </el-table-column>
                 </el-table>
+                <el-dialog
+                        title="取消原因"
+                        :visible.sync="cancelDialogVisible"
+                        width="30%"
+                >
+                    <span>取消原因</span>
+                    <el-input type="textarea" v-model="cancelVueString"></el-input>
+                    <span slot="footer" class="dialog-footer">
+    <el-button @click="cancelDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="cancelOrder">确 定</el-button>
+  </span>
+                </el-dialog>
                 <template>
                     <el-pagination
                             layout="prev, pager, next"
@@ -229,7 +254,6 @@
                     </el-pagination>
                 </template>
             </template>
-        </template>
     </el-main>
 
 
@@ -282,10 +306,113 @@
             categoryAttr: [],
             productList: [],
             orderProductList: [],
-            orderOffset: 0,
+            orderPageNum: 1,
+            orderTotal: 0,
             orderLimit: 10,
+            cancelDialogVisible: false,
+            cancelOrderVO: {},
+            cancelVueString: ""
         },
         methods: {
+            beforeUpload(file) {
+                const fileSuffix = file.name.substring(file.name.lastIndexOf(".") + 1);
+
+                const whiteList = ["png", "jpg"];
+
+                if (whiteList.indexOf(fileSuffix) === -1) {
+                    this.$alert("上传文件只能是 png、jpg格式");
+                    return false;
+                }
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isLt2M) {
+                    this.$alert("上传文件大小不能超过 2MB");
+                    return false;
+                }
+            },
+
+            orderItemOk(item) {
+                let _this = this;
+                let cancelVO = {
+                    orderSn: item.orderSn,
+                    status: '商家已发货',
+                }
+                item.status = '商家已发货'
+                axios.post('http://127.0.0.1:8888/productService/pmsOrderItem/orderItem/ok', cancelVO
+                ).then(function (response) {
+                    console.log('解析请求')
+                    var data = response.data;
+                    if (data.code == 8888) {
+                        console.log('请求成功')
+                        _this.$alert('发货成功', '提示', {
+                            confirmButtonText: '确定',
+                        });
+                    } else {
+                    }
+                })
+
+            },
+            showCancelOrder(item) {
+                if (item.status.indexOf("取消") != -1) {
+                    this.$alert('无法被重复取消', '提示', {
+                        confirmButtonText: '确定',
+                    });
+                    return
+                }
+                if (item.status.indexOf("已发货") != -1) {
+                    this.$alert('订单已发货', '提示', {
+                        confirmButtonText: '确定',
+                    });
+                    return
+                }
+                this.cancelVueString = ""
+                this.cancelDialogVisible = true
+                this.cancelOrderVO = item
+            },
+
+            cancelOrder() {
+                let _this = this;
+                let cancelVO = {
+                    orderSn: this.cancelOrderVO.orderSn,
+                    status: '商家取消',
+                    cancelString: this.cancelVueString
+                }
+                this.orderProductList.forEach(function (item) {
+                    if (item.orderSn == _this.cancelOrderVO.orderSn) {
+                        item.status = '商家取消'
+                    }
+                })
+
+                this.cancelOrderVO.status = '商家取消'
+                axios.post('http://127.0.0.1:8888/productService/pmsOrderItem/cancel', cancelVO
+                ).then(function (response) {
+
+                })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+                this.cancelDialogVisible = false
+                this.cancelString = ""
+            },
+
+            deleteProduct(id) {
+                let _this = this;
+                axios.get('http://127.0.0.1:8888/productService/pmsSkuInfo/deleteProduct/' + id)
+                    .then(function (response) {
+                        var data = response.data;
+                        if (data.code == 8888) {
+                            _this.$message({
+                                type: 'success',
+                                message: '操作成功 !'
+                            });
+                            _this.getProduct()
+                        } else {
+                        }
+                    }).catch(function (error) {
+                });
+            },
+
             async getProduct() {
                 const userID = localStorage.getItem("userID");
                 let _this = this;
@@ -331,6 +458,7 @@
                 }
             },
             skuAddButton() {
+                let _this = this;
                 if (this.active++ > 2) this.active = 0;
                 if (this.active == 1) {
                     console.log(111111)
@@ -342,14 +470,20 @@
                 if (this.active == 2) {
                     console.log(222222)
                     this.sku.attr = this.categoryAttr
-                    this.sku.stock = 0
+                    this.sku.stock == null ? this.sku.stock = 0 : this.sku.stock = this.sku.stock
                     this.sku.userId = localStorage.getItem("userID")
                     axios.post('http://127.0.0.1:8888/productService/pmsSkuInfo/add', this.sku).then((res) => {
                         console.log(res)
-                        this.productList.push(this.sku)
+                        _this.productList.push(_this.sku)
+                        _this.$message({
+                            type: 'success',
+                            message: '添加成功 !'
+                        });
+                        _this.sku = {}
                     })
                     this.active = 0;
                     this.productAddDialog = false;
+                    this.productAddNext = "下一步"
                 }
             },
             getCaseList(item) {
@@ -421,11 +555,15 @@
             },
 
             queryOrderProduct() {
-                axios.get('http://127.0.0.1:8888/productService/pmsOrderItem/orderItem/' + localStorage.getItem("userID") + "/" + this.orderOffset + "/" + this.orderLimit).then((res) => {
+                let _this = this;
+                let offset = (this.orderPageNum - 1) * this.orderLimit;
+                axios.get('http://127.0.0.1:8888/productService/pmsOrderItem/orderItem/' + localStorage.getItem("userID") + "/" + offset + "/" + this.orderLimit).then((res) => {
                     console.log(res)
                     res.data.data.forEach((item) => {
-                        this.orderProductList.push(item)
+                        _this.orderProductList.push(item)
                     })
+                    _this.orderTotal = res.data.total
+                    _this.orderOffset = _this.orderOffset + _this.orderLimit;
                 })
             },
             isCheckOk() {

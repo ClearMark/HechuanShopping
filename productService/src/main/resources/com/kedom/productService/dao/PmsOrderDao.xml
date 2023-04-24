@@ -17,6 +17,7 @@
         <result property="receiverCity" column="receiver_city" jdbcType="VARCHAR"/>
         <result property="receiverRegion" column="receiver_region" jdbcType="VARCHAR"/>
         <result property="receiverDetailAddress" column="receiver_detail_address" jdbcType="VARCHAR"/>
+        <result property="cancelString" column="cancelString" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--查询单个-->
@@ -145,7 +146,36 @@
         select *
         from pms_order
         where member_id = #{userId}
+        order by create_time desc
         limit #{offset}, #{limit}
+    </select>
+    <select id="queryAdmin" resultMap="PmsOrderMap">
+        select * from pms_order
+        <where>
+            DATE_FORMAT(create_time,'%Y-%m-%d') between #{createTimeBegin} and #{createTimeEnd}
+
+            <if test="orderSn != null and orderSn != ''">
+                and order_sn like concat('%', #{orderSn}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+        limit #{pageNum}, 10
+    </select>
+
+    <select id="queryAdminTotal" resultType="java.lang.Integer">
+        select count(*) from pms_order
+        <where>
+            DATE_FORMAT(create_time,'%Y-%m-%d') between #{createTimeBegin} and #{createTimeEnd}
+
+            <if test="orderSn != null and orderSn != ''">
+                and order_sn = concat('%', #{orderSn}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
     </select>
 
     <!--新增所有列-->
@@ -249,6 +279,17 @@
         from pms_order
         where id = #{id}
     </delete>
+    <update id="cancelOrder">
+        update pms_order
+        <set>
+            status = #{status},
+            cancelString = #{cancelString},
+            cancel_time = now()
+        </set>
+        where order_Sn = #{orderSn}
+
+
+    </update>
 
 </mapper>
 

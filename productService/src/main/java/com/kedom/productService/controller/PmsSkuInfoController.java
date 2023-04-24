@@ -3,6 +3,7 @@ package com.kedom.productService.controller;
 import com.kedom.common.entity.KedomResponse;
 import com.kedom.productService.entity.PmsSkuInfo;
 import com.kedom.productService.entity.SkuHotVO;
+import com.kedom.productService.entity.SkuImage;
 import com.kedom.productService.entity.vo.Sku;
 import com.kedom.productService.service.PmsSkuInfoService;
 import org.springframework.http.ResponseEntity;
@@ -38,12 +39,31 @@ public class PmsSkuInfoController {
         return null;
     }
 
+    @GetMapping("/deleteProduct/{id}")
+    public KedomResponse deleteProductById(@PathVariable("id") Long id) {
+        pmsSkuInfoService.deleteProductById(id);
+        return KedomResponse.ok();
+    }
+
 
     @PostMapping("/skuHot")
     public KedomResponse getSkuHot(@RequestBody SkuHotVO skuHotVO) {
 
         List<PmsSkuInfo> skuHot = this.pmsSkuInfoService.getSkuHot(skuHotVO);
-        return KedomResponse.okAddData(skuHot);
+
+        Integer total = this.pmsSkuInfoService.getSkuHotTotal(skuHotVO);
+
+        return KedomResponse.dataAndTotal(skuHot, total);
+
+    }
+
+    @PostMapping("/setHot")
+    public KedomResponse setHot(@RequestBody PmsSkuInfo pmsSkuInfo) {
+
+        this.pmsSkuInfoService.setHot(pmsSkuInfo);
+
+        return KedomResponse.ok();
+
 
     }
 
@@ -103,8 +123,27 @@ public class PmsSkuInfoController {
      */
     @DeleteMapping
     public KedomResponse deleteById(Long id) {
-     return null;
+        return null;
     }
+
+
+    @PostMapping("/add/image")
+    public KedomResponse addImage(@RequestBody SkuImage skuImage) {
+        this.pmsSkuInfoService.addImage(skuImage);
+        return KedomResponse.ok();
+    }
+
+    @GetMapping("/delete/image/{id}")
+    public KedomResponse deleteImage(@PathVariable String id) {
+        this.pmsSkuInfoService.deleteImage(id);
+        return KedomResponse.ok();
+    }
+
+    @GetMapping("/product/image/{id}")
+    public KedomResponse productImage(@PathVariable String id) {
+        return KedomResponse.okAddData(this.pmsSkuInfoService.productImage(id));
+    }
+
 
 }
 

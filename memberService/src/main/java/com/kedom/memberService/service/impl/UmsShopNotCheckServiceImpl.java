@@ -79,6 +79,7 @@ public class UmsShopNotCheckServiceImpl implements UmsShopNotCheckService {
             UmsShop umsShop = new UmsShop();
             umsShop.setShopName(umsShopNotCheck.getShopName());
             umsShop.setNotCheckId(umsShopNotCheck.getId());
+            umsShop.setUserId(umsShopNotCheck.getUserId());
             umsShopService.insert(umsShop);
         }
 

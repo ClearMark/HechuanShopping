@@ -1,6 +1,8 @@
 package com.kedom.productService.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,11 +21,15 @@ public class OrderVO {
     /**
      * create_time
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
     /**
      * 订单总额
      */
     private Double totalAmount;
+
+    private String cancelString;
     /**
      * 运费金额
      */
@@ -56,6 +62,8 @@ public class OrderVO {
      * 区
      */
     private String receiverRegion;
+
+
     /**
      * 详细地址
      */

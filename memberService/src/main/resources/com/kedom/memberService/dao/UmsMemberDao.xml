@@ -25,8 +25,24 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="UmsMemberMap">
-        select
-          id, level_id, username, password, nickname, mobile, email, header, gender, birth, city, job, sign, source_type, integration, growth, status, create_time
+        select id,
+               level_id,
+               username,
+               password,
+               nickname,
+               mobile,
+               email,
+               header,
+               gender,
+               birth,
+               city,
+               job,
+               sign,
+               source_type,
+               integration,
+               growth,
+               status,
+               create_time
         from ums_member
         where id = #{id}
     </select>
@@ -34,7 +50,8 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="UmsMemberMap">
         select
-          id, level_id, username, password, nickname, mobile, email, header, gender, birth, city, job, sign, source_type, integration, growth, status, create_time
+        id, level_id, username, password, nickname, mobile, email, header, gender, birth, city, job, sign, source_type,
+        integration, growth, status, create_time
         from ums_member
         <where>
             <if test="id != null">
@@ -158,41 +175,84 @@
     </select>
 
     <select id="queryUsernameIsUnique" resultType="java.lang.Integer">
-        select count(*) from ums_member where username = #{username} limit 1
+        select count(*)
+        from ums_member
+        where username = #{username}
+        limit 1
     </select>
     <select id="queryMobileIsUnique" resultType="java.lang.Integer">
-        select count(*) from ums_member where mobile = #{mobile} limit 1
+        select count(*)
+        from ums_member
+        where mobile = #{mobile}
+        limit 1
     </select>
 
     <select id="queryPublicInfoByUsername" resultType="com.kedom.common.entity.memberServiceEntity.UmsMember">
-        select * from ums_member where username = #{username} limit 1
+        select *
+        from ums_member
+        where username = #{username}
+        limit 1
     </select>
     <select id="queryEmailIsUnique" resultType="java.lang.Integer">
-        select count(*) from ums_member where email = #{email} limit 1
+        select count(*)
+        from ums_member
+        where email = #{email}
+        limit 1
     </select>
-    <select id="queryAll" resultType="com.kedom.common.entity.memberServiceEntity.UmsMember">
-        select * from ums_member limit #{offset},10
+
+    <select id="queryAll" resultMap="UmsMemberMap">
+        select * from ums_member
+        <where>
+            <if test="username != null and username!=''">
+                and username like concat('%',#{username},'%')
+            </if>
+            <if test="email != null and email!=''">
+                and email like concat('%',#{email},'%')
+            </if>
+        </where>
+        limit #{pageNum},#{pageSize}
+    </select>
+    <select id="queryAllTotal" resultType="java.lang.Integer">
+        select count(*) from ums_member
+        <where>
+            <if test="username != null and username!=''">
+                and username like concat('%',#{username},'%')
+            </if>
+            <if test="email != null and email!=''">
+                and email like concat('%',#{email},'%')
+            </if>
+        </where>
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" >
-        insert into ums_member(id, level_id, username, password, nickname, mobile, email, header, gender, birth, city, job, sign, source_type, integration, growth, status, create_time)
-        values (#{id}, #{levelId}, #{username}, #{password}, #{nickname}, #{mobile}, #{email}, #{header}, #{gender}, #{birth}, #{city}, #{job}, #{sign}, #{sourceType}, #{integration}, #{growth}, #{status}, #{createTime})
+    <insert id="insert">
+        insert into ums_member(id, level_id, username, password, nickname, mobile, email, header, gender, birth, city,
+                               job, sign, source_type, integration, growth, status, create_time)
+        values (#{id}, #{levelId}, #{username}, #{password}, #{nickname}, #{mobile}, #{email}, #{header}, #{gender},
+                #{birth}, #{city}, #{job}, #{sign}, #{sourceType}, #{integration}, #{growth}, #{status}, #{createTime})
     </insert>
 
     <insert id="insertBatch">
-        insert into ums_member(id, level_id, username, password, nickname, mobile, email, header, gender, birth, city, job, sign, source_type, integration, growth, status, create_time)
+        insert into ums_member(id, level_id, username, password, nickname, mobile, email, header, gender, birth, city,
+        job, sign, source_type, integration, growth, status, create_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.id}, #{entity.levelId}, #{entity.username}, #{entity.password}, #{entity.nickname}, #{entity.mobile}, #{entity.email}, #{entity.header}, #{entity.gender}, #{entity.birth}, #{entity.city}, #{entity.job}, #{entity.sign}, #{entity.sourceType}, #{entity.integration}, #{entity.growth}, #{entity.status}, #{entity.createTime})
+            (#{entity.id}, #{entity.levelId}, #{entity.username}, #{entity.password}, #{entity.nickname},
+            #{entity.mobile}, #{entity.email}, #{entity.header}, #{entity.gender}, #{entity.birth}, #{entity.city},
+            #{entity.job}, #{entity.sign}, #{entity.sourceType}, #{entity.integration}, #{entity.growth},
+            #{entity.status}, #{entity.createTime})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch">
-        insert into ums_member(level_id, username, password, nickname, mobile, email, header, gender, birth, city, job, sign, source_type, integration, growth, status, create_time)
+        insert into ums_member(level_id, username, password, nickname, mobile, email, header, gender, birth, city, job,
+        sign, source_type, integration, growth, status, create_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.id}, #{entity.levelId}, #{entity.username}, #{entity.password}, #{entity.nickname}, #{entity.mobile}, #{entity.email}, #{entity.header}, #{entity.gender}, #{entity.birth}, #{entity.city}, #{entity.job}, #{entity.sign}, #{entity.sourceType}, #{entity.integration}, #{entity.growth}, #{entity.status}, #{entity.createTime})
+            (#{entity.id}, #{entity.levelId}, #{entity.username}, #{entity.password}, #{entity.nickname},
+            #{entity.mobile}, #{entity.email}, #{entity.header}, #{entity.gender}, #{entity.birth}, #{entity.city},
+            #{entity.job}, #{entity.sign}, #{entity.sourceType}, #{entity.integration}, #{entity.growth},
+            #{entity.status}, #{entity.createTime})
         </foreach>
         on duplicate key update
         id = values(id),
@@ -273,10 +333,22 @@
         </set>
         where id = #{id}
     </update>
+    <update id="resetPassword">
+        update ums_member
+        set password = #{encodeAfterPassword}
+        where id = #{id}
+    </update>
+    <update id="updatePassword">
+        update ums_member
+        set password = #{encodeAfterPassword}
+        where id = #{id}
+    </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from ums_member where id = #{id}
+        delete
+        from ums_member
+        where id = #{id}
     </delete>
 </mapper>
 

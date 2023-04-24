@@ -4,9 +4,11 @@ import com.kedom.common.entity.KedomResponse;
 import com.kedom.memberService.entity.ShopInfoVO;
 import com.kedom.memberService.entity.UmsShop;
 import com.kedom.memberService.service.UmsShopService;
+import com.kedom.productService.entity.ShopSearchVO;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 会员(UmsShop)表控制层
@@ -55,6 +57,13 @@ public class UmsShopController {
     public KedomResponse add(UmsShop umsShop) {
         this.umsShopService.insert(umsShop);
         return KedomResponse.ok();
+    }
+
+    @PostMapping("/queryAll")
+    public KedomResponse queryAll(@RequestBody ShopSearchVO umsShop) {
+        List<ShopInfoVO> data = this.umsShopService.queryAll(umsShop);
+        Integer total = this.umsShopService.queryAllTotal(umsShop);
+        return KedomResponse.dataAndTotal(data, total);
     }
 
     /**

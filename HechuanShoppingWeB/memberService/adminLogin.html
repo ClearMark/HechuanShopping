@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" href="../css/login.css"/>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+</head>
+<body>
+<div id="app">
+    <div id="login-box">
+        <h1>登录</h1>
+        <div class="form">
+            <div class="item">
+                <i class="fa fa-github-alt" style="font-size:24px"></i>
+                <input type="text" placeholder="Username" v-model="admin.username">
+            </div>
+            <div class="item">
+                <i class="fa fa-search" style="font-size:24px"></i>
+                <input type="text" placeholder="Password" v-model="admin.password">
+            </div>
+        </div>
+        <button @click="login">Login</button>
+    </div>
+</div>
+
+
+</body>
+<!-- 引入组件库 -->
+<script src="../js/axios.min.js"></script>
+<link rel="stylesheet" href="../js/elment/http_unpkg.com_element-ui_lib_theme-chalk_index.css">
+<script src="../js/vue2.js"></script>
+<script src="../js/elment/http_unpkg.com_element-ui_lib_index.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            admin: {
+                username: '',
+                password: ''
+            }
+
+        },
+
+        methods: {
+            login() {
+                axios.post('http://127.0.0.1:8888/umsMember/umsAdmin/login', this.admin).then(response => {
+                    if (response.data.code === 8888) {
+                        localStorage.setItem("adminId", response.data.data)
+                        window.location.href = "../productService/adminIndex.html"
+                    } else {
+                        this.$message.error(response.data.message)
+                    }
+                }).catch(error => {
+                    console.log(error)
+                })
+            },
+
+        },
+
+
+    })
+
+
+</script>
+</html>
+

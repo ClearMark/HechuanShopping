@@ -7,6 +7,14 @@ spring:
     nacos:
       server-addr: 127.0.0.1:8848
   datasource:
-    url: jdbc:mysql://localhost:3306/ums?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true
+    url: jdbc:mysql://localhost:3306/ums?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
     username: root
     password: root
+
+
+mybatis:
+  configuration-properties:
+    offsetAsPageNum: true
+    rowBoundsWithCount: true
+    reasonable: true
+    log.level: debug

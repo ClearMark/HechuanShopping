@@ -1,9 +1,24 @@
 <html>
 <head>
+    <style>
+        .logo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            font-size: 1.5em;
+        }
+    </style>
     <meta charset="utf-8">
+
+
 </head>
 <body>
 <div id="app">
+    <div class="logo">
+        <span onclick="backIndex()">合川特色购物商城</span></div>
     <el-card class="box-card">
         <div slot="header" class="clearfix">
             <span>订单列表</span>
@@ -40,6 +55,15 @@
                         prop="receiverDetailAddress"
                         label="详细地址">
                 </el-table-column>
+                <el-table-column
+                        fixed="right"
+                        label="操作"
+                        width="100">
+                    <template slot-scope="scope">
+                        <el-button type="text" size="small" @click="showCancelOrder(scope.row)">取消订单</el-button>
+                    </template>
+                </el-table-column>
+
                 <infinite-loading
                         slot="append"
                         @infinite="infiniteHandler"
@@ -47,8 +71,21 @@
                 </infinite-loading>
             </el-table>
         </template>
+        <el-dialog
+                title="取消原因"
+                :visible.sync="cancelDialogVisible"
+                width="30%"
+        >
+            <span>取消原因</span>
+            <el-input type="textarea" v-model="cancelVueString"></el-input>
+            <span slot="footer" class="dialog-footer">
+    <el-button @click="cancelDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="cancelOrder">确 定</el-button>
+  </span>
+        </el-dialog>
+
     </el-card>
-    <el-card class="box-card">
+    <el-card class="box-card" v-if="showOrderData">
         <template>
             <el-descriptions title="订单信息" column="5">
                 <el-descriptions-item label="订单号">{{nowOrder.orderSn}}</el-descriptions-item>
@@ -110,16 +147,25 @@
 <script src="../js/elment/http_unpkg.com_element-ui_lib_index.js"></script>
 <script src="https://unpkg.com/vue-infinite-loading@^2/dist/vue-infinite-loading.js"></script>
 <script>
+    function backIndex() {
+        window.location.href = '../productService/index.html'
+    }
+</script>
+<script>
     new Vue({
         el: '#app',
         data: {
+            cancelDialogVisible: false,
             showOrder: false,
             orderList: [],
             offset: 0,
             limit: 10,
             nowOrder: {},
             isLoad: true,
-            orderItem: []
+            orderItem: [],
+            showOrderData: false,
+            cancelVueString: "",
+            cancelOrderVO: {},
         },
 
         methods: {
@@ -133,6 +179,7 @@
 
             },
             selectRow(item) {
+                this.showOrderData = true
                 this.nowOrder = item
                 let _this = this;
                 axios.get('http://127.0.0.1:8888/productService/pmsOrderItem/OrderId/' + item.orderSn
@@ -153,6 +200,11 @@
                         _this.isLoad = false
                     }
                     response.data.data.forEach(function (item) {
+                        if (item.status.indexOf("取消") != -1 && item.cancelString != null) {
+                            item.status = item.status + "(" + item.cancelString + ")"
+                        } else {
+
+                        }
                         _this.orderList.push(item)
                         _this.showOrder = true
                     })
@@ -164,6 +216,44 @@
                         console.log(error);
                     });
             },
+
+            showCancelOrder(item) {
+                if (item.status.indexOf("取消") != -1) {
+                    this.$alert('订单无法被重复取消', '提示', {
+                        confirmButtonText: '确定',
+                    });
+                    return
+                }
+                if (item.status.indexOf("完成") != -1) {
+                    this.$alert('订单已完成', '提示', {
+                        confirmButtonText: '确定',
+                    });
+                    return
+                }
+                this.cancelDialogVisible = true
+                this.cancelVueString = ""
+                this.cancelOrderVO = item
+            },
+
+            cancelOrder() {
+                let _this = this;
+                let cancelVO = {
+                    orderSn: this.cancelOrderVO.orderSn,
+                    status: '用户取消',
+                    cancelString: this.cancelVueString
+                }
+
+                axios.post('http://127.0.0.1:8888/productService/pmsOrder/cancel', cancelVO
+                ).then(function (response) {
+                    _this.orderList = []
+                    _this.offset = 0
+                    _this.getOrder()
+                    _this.cancelDialogVisible = false
+                })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
 
 
         },
